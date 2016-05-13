@@ -28,58 +28,64 @@ public class Main {
 	public static void main(String[] args) {
 
 		final int seed = Primes.getRandomPrime();
-		
+
 		logger.info("Random prime seed: " + seed);
-		
-		final Method method = Method.MLP_BPROP;
-		
-		logger.info("Selected method: " + method.getName());
 
-		for (String folder : Folders.FOLDERS_LING) {
+		final Method[] methods = new Method[] { Method.MLP_BPROP,
+				Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP, Method.SVM };
 
-			logger.info("Current folder: " + folder);
+		for (Method method : methods) {
 
-			File hamFile = new File(folder + "/ham");
-			File spamFile = new File(folder + "/spam");
+			logger.info("Current method: " + method.getName());
 
-			MessageDataSet dataSet = new MessageDataSet(hamFile, spamFile);
-			MessageDataSet dataSubset = null;
+			for (String folder : Folders.FOLDERS_LING) {
 
-			dataSet.shuffle(seed);
+				logger.info("Current folder: " + folder);
 
-			dataSubset = dataSet.getSubset(0, 40);
-			BasicMLDataSet trainingSet = new BasicMLDataSet(
-					dataSubset.getInputDataAsPrimitiveMatrix(),
-					dataSubset.getOutputDataAsPrimitiveMatrix());
+				File hamFile = new File(folder + "/ham");
+				File spamFile = new File(folder + "/spam");
 
-			dataSubset = dataSet.getSubset(40, 60);
-			BasicMLDataSet validationSet = new BasicMLDataSet(
-					dataSubset.getInputDataAsPrimitiveMatrix(),
-					dataSubset.getOutputDataAsPrimitiveMatrix());
+				MessageDataSet dataSet = new MessageDataSet(hamFile, spamFile);
+				MessageDataSet dataSubset = null;
 
-			dataSubset = dataSet.getSubset(60, 100);
-			BasicMLDataSet testSet = new BasicMLDataSet(
-					dataSubset.getInputDataAsPrimitiveMatrix(),
-					dataSubset.getOutputDataAsPrimitiveMatrix());
+				dataSet.shuffle(seed);
 
-			switch (method) {
-			case MLP_BPROP:
-				MethodMlpBprop.run(trainingSet, validationSet, testSet, seed);
-				break;
-			case MLP_RPROP:
-				MethodMlpRprop.run(trainingSet, validationSet, testSet, seed);
-				break;
-			case NEAT:
-				MethodNeat.run(trainingSet, validationSet, testSet, seed);
-				break;
-			case RBF_QPROP:
-				MethodRbfQprop.run(trainingSet, validationSet, testSet, seed);
-				break;
-			case SVM:
-				MethodSvm.run(trainingSet, validationSet, testSet, seed);
-				break;
+				dataSubset = dataSet.getSubset(0, 40);
+				BasicMLDataSet trainingSet = new BasicMLDataSet(
+						dataSubset.getInputDataAsPrimitiveMatrix(),
+						dataSubset.getOutputDataAsPrimitiveMatrix());
+
+				dataSubset = dataSet.getSubset(40, 60);
+				BasicMLDataSet validationSet = new BasicMLDataSet(
+						dataSubset.getInputDataAsPrimitiveMatrix(),
+						dataSubset.getOutputDataAsPrimitiveMatrix());
+
+				dataSubset = dataSet.getSubset(60, 100);
+				BasicMLDataSet testSet = new BasicMLDataSet(
+						dataSubset.getInputDataAsPrimitiveMatrix(),
+						dataSubset.getOutputDataAsPrimitiveMatrix());
+
+				switch (method) {
+				case MLP_BPROP:
+					MethodMlpBprop.run(trainingSet, validationSet, testSet,
+							seed);
+					break;
+				case MLP_RPROP:
+					MethodMlpRprop.run(trainingSet, validationSet, testSet,
+							seed);
+					break;
+				case NEAT:
+					MethodNeat.run(trainingSet, validationSet, testSet, seed);
+					break;
+				case RBF_QPROP:
+					MethodRbfQprop.run(trainingSet, validationSet, testSet,
+							seed);
+					break;
+				case SVM:
+					MethodSvm.run(trainingSet, validationSet, testSet, seed);
+					break;
+				}
 			}
-
 		}
 
 		Encog.getInstance().shutdown();
