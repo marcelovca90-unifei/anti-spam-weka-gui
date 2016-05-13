@@ -18,27 +18,30 @@ import xyz.marcelovca90.math.ActivationTanSig;
  * @author marcelovca90
  * 
  */
-public class MlpBprop {
+public class MethodMlpBprop {
 
-	private static final Logger logger = LogManager.getLogger(MlpBprop.class);
+	private static final Logger logger = LogManager.getLogger(MethodMlpBprop.class);
 
-	/**
-	 * @param args
-	 */
-	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(BasicMLDataSet trainingSet,
+			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = NeuralUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
+		int hiddenCount = MethodNeuralUtil.getHiddenNeuronsCount(inputCount,
+				trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationTanSig(), false, inputCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true, hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true, hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationLogSig(), false, outputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), false,
+				inputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
+				2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
+				2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationLogSig(), false,
+				outputCount));
 		network.getStructure().finalizeStructure();
 		network.reset(seed);
-		
+
 		Backpropagation backpropagation = new Backpropagation(network,
 				trainingSet, 1e-4, 0.9);
 		backpropagation.setBatchSize(0);
@@ -67,12 +70,12 @@ public class MlpBprop {
 			}
 
 			/*
-			logger.debug(String.format(
-					"Iteration #%d\tLR = %3.3e\tMO = %.6f\tvError = %.12f",
-					backpropagation.getIteration(),
-					backpropagation.getLearningRate(),
-					backpropagation.getMomentum(), validationErrorAfter));
-			*/
+			 * logger.debug(String.format(
+			 * "Iteration #%d\tLR = %3.3e\tMO = %.6f\tvError = %.12f",
+			 * backpropagation.getIteration(),
+			 * backpropagation.getLearningRate(), backpropagation.getMomentum(),
+			 * validationErrorAfter));
+			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
 
@@ -85,14 +88,14 @@ public class MlpBprop {
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (NeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
-				if (NeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
 					hamCorrect++;
 				}
-			} else if (NeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
-				if (NeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
 					spamCorrect++;
 				}
 			}

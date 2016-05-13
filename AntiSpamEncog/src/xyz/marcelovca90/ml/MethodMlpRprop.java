@@ -2,7 +2,6 @@ package xyz.marcelovca90.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.encog.Encog;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -18,18 +17,15 @@ import xyz.marcelovca90.math.ActivationTanSig;
  * @author marcelovca90
  * 
  */
-public class MlpRprop {
+public class MethodMlpRprop {
 
-	private static final Logger logger = LogManager.getLogger(MlpRprop.class);
+	private static final Logger logger = LogManager.getLogger(MethodMlpRprop.class);
 
-	/**
-	 * @param args
-	 */
 	public static void run(BasicMLDataSet trainingSet,
 			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = NeuralUtil.getHiddenNeuronsCount(inputCount,
+		int hiddenCount = MethodNeuralUtil.getHiddenNeuronsCount(inputCount,
 				trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
@@ -37,9 +33,9 @@ public class MlpRprop {
 		network.addLayer(new BasicLayer(new ActivationTanSig(), false,
 				inputCount));
 		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				hiddenCount));
+				2 * hiddenCount));
 		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				hiddenCount));
+				2 * hiddenCount));
 		network.addLayer(new BasicLayer(new ActivationLogSig(), false,
 				outputCount));
 		network.getStructure().finalizeStructure();
@@ -61,9 +57,9 @@ public class MlpRprop {
 			validationErrorAfter = network.calculateError(validationSet);
 
 			/*
-			logger.debug(String.format("Iteration #%d\tvError = %.12f",
-					resilientPropagation.getIteration(), validationErrorAfter));
-			*/
+			 * logger.debug(String.format("Iteration #%d\tvError = %.12f",
+			 * resilientPropagation.getIteration(), validationErrorAfter));
+			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
 
@@ -76,14 +72,14 @@ public class MlpRprop {
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (NeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
-				if (NeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
 					hamCorrect++;
 				}
-			} else if (NeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
-				if (NeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
 					spamCorrect++;
 				}
 			}
@@ -94,8 +90,5 @@ public class MlpRprop {
 						* (double) hamCorrect / (double) hamCount, hamCorrect,
 				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
 				spamCorrect, spamCount));
-
-		Encog.getInstance().shutdown();
-		Runtime.getRuntime().gc();
 	}
 }

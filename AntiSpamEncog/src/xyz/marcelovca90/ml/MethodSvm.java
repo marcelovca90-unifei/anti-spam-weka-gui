@@ -2,7 +2,6 @@ package xyz.marcelovca90.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.encog.Encog;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -17,14 +16,10 @@ import xyz.marcelovca90.data.MessageLabel;
  * @author marcelovca90
  * 
  */
-public class SvmClassifier {
+public class MethodSvm {
 
-	private static final Logger logger = LogManager
-			.getLogger(SvmClassifier.class);
+	private static final Logger logger = LogManager.getLogger(MethodSvm.class);
 
-	/**
-	 * @param args
-	 */
 	public static void run(BasicMLDataSet trainingSet,
 			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
@@ -35,19 +30,22 @@ public class SvmClassifier {
 
 		double bestC = 0, bestGamma = 0, bestError = Double.MAX_VALUE;
 
-		for (int i = 0; i < 100; i++) {
-			SVMTrain svmTrainTemp = new SVMTrain(svm, trainingSet);
-			svmTrainTemp.setC(1000.0 * Math.random());
+		for (int i = 1; i <= 1000; i++) {
+			SVMTrain svmTrainTemp = new SVMTrain(svm, validationSet);
+			svmTrainTemp.setC(Math.random());
 			svmTrainTemp.setGamma(Math.random());
-			svmTrainTemp.setFold((int)Math.log10(inputCount) + 1);
+			svmTrainTemp.setFold((int) Math.log10(inputCount) + 1);
 			svmTrainTemp.iteration();
 			if (svmTrainTemp.getError() < bestError) {
 				bestError = svmTrainTemp.getError();
 				bestC = svmTrainTemp.getC();
 				bestGamma = svmTrainTemp.getGamma();
+				/*
+				 * logger.debug(String.format(
+				 * "Best error so far = %f (i = %d, C=%f, GAMMA=%f)", bestError,
+				 * i, bestC, bestGamma));
+				 */
 			}
-			logger.debug(String.format("Best error = %f (C=%f,  GAMMA=%f)",
-					bestError, bestC, bestGamma));
 		}
 
 		SVMTrain svmTrain = new SVMTrain(svm, trainingSet);
@@ -65,12 +63,12 @@ public class SvmClassifier {
 			MLData ideal = pair.getIdeal();
 			MLData output = svm.compute(input);
 
-			if (NeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
 				if (Math.abs(output.getData(0) - 0.0) < 1e-6) {
 					hamCorrect++;
 				}
-			} else if (NeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
 				if (Math.abs(output.getData(0) - 1.0) < 1e-6) {
 					spamCorrect++;
@@ -83,8 +81,5 @@ public class SvmClassifier {
 						* (double) hamCorrect / (double) hamCount, hamCorrect,
 				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
 				spamCorrect, spamCount));
-
-		Encog.getInstance().shutdown();
-		Runtime.getRuntime().gc();
 	}
 }

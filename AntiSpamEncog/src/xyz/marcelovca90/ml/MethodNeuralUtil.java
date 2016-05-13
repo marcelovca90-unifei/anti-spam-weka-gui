@@ -11,13 +11,13 @@ import xyz.marcelovca90.data.MessageLabel;
  * @author marcelovca90
  * 
  */
-public class NeuralUtil {
+public class MethodNeuralUtil {
 
 	public static int getHiddenNeuronsCount(int numberOfFeatures,
 			int trainingSetSize) {
 
 		return (int) Math.ceil(((-(numberOfFeatures + 2)) + Math.sqrt(Math.pow(
-				(numberOfFeatures + 2), 2) + 2 * trainingSetSize)) / 2);
+				(numberOfFeatures + 2), 2) + 2 * trainingSetSize)));
 	}
 
 	public static MessageLabel infer(double[] data) {
