@@ -7,15 +7,20 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author marcelovca90
- *
+ * 
  */
 public class MessageDataSet {
 
-	private ArrayList<MessageData> messages;
+	private List<Double[]> inputData;
+
+	private List<Double[]> outputData;
 
 	private String hamFilePath;
 
@@ -25,28 +30,40 @@ public class MessageDataSet {
 
 	private int spamCount;
 
-	private MessageDataSet(ArrayList<MessageData> messages, String hamFilePath,
-			String spamFilePath, int hamCount, int spamCount) {
+	public MessageDataSet(File hamFile, File spamFile) {
 
-		this.messages = messages;
+		this.inputData = new ArrayList<Double[]>();
+		this.outputData = new ArrayList<Double[]>();
+
+		this.hamFilePath = hamFile.getPath().substring(
+				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
+		this.spamFilePath = spamFile.getPath().substring(
+				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
+
+		this.addMessagesFromFile(hamFile);
+		this.addMessagesFromFile(spamFile);
+	}
+
+	private MessageDataSet(List<Double[]> inputData, List<Double[]> outputData,
+			String hamFilePath, String spamFilePath, int hamCount, int spamCount) {
+
+		this.inputData = inputData;
+		this.outputData = outputData;
 		this.hamFilePath = hamFilePath;
 		this.spamFilePath = spamFilePath;
 		this.hamCount = hamCount;
 		this.spamCount = spamCount;
 	}
 
-	public MessageDataSet(File hamFile, File spamFile) {
-
-		this.messages = new ArrayList<MessageData>();
-		this.hamFilePath = hamFile.getPath().substring(
-				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
-		this.spamFilePath = spamFile.getPath().substring(
-				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
-		this.addMessagesFromFile(hamFile);
-		this.addMessagesFromFile(spamFile);
-	}
-
 	private void addMessagesFromFile(File file) {
+
+		try {
+			if (!file.getName().contains("ham")
+					&& !file.getName().contains("spam"))
+				throw new IOException("File name must contain 'ham' or 'spam'.");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
 		// open file
 		FileInputStream stream = null;
@@ -57,7 +74,7 @@ public class MessageDataSet {
 		}
 		FileChannel fileIn = stream.getChannel();
 
-		// load data
+		// load input
 		int bufferLen = (int) file.length();
 
 		ByteBuffer inBuffer = ByteBuffer.allocate(bufferLen);
@@ -80,23 +97,32 @@ public class MessageDataSet {
 
 		int instanceAmount = inBuffer.getInt(); // amount of instances
 		int featureAmount = inBuffer.getInt(); // amount of features in each
-												// instance
+		// instance
 
 		for (int i = 0; i < instanceAmount; i++) {
 
-			double[] data = new double[featureAmount];
+			Double[] tempInputData = new Double[featureAmount];
 
 			for (int j = 0; j < featureAmount; j++)
-				data[j] = inBuffer.getDouble();
+				tempInputData[j] = inBuffer.getDouble();
 
-			MessageType type = file.getName().contains("ham") ? MessageType.HAM
-					: MessageType.SPAM;
+			this.inputData.add(tempInputData);
 
-			this.messages.add(new MessageData(data, type));
-			if (type == MessageType.HAM)
+			MessageLabel tempOutputLabel = file.getName().contains("ham") ? MessageLabel.HAM
+					: MessageLabel.SPAM;
+
+			switch (tempOutputLabel) {
+			case HAM:
 				this.hamCount++;
-			else
+				break;
+			case SPAM:
 				this.spamCount++;
+				break;
+			}
+
+			Double[] tempOutputData = tempOutputLabel.getValue();
+
+			this.outputData.add(tempOutputData);
 		}
 	}
 
@@ -104,12 +130,39 @@ public class MessageDataSet {
 		return hamCount;
 	}
 
-	public ArrayList<MessageData> getMessages() {
-		return messages;
+	public String getHamFilePath() {
+		return hamFilePath;
+	}
+
+	public List<Double[]> getInputData() {
+		return inputData;
+	}
+
+	public double[][] getInputDataAsPrimitiveMatrix() {
+		double[][] matrix = new double[inputData.size()][];
+		for (int i = 0; i < matrix.length; i++)
+			matrix[i] = ArrayUtils.toPrimitive(inputData.get(i));
+		return matrix;
+	}
+
+	public List<Double[]> getOutputData() {
+		return outputData;
+	}
+
+	public double[][] getOutputDataAsPrimitiveMatrix() {
+
+		double[][] matrix = new double[outputData.size()][];
+		for (int i = 0; i < matrix.length; i++)
+			matrix[i] = ArrayUtils.toPrimitive(outputData.get(i));
+		return matrix;
 	}
 
 	public int getSpamCount() {
 		return spamCount;
+	}
+
+	public String getSpamFilePath() {
+		return spamFilePath;
 	}
 
 	public MessageDataSet getSubset(int startPercentage, int endPercentage) {
@@ -117,11 +170,15 @@ public class MessageDataSet {
 		double startPercentageDouble = ((double) startPercentage / 100.0);
 		double endPercentageDouble = ((double) endPercentage / 100.0);
 
-		int startIndex = (int) ((double) this.messages.size() * startPercentageDouble);
-		int endIndex = (int) ((double) this.messages.size() * endPercentageDouble);
+		int inputStartIndex = (int) ((double) this.inputData.size() * startPercentageDouble);
+		int inputEndIndex = (int) ((double) this.inputData.size() * endPercentageDouble);
+		List<Double[]> newInputData = this.inputData.subList(inputStartIndex,
+				inputEndIndex);
 
-		ArrayList<MessageData> newData = new ArrayList<MessageData>(
-				this.messages.subList(startIndex, endIndex));
+		int outputStartIndex = (int) ((double) this.outputData.size() * startPercentageDouble);
+		int outputEndIndex = (int) ((double) this.outputData.size() * endPercentageDouble);
+		List<Double[]> newOutputData = this.outputData.subList(
+				outputStartIndex, outputEndIndex);
 
 		String newHamFilePath = String.format("%s[%d,%d]", hamFilePath,
 				startPercentage, endPercentage);
@@ -131,31 +188,58 @@ public class MessageDataSet {
 		int newHamCount = 0;
 		int newSpamCount = 0;
 
-		for (MessageData messageData : newData) {
-			if (messageData.getType() == MessageType.HAM)
+		for (Double[] output : newOutputData) {
+			switch (this.getType(output)) {
+			case HAM:
 				newHamCount++;
-			else
+				break;
+			case SPAM:
 				newSpamCount++;
+				break;
+			}
 		}
 
-		return new MessageDataSet(newData, newHamFilePath, newSpamFilePath,
-				newHamCount, newSpamCount);
+		return new MessageDataSet(newInputData, newOutputData, newHamFilePath,
+				newSpamFilePath, newHamCount, newSpamCount);
+	}
+
+	private MessageLabel getType(Double[] data) {
+
+		if (data.length == 2 && data[0].compareTo(1.0) == 0
+				&& data[1].compareTo(0.0) == 0)
+			return MessageLabel.HAM;
+		else if (data.length == 2 && data[0].compareTo(0.0) == 0
+				&& data[1].compareTo(1.0) == 0)
+			return MessageLabel.SPAM;
+		else
+			throw new AssertionError();
 	}
 
 	public void shuffle(long seed) {
 
-		Random random = new Random(seed);
+		if (this.inputData.size() != this.outputData.size())
+			throw new ArithmeticException(
+					"Input and output arrays must have the same size.");
 
-		for (int i = this.messages.size() - 1; i > 0; i--) {
+		Random random = new Random(seed);
+		Double[] backup;
+
+		for (int i = this.inputData.size() - 1; i > 0; i--) {
 			int index = random.nextInt(i + 1);
-			MessageData backup = this.messages.get(index);
-			this.messages.set(index, this.messages.get(i));
-			this.messages.set(i, backup);
+
+			backup = this.inputData.get(index);
+			this.inputData.set(index, this.inputData.get(i));
+			this.inputData.set(i, backup);
+
+			backup = this.outputData.get(index);
+			this.outputData.set(index, this.outputData.get(i));
+			this.outputData.set(i, backup);
 		}
 	}
 
 	@Override
 	public String toString() {
+
 		return "MessageDataSet [hamFilePath=" + hamFilePath + ", spamFilePath="
 				+ spamFilePath + ", hamCount=" + hamCount + ", spamCount="
 				+ spamCount + "]";
