@@ -12,7 +12,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import xyz.marcelovca90.ml.MethodNeuralUtil;
+import xyz.marcelovca90.common.Enumerates.MessageLabel;
+import xyz.marcelovca90.ml.MethodUtil;
 
 /**
  * @author marcelovca90
@@ -191,7 +192,7 @@ public class MessageDataSet {
 		int newSpamCount = 0;
 
 		for (Double[] output : newOutputData) {
-			switch (MethodNeuralUtil.infer(output)) {
+			switch (MethodUtil.infer(output)) {
 			case HAM:
 				newHamCount++;
 				break;

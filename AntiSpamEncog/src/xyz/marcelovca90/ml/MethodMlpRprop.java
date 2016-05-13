@@ -9,7 +9,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-import xyz.marcelovca90.data.MessageLabel;
+import xyz.marcelovca90.common.Enumerates.MessageLabel;
 import xyz.marcelovca90.math.ActivationLogSig;
 import xyz.marcelovca90.math.ActivationTanSig;
 
@@ -25,7 +25,7 @@ public class MethodMlpRprop {
 			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodNeuralUtil.getHiddenNeuronsCount(inputCount,
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
 				trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
@@ -72,14 +72,14 @@ public class MethodMlpRprop {
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
-				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM) {
 					hamCorrect++;
 				}
-			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
-				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM) {
 					spamCorrect++;
 				}
 			}

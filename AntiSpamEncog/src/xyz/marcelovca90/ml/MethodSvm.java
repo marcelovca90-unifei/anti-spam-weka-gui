@@ -10,7 +10,7 @@ import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 import org.encog.ml.svm.training.SVMTrain;
 
-import xyz.marcelovca90.data.MessageLabel;
+import xyz.marcelovca90.common.Enumerates.MessageLabel;
 
 /**
  * @author marcelovca90
@@ -63,12 +63,12 @@ public class MethodSvm {
 			MLData ideal = pair.getIdeal();
 			MLData output = svm.compute(input);
 
-			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
 				if (Math.abs(output.getData(0) - 0.0) < 1e-6) {
 					hamCorrect++;
 				}
-			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
 				if (Math.abs(output.getData(0) - 1.0) < 1e-6) {
 					spamCorrect++;

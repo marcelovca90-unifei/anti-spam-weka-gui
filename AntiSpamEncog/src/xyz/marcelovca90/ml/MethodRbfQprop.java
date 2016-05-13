@@ -9,7 +9,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
 import org.encog.neural.rbf.RBFNetwork;
 
-import xyz.marcelovca90.data.MessageLabel;
+import xyz.marcelovca90.common.Enumerates.MessageLabel;
 
 /**
  * @author marcelovca90
@@ -24,7 +24,7 @@ public class MethodRbfQprop {
 			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodNeuralUtil.getHiddenNeuronsCount(inputCount,
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
 				trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
@@ -63,14 +63,14 @@ public class MethodRbfQprop {
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
 				hamCount++;
-				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM) {
 					hamCorrect++;
 				}
-			} else if (MethodNeuralUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
 				spamCount++;
-				if (MethodNeuralUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM) {
 					spamCorrect++;
 				}
 			}
