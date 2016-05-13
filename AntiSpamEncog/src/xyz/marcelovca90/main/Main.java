@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.encog.Encog;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
+import xyz.marcelovca90.common.Enumerates.Method;
 import xyz.marcelovca90.common.Folders;
 import xyz.marcelovca90.common.Primes;
 import xyz.marcelovca90.data.MessageDataSet;
@@ -15,7 +16,6 @@ import xyz.marcelovca90.ml.MethodMlpRprop;
 import xyz.marcelovca90.ml.MethodNeat;
 import xyz.marcelovca90.ml.MethodRbfQprop;
 import xyz.marcelovca90.ml.MethodSvm;
-import xyz.marcelovca90.ml.MethodUtil;
 
 /**
  * @author marcelovca90
@@ -31,7 +31,7 @@ public class Main {
 		
 		logger.info("Random prime seed: " + seed);
 		
-		final MethodUtil method = MethodUtil.MLP_BPROP;
+		final Method method = Method.MLP_BPROP;
 		
 		logger.info("Selected method: " + method.getName());
 
