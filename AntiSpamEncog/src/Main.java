@@ -10,6 +10,7 @@ import xyz.marcelovca90.common.Primes;
 import xyz.marcelovca90.data.MessageDataSet;
 import xyz.marcelovca90.ml.MlpBprop;
 import xyz.marcelovca90.ml.MlpRprop;
+import xyz.marcelovca90.ml.SvmClassifier;
 
 /**
  * @author marcelovca90
@@ -55,6 +56,7 @@ public class Main {
 					dataSubset.getInputDataAsPrimitiveMatrix(),
 					dataSubset.getOutputDataAsPrimitiveMatrix());
 
+			SvmClassifier.run(trainingSet, validationSet, testSet, seed);
 			MlpBprop.run(trainingSet, validationSet, testSet, seed);
 			MlpRprop.run(trainingSet, validationSet, testSet, seed);
 		}
