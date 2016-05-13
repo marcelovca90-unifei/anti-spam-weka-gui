@@ -1,38 +1,44 @@
+package xyz.marcelovca90.main;
+
 import java.io.File;
-import java.util.Calendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.encog.Encog;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
 import xyz.marcelovca90.common.Folders;
 import xyz.marcelovca90.common.Primes;
 import xyz.marcelovca90.data.MessageDataSet;
-import xyz.marcelovca90.ml.MlpBprop;
-import xyz.marcelovca90.ml.MlpRprop;
-import xyz.marcelovca90.ml.SvmClassifier;
+import xyz.marcelovca90.ml.MethodMlpBprop;
+import xyz.marcelovca90.ml.MethodMlpRprop;
+import xyz.marcelovca90.ml.MethodNeat;
+import xyz.marcelovca90.ml.MethodRbfQprop;
+import xyz.marcelovca90.ml.MethodSvm;
+import xyz.marcelovca90.ml.MethodUtil;
 
 /**
  * @author marcelovca90
- *
+ * 
  */
 public class Main {
 
 	private static final Logger logger = LogManager.getLogger(Main.class);
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
-		logger.info("Process started at " + Calendar.getInstance().getTime());
-
-		int seed = Primes.getRandomPrime();
+		final int seed = Primes.getRandomPrime();
+		
+		logger.info("Random prime seed: " + seed);
+		
+		final MethodUtil method = MethodUtil.MLP_BPROP;
+		
+		logger.info("Selected method: " + method.getName());
 
 		for (String folder : Folders.FOLDERS_LING) {
-			
+
 			logger.info("Current folder: " + folder);
-			
+
 			File hamFile = new File(folder + "/ham");
 			File spamFile = new File(folder + "/spam");
 
@@ -56,12 +62,28 @@ public class Main {
 					dataSubset.getInputDataAsPrimitiveMatrix(),
 					dataSubset.getOutputDataAsPrimitiveMatrix());
 
-			SvmClassifier.run(trainingSet, validationSet, testSet, seed);
-			MlpBprop.run(trainingSet, validationSet, testSet, seed);
-			MlpRprop.run(trainingSet, validationSet, testSet, seed);
+			switch (method) {
+			case MLP_BPROP:
+				MethodMlpBprop.run(trainingSet, validationSet, testSet, seed);
+				break;
+			case MLP_RPROP:
+				MethodMlpRprop.run(trainingSet, validationSet, testSet, seed);
+				break;
+			case NEAT:
+				MethodNeat.run(trainingSet, validationSet, testSet, seed);
+				break;
+			case RBF_QPROP:
+				MethodRbfQprop.run(trainingSet, validationSet, testSet, seed);
+				break;
+			case SVM:
+				MethodSvm.run(trainingSet, validationSet, testSet, seed);
+				break;
+			}
+
 		}
 
-		logger.info("Process finished at " + Calendar.getInstance().getTime());
+		Encog.getInstance().shutdown();
+		Runtime.getRuntime().gc();
 	}
 
 }
