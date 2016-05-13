@@ -12,6 +12,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import xyz.marcelovca90.ml.NeuralUtil;
+
 /**
  * @author marcelovca90
  * 
@@ -189,7 +191,7 @@ public class MessageDataSet {
 		int newSpamCount = 0;
 
 		for (Double[] output : newOutputData) {
-			switch (this.getType(output)) {
+			switch (NeuralUtil.infer(output)) {
 			case HAM:
 				newHamCount++;
 				break;
@@ -201,18 +203,6 @@ public class MessageDataSet {
 
 		return new MessageDataSet(newInputData, newOutputData, newHamFilePath,
 				newSpamFilePath, newHamCount, newSpamCount);
-	}
-
-	private MessageLabel getType(Double[] data) {
-
-		if (data.length == 2 && data[0].compareTo(1.0) == 0
-				&& data[1].compareTo(0.0) == 0)
-			return MessageLabel.HAM;
-		else if (data.length == 2 && data[0].compareTo(0.0) == 0
-				&& data[1].compareTo(1.0) == 0)
-			return MessageLabel.SPAM;
-		else
-			throw new AssertionError();
 	}
 
 	public void shuffle(long seed) {
