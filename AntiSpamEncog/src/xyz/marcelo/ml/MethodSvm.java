@@ -1,4 +1,4 @@
-package xyz.marcelovca90.ml;
+package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,7 @@ import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 import org.encog.ml.svm.training.SVMTrain;
 
-import xyz.marcelovca90.common.Enumerates.MessageLabel;
+import xyz.marcelo.common.Enumerates.MessageLabel;
 
 /**
  * @author marcelovca90

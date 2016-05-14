@@ -1,25 +1,26 @@
-package xyz.marcelovca90.ml;
+package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.encog.ml.CalculateScore;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.ml.ea.train.basic.TrainEA;
+import org.encog.neural.neat.NEATNetwork;
+import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.NEATUtil;
+import org.encog.neural.networks.training.TrainingSetScore;
 
-import xyz.marcelovca90.common.Enumerates.MessageLabel;
-import xyz.marcelovca90.math.ActivationLogSig;
-import xyz.marcelovca90.math.ActivationTanSig;
+import xyz.marcelo.common.Enumerates.MessageLabel;
 
 /**
  * @author marcelovca90
  * 
  */
-public class MethodMlpRprop {
+public class MethodNeat {
 
-	private static final Logger logger = LogManager.getLogger(MethodMlpRprop.class);
+	private static final Logger logger = LogManager.getLogger(MethodNeat.class);
 
 	public static void run(BasicMLDataSet trainingSet,
 			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
@@ -29,22 +30,16 @@ public class MethodMlpRprop {
 				trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
-		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationTanSig(), false,
-				inputCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationLogSig(), false,
-				outputCount));
-		network.getStructure().finalizeStructure();
-		network.reset(seed);
+		NEATNetwork network = null;
 
-		ResilientPropagation resilientPropagation = new ResilientPropagation(
-				network, trainingSet);
-		resilientPropagation.setBatchSize(0);
-		resilientPropagation.setThreadCount(0);
+		NEATPopulation population = new NEATPopulation(inputCount, outputCount,
+				hiddenCount);
+		population.reset();
+
+		CalculateScore score = new TrainingSetScore(trainingSet);
+
+		TrainEA train = NEATUtil.constructNEATTrainer(population, score);
+		train.setThreadCount(Runtime.getRuntime().availableProcessors());
 
 		double validationErrorBefore = Double.MAX_VALUE, validationErrorAfter = Double.MAX_VALUE;
 
@@ -52,13 +47,16 @@ public class MethodMlpRprop {
 
 			validationErrorBefore = validationErrorAfter;
 
-			resilientPropagation.iteration(20);
+			train.iteration(20);
+
+			network = (NEATNetwork) train.getCODEC().decode(
+					train.getBestGenome());
 
 			validationErrorAfter = network.calculateError(validationSet);
 
 			/*
 			 * logger.debug(String.format("Iteration #%d\tvError = %.12f",
-			 * resilientPropagation.getIteration(), validationErrorAfter));
+			 * train.getIteration(), validationErrorAfter));
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);

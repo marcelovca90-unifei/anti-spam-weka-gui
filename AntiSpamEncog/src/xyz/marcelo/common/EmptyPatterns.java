@@ -1,4 +1,4 @@
-package xyz.marcelovca90.common;
+package xyz.marcelo.common;
 
 import java.util.HashMap;
 

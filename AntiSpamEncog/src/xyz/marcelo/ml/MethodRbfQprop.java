@@ -1,4 +1,4 @@
-package xyz.marcelovca90.ml;
+package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
 import org.encog.neural.rbf.RBFNetwork;
 
-import xyz.marcelovca90.common.Enumerates.MessageLabel;
+import xyz.marcelo.common.Enumerates.MessageLabel;
 
 /**
  * @author marcelovca90
