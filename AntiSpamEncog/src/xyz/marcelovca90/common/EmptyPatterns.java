@@ -136,7 +136,7 @@ public class EmptyPatterns {
 			map.put("/Unifei_2016/MI/100", new int[] {16, 151});
 		}
 		
-		String folderSuffix = folder.replace(Folders.BASE_FOLDER, "");
+		String folderSuffix = folder.replace(Folders.ROOT, "");
 
 		if (map.containsKey(folder)) 
 			return map.get(folder);

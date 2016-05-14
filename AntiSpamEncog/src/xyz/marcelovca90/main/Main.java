@@ -1,6 +1,7 @@
 package xyz.marcelovca90.main;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,8 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		System.out.println(Arrays.toString(Folders.ALL));
+
 		final int seed = Primes.getRandomPrime();
 
 		logger.info("Random prime seed: " + seed);
@@ -38,7 +41,7 @@ public class Main {
 
 			logger.info("Current method: " + method.getName());
 
-			for (String folder : Folders.FOLDERS_LING) {
+			for (String folder : Folders.ALL) {
 
 				logger.info("Current folder: " + folder);
 
