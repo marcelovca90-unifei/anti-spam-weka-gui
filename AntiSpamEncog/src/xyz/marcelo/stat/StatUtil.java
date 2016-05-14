@@ -1,4 +1,4 @@
-package xyz.marcelovca90.stat;
+package xyz.marcelo.stat;
 
 import java.util.Set;
 

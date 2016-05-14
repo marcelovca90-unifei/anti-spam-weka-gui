@@ -1,4 +1,4 @@
-package xyz.marcelovca90.ml;
+package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,9 +10,9 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
-import xyz.marcelovca90.common.Enumerates.MessageLabel;
-import xyz.marcelovca90.math.ActivationLogSig;
-import xyz.marcelovca90.math.ActivationTanSig;
+import xyz.marcelo.common.Enumerates.MessageLabel;
+import xyz.marcelo.math.ActivationLogSig;
+import xyz.marcelo.math.ActivationTanSig;
 
 /**
  * @author marcelovca90
