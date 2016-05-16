@@ -22,18 +22,15 @@ public class MethodNeat {
 
 	private static final Logger logger = LogManager.getLogger(MethodNeat.class);
 
-	public static void run(BasicMLDataSet trainingSet,
-			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
-				trainingSet.size());
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
 		NEATNetwork network = null;
 
-		NEATPopulation population = new NEATPopulation(inputCount, outputCount,
-				hiddenCount);
+		NEATPopulation population = new NEATPopulation(inputCount, outputCount, hiddenCount);
 		population.reset();
 
 		CalculateScore score = new TrainingSetScore(trainingSet);
@@ -49,8 +46,7 @@ public class MethodNeat {
 
 			train.iteration(20);
 
-			network = (NEATNetwork) train.getCODEC().decode(
-					train.getBestGenome());
+			network = (NEATNetwork) train.getCODEC().decode(train.getBestGenome());
 
 			validationErrorAfter = network.calculateError(validationSet);
 
@@ -83,10 +79,8 @@ public class MethodNeat {
 			}
 		}
 
-		logger.info(String.format(
-				"Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0
-						* (double) hamCorrect / (double) hamCount, hamCorrect,
-				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
+		logger.info(String.format("Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0 * (double) hamCorrect
+				/ (double) hamCount, hamCorrect, hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
 				spamCorrect, spamCount));
 	}
 }

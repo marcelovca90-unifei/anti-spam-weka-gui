@@ -22,28 +22,21 @@ public class MethodMlpBprop {
 
 	private static final Logger logger = LogManager.getLogger(MethodMlpBprop.class);
 
-	public static void run(BasicMLDataSet trainingSet,
-			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
-				trainingSet.size());
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationTanSig(), false,
-				inputCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationLogSig(), false,
-				outputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), false, inputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationLogSig(), false, outputCount));
 		network.getStructure().finalizeStructure();
 		network.reset(seed);
 
-		Backpropagation backpropagation = new Backpropagation(network,
-				trainingSet, 1e-4, 0.9);
+		Backpropagation backpropagation = new Backpropagation(network, trainingSet, 1e-4, 0.9);
 		backpropagation.setBatchSize(0);
 		backpropagation.setThreadCount(0);
 
@@ -61,8 +54,7 @@ public class MethodMlpBprop {
 			validationErrorAfter = network.calculateError(validationSet);
 
 			if (trainingErrorAfter < trainingErrorBefore) {
-				backpropagation.setLearningRate(1.02 * backpropagation
-						.getLearningRate());
+				backpropagation.setLearningRate(1.02 * backpropagation.getLearningRate());
 				backpropagation.setMomentum(backpropagation.getMomentum());
 			} else {
 				backpropagation.setLearningRate(1e-4);
@@ -101,10 +93,8 @@ public class MethodMlpBprop {
 			}
 		}
 
-		logger.info(String.format(
-				"Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0
-						* (double) hamCorrect / (double) hamCount, hamCorrect,
-				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
+		logger.info(String.format("Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0 * (double) hamCorrect
+				/ (double) hamCount, hamCorrect, hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
 				spamCorrect, spamCount));
 
 		Encog.getInstance().shutdown();

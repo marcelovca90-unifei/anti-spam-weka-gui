@@ -12,6 +12,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import xyz.marcelo.common.EmptyPatterns;
 import xyz.marcelo.common.Enumerates.MessageLabel;
 import xyz.marcelo.ml.MethodUtil;
 
@@ -38,17 +39,71 @@ public class MessageDataSet {
 		this.inputData = new ArrayList<Double[]>();
 		this.outputData = new ArrayList<Double[]>();
 
-		this.hamFilePath = hamFile.getPath().substring(
-				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
-		this.spamFilePath = spamFile.getPath().substring(
-				hamFile.getPath().indexOf("Vectors") + "Vectors".length());
+		this.hamFilePath = hamFile.getPath().substring(hamFile.getPath().indexOf("Vectors") + "Vectors".length());
+		this.spamFilePath = spamFile.getPath().substring(hamFile.getPath().indexOf("Vectors") + "Vectors".length());
 
 		this.addMessagesFromFile(hamFile);
 		this.addMessagesFromFile(spamFile);
 	}
 
-	private MessageDataSet(List<Double[]> inputData, List<Double[]> outputData,
-			String hamFilePath, String spamFilePath, int hamCount, int spamCount) {
+	public void insertEmptyPatterns(String folder) {
+
+		int numberOfFeatures = this.inputData.get(0).length;
+
+		final Double[] emptyInputPattern = new Double[numberOfFeatures];
+		emptyInputPattern[0] = 1.0;
+		for (int i = 1; i < numberOfFeatures; i++)
+			emptyInputPattern[i] = 0.0;
+		final Double[] emptyOutputHamPattern = new Double[] { 1.0, 0.0 };
+		final Double[] emptyOutputSpamPattern = new Double[] { 0.0, 1.0 };
+
+		int[] emptyPatternsCount = EmptyPatterns.get(folder);
+
+		int emptyHamsCount = emptyPatternsCount[0];
+		for (int i = 0; i < emptyHamsCount; i++) {
+			this.inputData.add(emptyInputPattern.clone());
+			this.outputData.add(emptyOutputHamPattern.clone());
+		}
+		this.hamCount += emptyHamsCount;
+
+		int emptySpamsCount = emptyPatternsCount[1];
+		for (int i = 0; i < emptySpamsCount; i++) {
+			this.inputData.add(emptyInputPattern.clone());
+			this.outputData.add(emptyOutputSpamPattern.clone());
+		}
+		this.spamCount += emptySpamsCount;
+	}
+
+	public void replicate(int seed) {
+
+		List<Double[]> newInputData = new ArrayList<Double[]>();
+		List<Double[]> newOutputData = new ArrayList<Double[]>();
+		Random random = new Random(seed);
+
+		if (this.hamCount < this.spamCount) {
+			int hamsToBeAdded = (this.spamCount - this.hamCount);
+			for (int i = 0; i < hamsToBeAdded; i++) {
+				int randomIndex = random.nextInt(this.hamCount);
+				newInputData.add(this.inputData.get(randomIndex));
+				newOutputData.add(this.outputData.get(randomIndex));
+			}
+			this.hamCount += hamsToBeAdded;
+		} else {
+			int spamsToBeAdded = (this.hamCount - this.spamCount);
+			for (int i = 0; i < spamsToBeAdded; i++) {
+				int randomIndex = this.hamCount + random.nextInt(this.spamCount);
+				newInputData.add(this.inputData.get(randomIndex));
+				newOutputData.add(this.outputData.get(randomIndex));
+			}
+			this.spamCount += spamsToBeAdded;
+		}
+
+		this.inputData.addAll(newInputData);
+		this.outputData.addAll(newOutputData);
+	}
+
+	private MessageDataSet(List<Double[]> inputData, List<Double[]> outputData, String hamFilePath,
+			String spamFilePath, int hamCount, int spamCount) {
 
 		this.inputData = inputData;
 		this.outputData = outputData;
@@ -61,8 +116,7 @@ public class MessageDataSet {
 	private void addMessagesFromFile(File file) {
 
 		try {
-			if (!file.getName().contains("ham")
-					&& !file.getName().contains("spam"))
+			if (!file.getName().contains("ham") && !file.getName().contains("spam"))
 				throw new IOException("File name must contain 'ham' or 'spam'.");
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -111,8 +165,7 @@ public class MessageDataSet {
 
 			this.inputData.add(tempInputData);
 
-			MessageLabel tempOutputLabel = file.getName().contains("ham") ? MessageLabel.HAM
-					: MessageLabel.SPAM;
+			MessageLabel tempOutputLabel = file.getName().contains("ham") ? MessageLabel.HAM : MessageLabel.SPAM;
 
 			switch (tempOutputLabel) {
 			case HAM:
@@ -175,18 +228,14 @@ public class MessageDataSet {
 
 		int inputStartIndex = (int) ((double) this.inputData.size() * startPercentageDouble);
 		int inputEndIndex = (int) ((double) this.inputData.size() * endPercentageDouble);
-		List<Double[]> newInputData = this.inputData.subList(inputStartIndex,
-				inputEndIndex);
+		List<Double[]> newInputData = this.inputData.subList(inputStartIndex, inputEndIndex);
 
 		int outputStartIndex = (int) ((double) this.outputData.size() * startPercentageDouble);
 		int outputEndIndex = (int) ((double) this.outputData.size() * endPercentageDouble);
-		List<Double[]> newOutputData = this.outputData.subList(
-				outputStartIndex, outputEndIndex);
+		List<Double[]> newOutputData = this.outputData.subList(outputStartIndex, outputEndIndex);
 
-		String newHamFilePath = String.format("%s[%d,%d]", hamFilePath,
-				startPercentage, endPercentage);
-		String newSpamFilePath = String.format("%s[%d,%d]", spamFilePath,
-				startPercentage, endPercentage);
+		String newHamFilePath = String.format("%s[%d,%d]", hamFilePath, startPercentage, endPercentage);
+		String newSpamFilePath = String.format("%s[%d,%d]", spamFilePath, startPercentage, endPercentage);
 
 		int newHamCount = 0;
 		int newSpamCount = 0;
@@ -202,15 +251,14 @@ public class MessageDataSet {
 			}
 		}
 
-		return new MessageDataSet(newInputData, newOutputData, newHamFilePath,
-				newSpamFilePath, newHamCount, newSpamCount);
+		return new MessageDataSet(newInputData, newOutputData, newHamFilePath, newSpamFilePath, newHamCount,
+				newSpamCount);
 	}
 
 	public void shuffle(long seed) {
 
 		if (this.inputData.size() != this.outputData.size())
-			throw new ArithmeticException(
-					"Input and output arrays must have the same size.");
+			throw new ArithmeticException("Input and output arrays must have the same size.");
 
 		Random random = new Random(seed);
 		Double[] backup;
@@ -231,9 +279,8 @@ public class MessageDataSet {
 	@Override
 	public String toString() {
 
-		return "MessageDataSet [hamFilePath=" + hamFilePath + ", spamFilePath="
-				+ spamFilePath + ", hamCount=" + hamCount + ", spamCount="
-				+ spamCount + "]";
+		return "MessageDataSet [hamFilePath=" + hamFilePath + ", spamFilePath=" + spamFilePath + ", hamCount="
+				+ hamCount + ", spamCount=" + spamCount + "]";
 	}
 
 }

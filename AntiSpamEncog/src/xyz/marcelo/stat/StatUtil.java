@@ -9,8 +9,7 @@ import java.util.Set;
 public class StatUtil {
 
 	// Calculates the average for a given set of values
-	public static Double average(Set<Double> values)
-	{
+	public static Double average(Set<Double> values) {
 		Double acc = 0.0;
 		for (Double v : values)
 			acc += v;
@@ -18,8 +17,7 @@ public class StatUtil {
 	}
 
 	// Calculates the sum for a given set of values
-	public static Double sum(Set<Double> values)
-	{
+	public static Double sum(Set<Double> values) {
 		Double acc = 0.0;
 		for (Double v : values)
 			acc += v;
@@ -27,8 +25,7 @@ public class StatUtil {
 	}
 
 	// Calculates the standard deviation for a given set of values
-	public static Double standardDeviation(Set<Double> values)
-	{
+	public static Double standardDeviation(Set<Double> values) {
 		Double acc = 0.0, avg = average(values);
 		for (Double v : values)
 			acc += Math.pow(v - avg, 2.0);

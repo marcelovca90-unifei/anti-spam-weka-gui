@@ -147,6 +147,4 @@ public class Folders {
 		BASE_FOLDER + "/Unifei_2016/MI/100"
 			};
 
-
-
 }

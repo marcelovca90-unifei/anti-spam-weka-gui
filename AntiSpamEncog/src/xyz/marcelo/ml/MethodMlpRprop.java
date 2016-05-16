@@ -21,28 +21,21 @@ public class MethodMlpRprop {
 
 	private static final Logger logger = LogManager.getLogger(MethodMlpRprop.class);
 
-	public static void run(BasicMLDataSet trainingSet,
-			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
-				trainingSet.size());
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationTanSig(), false,
-				inputCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true,
-				2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationLogSig(), false,
-				outputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), false, inputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationLogSig(), false, outputCount));
 		network.getStructure().finalizeStructure();
 		network.reset(seed);
 
-		ResilientPropagation resilientPropagation = new ResilientPropagation(
-				network, trainingSet);
+		ResilientPropagation resilientPropagation = new ResilientPropagation(network, trainingSet);
 		resilientPropagation.setBatchSize(0);
 		resilientPropagation.setThreadCount(0);
 
@@ -85,10 +78,8 @@ public class MethodMlpRprop {
 			}
 		}
 
-		logger.info(String.format(
-				"Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0
-						* (double) hamCorrect / (double) hamCount, hamCorrect,
-				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
+		logger.info(String.format("Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0 * (double) hamCorrect
+				/ (double) hamCount, hamCorrect, hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
 				spamCorrect, spamCount));
 	}
 }
