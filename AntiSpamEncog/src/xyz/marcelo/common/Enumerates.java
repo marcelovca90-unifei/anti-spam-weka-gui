@@ -1,7 +1,7 @@
 /**
  * 
  */
-package xyz.marcelovca90.common;
+package xyz.marcelo.common;
 
 /**
  * @author marcelovca90
