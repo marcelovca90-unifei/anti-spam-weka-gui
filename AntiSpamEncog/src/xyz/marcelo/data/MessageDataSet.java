@@ -46,62 +46,6 @@ public class MessageDataSet {
 		this.addMessagesFromFile(spamFile);
 	}
 
-	public void insertEmptyPatterns(String folder) {
-
-		int numberOfFeatures = this.inputData.get(0).length;
-
-		final Double[] emptyInputPattern = new Double[numberOfFeatures];
-		emptyInputPattern[0] = 1.0;
-		for (int i = 1; i < numberOfFeatures; i++)
-			emptyInputPattern[i] = 0.0;
-		final Double[] emptyOutputHamPattern = new Double[] { 1.0, 0.0 };
-		final Double[] emptyOutputSpamPattern = new Double[] { 0.0, 1.0 };
-
-		int[] emptyPatternsCount = EmptyPatterns.get(folder);
-
-		int emptyHamsCount = emptyPatternsCount[0];
-		for (int i = 0; i < emptyHamsCount; i++) {
-			this.inputData.add(emptyInputPattern.clone());
-			this.outputData.add(emptyOutputHamPattern.clone());
-		}
-		this.hamCount += emptyHamsCount;
-
-		int emptySpamsCount = emptyPatternsCount[1];
-		for (int i = 0; i < emptySpamsCount; i++) {
-			this.inputData.add(emptyInputPattern.clone());
-			this.outputData.add(emptyOutputSpamPattern.clone());
-		}
-		this.spamCount += emptySpamsCount;
-	}
-
-	public void replicate(int seed) {
-
-		List<Double[]> newInputData = new ArrayList<Double[]>();
-		List<Double[]> newOutputData = new ArrayList<Double[]>();
-		Random random = new Random(seed);
-
-		if (this.hamCount < this.spamCount) {
-			int hamsToBeAdded = (this.spamCount - this.hamCount);
-			for (int i = 0; i < hamsToBeAdded; i++) {
-				int randomIndex = random.nextInt(this.hamCount);
-				newInputData.add(this.inputData.get(randomIndex));
-				newOutputData.add(this.outputData.get(randomIndex));
-			}
-			this.hamCount += hamsToBeAdded;
-		} else {
-			int spamsToBeAdded = (this.hamCount - this.spamCount);
-			for (int i = 0; i < spamsToBeAdded; i++) {
-				int randomIndex = this.hamCount + random.nextInt(this.spamCount);
-				newInputData.add(this.inputData.get(randomIndex));
-				newOutputData.add(this.outputData.get(randomIndex));
-			}
-			this.spamCount += spamsToBeAdded;
-		}
-
-		this.inputData.addAll(newInputData);
-		this.outputData.addAll(newOutputData);
-	}
-
 	private MessageDataSet(List<Double[]> inputData, List<Double[]> outputData, String hamFilePath,
 			String spamFilePath, int hamCount, int spamCount) {
 
@@ -253,6 +197,62 @@ public class MessageDataSet {
 
 		return new MessageDataSet(newInputData, newOutputData, newHamFilePath, newSpamFilePath, newHamCount,
 				newSpamCount);
+	}
+
+	public void insertEmptyPatterns(String folder) {
+
+		int numberOfFeatures = this.inputData.get(0).length;
+
+		final Double[] emptyInputPattern = new Double[numberOfFeatures];
+		emptyInputPattern[0] = 1.0;
+		for (int i = 1; i < numberOfFeatures; i++)
+			emptyInputPattern[i] = 0.0;
+		final Double[] emptyOutputHamPattern = new Double[] { 1.0, 0.0 };
+		final Double[] emptyOutputSpamPattern = new Double[] { 0.0, 1.0 };
+
+		int[] emptyPatternsCount = EmptyPatterns.get(folder);
+
+		int emptyHamsCount = emptyPatternsCount[0];
+		for (int i = 0; i < emptyHamsCount; i++) {
+			this.inputData.add(emptyInputPattern.clone());
+			this.outputData.add(emptyOutputHamPattern.clone());
+		}
+		this.hamCount += emptyHamsCount;
+
+		int emptySpamsCount = emptyPatternsCount[1];
+		for (int i = 0; i < emptySpamsCount; i++) {
+			this.inputData.add(emptyInputPattern.clone());
+			this.outputData.add(emptyOutputSpamPattern.clone());
+		}
+		this.spamCount += emptySpamsCount;
+	}
+
+	public void replicate(int seed) {
+
+		List<Double[]> newInputData = new ArrayList<Double[]>();
+		List<Double[]> newOutputData = new ArrayList<Double[]>();
+		Random random = new Random(seed);
+
+		if (this.hamCount < this.spamCount) {
+			int hamsToBeAdded = (this.spamCount - this.hamCount);
+			for (int i = 0; i < hamsToBeAdded; i++) {
+				int randomIndex = random.nextInt(this.hamCount);
+				newInputData.add(this.inputData.get(randomIndex));
+				newOutputData.add(this.outputData.get(randomIndex));
+			}
+			this.hamCount += hamsToBeAdded;
+		} else {
+			int spamsToBeAdded = (this.hamCount - this.spamCount);
+			for (int i = 0; i < spamsToBeAdded; i++) {
+				int randomIndex = this.hamCount + random.nextInt(this.spamCount);
+				newInputData.add(this.inputData.get(randomIndex));
+				newOutputData.add(this.outputData.get(randomIndex));
+			}
+			this.spamCount += spamsToBeAdded;
+		}
+
+		this.inputData.addAll(newInputData);
+		this.outputData.addAll(newOutputData);
 	}
 
 	public void shuffle(long seed) {
