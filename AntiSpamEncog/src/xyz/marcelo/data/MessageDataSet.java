@@ -1,4 +1,4 @@
-package xyz.marcelovca90.data;
+package xyz.marcelo.data;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,8 +12,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import xyz.marcelovca90.common.Enumerates.MessageLabel;
-import xyz.marcelovca90.ml.MethodUtil;
+import xyz.marcelo.common.Enumerates.MessageLabel;
+import xyz.marcelo.ml.MethodUtil;
 
 /**
  * @author marcelovca90

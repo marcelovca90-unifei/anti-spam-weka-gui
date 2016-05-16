@@ -1,22 +1,21 @@
-package xyz.marcelovca90.main;
+package xyz.marcelo.main;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.encog.Encog;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
-import xyz.marcelovca90.common.Enumerates.Method;
-import xyz.marcelovca90.common.Folders;
-import xyz.marcelovca90.common.Primes;
-import xyz.marcelovca90.data.MessageDataSet;
-import xyz.marcelovca90.ml.MethodMlpBprop;
-import xyz.marcelovca90.ml.MethodMlpRprop;
-import xyz.marcelovca90.ml.MethodNeat;
-import xyz.marcelovca90.ml.MethodRbfQprop;
-import xyz.marcelovca90.ml.MethodSvm;
+import xyz.marcelo.common.Folders;
+import xyz.marcelo.common.Primes;
+import xyz.marcelo.common.Enumerates.Method;
+import xyz.marcelo.data.MessageDataSet;
+import xyz.marcelo.ml.MethodMlpBprop;
+import xyz.marcelo.ml.MethodMlpRprop;
+import xyz.marcelo.ml.MethodNeat;
+import xyz.marcelo.ml.MethodRbfQprop;
+import xyz.marcelo.ml.MethodSvm;
 
 /**
  * @author marcelovca90
@@ -27,8 +26,6 @@ public class Main {
 	private static final Logger logger = LogManager.getLogger(Main.class);
 
 	public static void main(String[] args) {
-
-		System.out.println(Arrays.toString(Folders.ALL));
 
 		final int seed = Primes.getRandomPrime();
 
@@ -41,7 +38,7 @@ public class Main {
 
 			logger.info("Current method: " + method.getName());
 
-			for (String folder : Folders.ALL) {
+			for (String folder : Folders.FOLDERS_LING) {
 
 				logger.info("Current folder: " + folder);
 
