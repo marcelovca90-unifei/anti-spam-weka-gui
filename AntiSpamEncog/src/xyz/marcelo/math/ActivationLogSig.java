@@ -11,8 +11,8 @@ public class ActivationLogSig implements ActivationFunction {
 	private static final long serialVersionUID = 1L;
 
 	public void activationFunction(double[] d, int start, int size) {
-		for (int i=0; i<d.length; i++)
-			d[i] = 1.0 / (1.0 + Math.exp(-1.0 * d[i]));		
+		for (int i = 0; i < d.length; i++)
+			d[i] = 1.0 / (1.0 + Math.exp(-1.0 * d[i]));
 	}
 
 	public double derivativeFunction(double b, double a) {
@@ -38,9 +38,9 @@ public class ActivationLogSig implements ActivationFunction {
 	public String getFactoryCode() {
 		return this.getClass().getName();
 	}
-	
+
 	public ActivationFunction clone() {
 		return new ActivationLogSig();
 	}
-	
+
 }
