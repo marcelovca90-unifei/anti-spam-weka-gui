@@ -13,6 +13,7 @@ import org.encog.neural.neat.NEATUtil;
 import org.encog.neural.networks.training.TrainingSetScore;
 
 import xyz.marcelo.common.Enumerates.MessageLabel;
+import xyz.marcelo.common.Folders;
 
 /**
  * @author marcelovca90
@@ -22,7 +23,8 @@ public class MethodNeat {
 
 	private static final Logger logger = LogManager.getLogger(MethodNeat.class);
 
-	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
+			BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
 		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
@@ -56,7 +58,7 @@ public class MethodNeat {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
-		
+
 		neatTrainer.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
@@ -81,8 +83,8 @@ public class MethodNeat {
 			}
 		}
 
-		logger.info(String.format("Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0 * (double) hamCorrect
-				/ (double) hamCount, hamCorrect, hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
-				spamCorrect, spamCount));
+		logger.info(String.format("%d\t%s\tHP: %.2f%% (%d/%d)\tSP: %.2f%% (%d/%d)", seed,
+				folder.replace(Folders.BASE_FOLDER, ""), 100.0 * (double) hamCorrect / (double) hamCount, hamCorrect,
+				hamCount, 100.0 * (double) spamCorrect / (double) spamCount, spamCorrect, spamCount));
 	}
 }

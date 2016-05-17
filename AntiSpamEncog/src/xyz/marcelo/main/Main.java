@@ -23,24 +23,19 @@ import xyz.marcelo.ml.MethodSvm;
  */
 public class Main {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(Main.class);
 
 	public static void main(String[] args) {
 
 		final int seed = Primes.getRandomPrime();
 
-		logger.info("Random prime seed: " + seed);
-
 		final Method[] methods = new Method[] { Method.MLP_BPROP, Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP,
 				Method.SVM };
 
 		for (Method method : methods) {
 
-			logger.info("Current method: " + method.getName());
-
 			for (String folder : Folders.FOLDERS_LING) {
-
-				logger.info("Current folder: " + folder);
 
 				File hamFile = new File(folder + "/ham");
 				File spamFile = new File(folder + "/spam");
@@ -66,19 +61,19 @@ public class Main {
 
 				switch (method) {
 				case MLP_BPROP:
-					MethodMlpBprop.run(trainingSet, validationSet, testSet, seed);
+					MethodMlpBprop.run(folder, trainingSet, validationSet, testSet, seed);
 					break;
 				case MLP_RPROP:
-					MethodMlpRprop.run(trainingSet, validationSet, testSet, seed);
+					MethodMlpRprop.run(folder, trainingSet, validationSet, testSet, seed);
 					break;
 				case NEAT:
-					MethodNeat.run(trainingSet, validationSet, testSet, seed);
+					MethodNeat.run(folder, trainingSet, validationSet, testSet, seed);
 					break;
 				case RBF_QPROP:
-					MethodRbfQprop.run(trainingSet, validationSet, testSet, seed);
+					MethodRbfQprop.run(folder, trainingSet, validationSet, testSet, seed);
 					break;
 				case SVM:
-					MethodSvm.run(trainingSet, validationSet, testSet, seed);
+					MethodSvm.run(folder, trainingSet, validationSet, testSet, seed);
 					break;
 				}
 			}

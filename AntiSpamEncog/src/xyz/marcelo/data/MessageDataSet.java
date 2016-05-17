@@ -21,7 +21,7 @@ import xyz.marcelo.ml.MethodUtil;
  * 
  */
 public class MessageDataSet {
-
+	
 	private List<Double[]> inputData;
 
 	private List<Double[]> outputData;
