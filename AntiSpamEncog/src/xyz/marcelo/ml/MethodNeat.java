@@ -35,8 +35,8 @@ public class MethodNeat {
 
 		CalculateScore score = new TrainingSetScore(trainingSet);
 
-		TrainEA train = NEATUtil.constructNEATTrainer(population, score);
-		train.setThreadCount(Runtime.getRuntime().availableProcessors());
+		TrainEA neatTrainer = NEATUtil.constructNEATTrainer(population, score);
+		neatTrainer.setThreadCount(Runtime.getRuntime().availableProcessors());
 
 		double validationErrorBefore = Double.MAX_VALUE, validationErrorAfter = Double.MAX_VALUE;
 
@@ -44,9 +44,9 @@ public class MethodNeat {
 
 			validationErrorBefore = validationErrorAfter;
 
-			train.iteration(20);
+			neatTrainer.iteration(20);
 
-			network = (NEATNetwork) train.getCODEC().decode(train.getBestGenome());
+			network = (NEATNetwork) neatTrainer.getCODEC().decode(neatTrainer.getBestGenome());
 
 			validationErrorAfter = network.calculateError(validationSet);
 
@@ -56,6 +56,8 @@ public class MethodNeat {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
+		
+		neatTrainer.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;

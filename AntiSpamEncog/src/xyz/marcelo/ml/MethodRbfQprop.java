@@ -48,6 +48,8 @@ public class MethodRbfQprop {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
+		
+		quickPropagation.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;
