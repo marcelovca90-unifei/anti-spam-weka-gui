@@ -2,7 +2,6 @@ package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.encog.Encog;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -11,6 +10,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 import xyz.marcelo.common.Enumerates.MessageLabel;
+import xyz.marcelo.common.Folders;
 import xyz.marcelo.math.ActivationLogSig;
 import xyz.marcelo.math.ActivationTanSig;
 
@@ -22,7 +22,8 @@ public class MethodMlpBprop {
 
 	private static final Logger logger = LogManager.getLogger(MethodMlpBprop.class);
 
-	public static void run(BasicMLDataSet trainingSet, BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
+			BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
 		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
@@ -70,7 +71,7 @@ public class MethodMlpBprop {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
-		
+
 		backpropagation.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
@@ -95,11 +96,8 @@ public class MethodMlpBprop {
 			}
 		}
 
-		logger.info(String.format("Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0 * (double) hamCorrect
-				/ (double) hamCount, hamCorrect, hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
-				spamCorrect, spamCount));
-
-		Encog.getInstance().shutdown();
-		Runtime.getRuntime().gc();
+		logger.info(String.format("%d\t%s\tHP: %.2f%% (%d/%d)\tSP: %.2f%% (%d/%d)", seed,
+				folder.replace(Folders.BASE_FOLDER, ""), 100.0 * (double) hamCorrect / (double) hamCount, hamCorrect,
+				hamCount, 100.0 * (double) spamCorrect / (double) spamCount, spamCorrect, spamCount));
 	}
 }

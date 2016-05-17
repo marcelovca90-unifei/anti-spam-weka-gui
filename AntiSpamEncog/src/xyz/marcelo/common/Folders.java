@@ -9,7 +9,7 @@ package xyz.marcelo.common;
  */
 public class Folders {
 
-	protected static final String BASE_FOLDER = "/home/marcelovca90/Mestrado/Vectors";
+	public static final String BASE_FOLDER = "/home/marcelovca90/Mestrado/Vectors";
 
 	public static final String[] FOLDERS_LING = new String[]
 			{
