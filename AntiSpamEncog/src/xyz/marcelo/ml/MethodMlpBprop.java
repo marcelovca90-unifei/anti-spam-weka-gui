@@ -70,6 +70,8 @@ public class MethodMlpBprop {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
+		
+		backpropagation.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;
