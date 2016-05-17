@@ -4,13 +4,16 @@
 package xyz.marcelo.common;
 
 /**
- * @author marcelovca90
+ * The Class Folders.
  *
+ * @author marcelovca90
  */
 public class Folders {
 
+	/** The parent folder for the data set folders. */
 	public static final String BASE_FOLDER = "/home/marcelovca90/Mestrado/Vectors";
 
+	/** LingSpam data set folders. */
 	public static final String[] FOLDERS_LING = new String[]
 			{
 		BASE_FOLDER + "/Ling_2016/CHI2/10",
@@ -45,6 +48,7 @@ public class Folders {
 		BASE_FOLDER + "/Ling_2016/MI/100"
 			};
 
+	/** SpamAssassin data set folders. */
 	public static final String[] FOLDERS_SPAMASSASSIN = new String[]
 			{
 		BASE_FOLDER + "/SpamAssassin_2016/CHI2/10",
@@ -79,6 +83,7 @@ public class Folders {
 		BASE_FOLDER + "/SpamAssassin_2016/MI/100"
 			};
 
+	/** Trec data set folders. */
 	public static final String[] FOLDERS_TREC = new String[]
 			{
 		BASE_FOLDER + "/TREC-2005-2006-2007_2016/CHI2/10",
@@ -113,6 +118,7 @@ public class Folders {
 		BASE_FOLDER + "/TREC-2005-2006-2007_2016/MI/100"
 			};
 
+	/** Unifei data set folders. */
 	public static final String[] FOLDERS_UNIFEI = new String[]
 			{
 		BASE_FOLDER + "/Unifei_2016/CHI2/10",
