@@ -10,6 +10,7 @@ import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 import org.encog.ml.svm.training.SVMTrain;
 
+import xyz.marcelo.common.Folders;
 import xyz.marcelo.common.Enumerates.MessageLabel;
 
 /**
@@ -20,13 +21,12 @@ public class MethodSvm {
 
 	private static final Logger logger = LogManager.getLogger(MethodSvm.class);
 
-	public static void run(BasicMLDataSet trainingSet,
-			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
+			BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
 
-		SVM svm = new SVM(inputCount, SVMType.SupportVectorClassification,
-				KernelType.RadialBasisFunction);
+		SVM svm = new SVM(inputCount, SVMType.SupportVectorClassification, KernelType.RadialBasisFunction);
 
 		double bestC = 0, bestGamma = 0, bestError = Double.MAX_VALUE;
 
@@ -76,10 +76,8 @@ public class MethodSvm {
 			}
 		}
 
-		logger.info(String.format(
-				"Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0
-						* (double) hamCorrect / (double) hamCount, hamCorrect,
-				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
-				spamCorrect, spamCount));
+		logger.info(String.format("%d\t%s\tHP: %.2f%% (%d/%d)\tSP: %.2f%% (%d/%d)", seed,
+				folder.replace(Folders.BASE_FOLDER, ""), 100.0 * (double) hamCorrect / (double) hamCount, hamCorrect,
+				hamCount, 100.0 * (double) spamCorrect / (double) spamCount, spamCorrect, spamCount));
 	}
 }

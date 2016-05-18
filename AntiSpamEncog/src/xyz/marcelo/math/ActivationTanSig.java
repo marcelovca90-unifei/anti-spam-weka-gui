@@ -11,8 +11,8 @@ public class ActivationTanSig implements ActivationFunction {
 	private static final long serialVersionUID = 1L;
 
 	public void activationFunction(double[] d, int start, int size) {
-		for (int i=0; i<d.length; i++)
-			d[i] = 2.0 / (1.0 + Math.exp(-2.0 * d[i])) - 1.0;		
+		for (int i = 0; i < d.length; i++)
+			d[i] = 2.0 / (1.0 + Math.exp(-2.0 * d[i])) - 1.0;
 	}
 
 	public double derivativeFunction(double b, double a) {
@@ -38,9 +38,9 @@ public class ActivationTanSig implements ActivationFunction {
 	public String getFactoryCode() {
 		return this.getClass().getName();
 	}
-	
+
 	public ActivationFunction clone() {
 		return new ActivationTanSig();
 	}
-	
+
 }

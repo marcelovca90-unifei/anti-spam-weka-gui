@@ -9,6 +9,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
 import org.encog.neural.rbf.RBFNetwork;
 
+import xyz.marcelo.common.Folders;
 import xyz.marcelo.common.Enumerates.MessageLabel;
 
 /**
@@ -17,23 +18,19 @@ import xyz.marcelo.common.Enumerates.MessageLabel;
  */
 public class MethodRbfQprop {
 
-	private static final Logger logger = LogManager
-			.getLogger(MethodRbfQprop.class);
+	private static final Logger logger = LogManager.getLogger(MethodRbfQprop.class);
 
-	public static void run(BasicMLDataSet trainingSet,
-			BasicMLDataSet validationSet, BasicMLDataSet testSet, int seed) {
+	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
+			BasicMLDataSet testSet, int seed) {
 
 		int inputCount = testSet.get(0).getInput().size();
-		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
-				trainingSet.size());
+		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
-		RBFNetwork network = new RBFNetwork(inputCount, hiddenCount,
-				outputCount, RBFEnum.Gaussian);
+		RBFNetwork network = new RBFNetwork(inputCount, hiddenCount, outputCount, RBFEnum.Gaussian);
 		network.reset();
 
-		QuickPropagation quickPropagation = new QuickPropagation(network,
-				trainingSet);
+		QuickPropagation quickPropagation = new QuickPropagation(network, trainingSet);
 		quickPropagation.setBatchSize(0);
 		quickPropagation.setThreadCount(0);
 
@@ -53,6 +50,8 @@ public class MethodRbfQprop {
 			 */
 
 		} while (validationErrorAfter < validationErrorBefore);
+
+		quickPropagation.finishTraining();
 
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;
@@ -76,10 +75,8 @@ public class MethodRbfQprop {
 			}
 		}
 
-		logger.info(String.format(
-				"Hams: %.2f%% (%d/%d)\tSpams: %.2f%% (%d/%d)", 100.0
-						* (double) hamCorrect / (double) hamCount, hamCorrect,
-				hamCount, 100.0 * (double) spamCorrect / (double) spamCount,
-				spamCorrect, spamCount));
+		logger.info(String.format("%d\t%s\tHP: %.2f%% (%d/%d)\tSP: %.2f%% (%d/%d)", seed,
+				folder.replace(Folders.BASE_FOLDER, ""), 100.0 * (double) hamCorrect / (double) hamCount, hamCorrect,
+				hamCount, 100.0 * (double) spamCorrect / (double) spamCount, spamCorrect, spamCount));
 	}
 }
