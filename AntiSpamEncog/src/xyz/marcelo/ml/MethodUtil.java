@@ -13,10 +13,9 @@ import xyz.marcelo.common.Enumerates.MessageLabel;
  */
 public class MethodUtil {
 
-	public static int getHiddenNeuronsCount(int numberOfFeatures, int trainingSetSize) {
+	public static int getHiddenNeuronsCount(int F, int T) {
 
-		return (int) Math.ceil(((-(numberOfFeatures + 2)) + Math.sqrt(Math.pow((numberOfFeatures + 2), 2) + 2
-				* trainingSetSize)));
+		return (int) Math.ceil((-(F + 2) + Math.sqrt(Math.pow((F + 2), 2) + 4 * T)) / 2);
 	}
 
 	public static MessageLabel infer(double[] data) {
