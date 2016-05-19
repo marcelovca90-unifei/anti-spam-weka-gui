@@ -64,8 +64,9 @@ public class Primes {
 
 	/**
 	 * Gets the i-th prime number.
-	 *
-	 * @param i the index
+	 * 
+	 * @param i
+	 *            the index
 	 * @return the i-th prime number
 	 */
 	public static int get(int i) {
@@ -74,7 +75,7 @@ public class Primes {
 
 	/**
 	 * Gets a random prime number.
-	 *
+	 * 
 	 * @return the random prime number
 	 */
 	public static int getRandomPrime() {

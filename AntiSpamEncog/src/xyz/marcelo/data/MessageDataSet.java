@@ -21,7 +21,7 @@ import xyz.marcelo.ml.MethodUtil;
  * 
  */
 public class MessageDataSet {
-	
+
 	private List<Double[]> inputData;
 
 	private List<Double[]> outputData;
@@ -106,7 +106,7 @@ public class MessageDataSet {
 
 			for (int j = 0; j < featureAmount; j++)
 				tempInputData[j] = inBuffer.getDouble();
-
+			
 			this.inputData.add(tempInputData);
 
 			MessageLabel tempOutputLabel = file.getName().contains("ham") ? MessageLabel.HAM : MessageLabel.SPAM;
