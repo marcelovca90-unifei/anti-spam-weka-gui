@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /**
  * The Class EmptyPatterns.
- *
+ * 
  * @author marcelovca90
  */
 public class EmptyPatterns {
@@ -14,8 +14,9 @@ public class EmptyPatterns {
 
 	/**
 	 * Gets the the amount of empty hams and spams for a given data set folder.
-	 *
-	 * @param folder the data set folder
+	 * 
+	 * @param folder
+	 *            the data set folder
 	 * @return the amount of [0] empty hams and [1] spams
 	 */
 	public static int[] get(String folder) {
