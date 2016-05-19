@@ -28,14 +28,14 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		final int seed = Primes.getRandomPrime();
+		final int seed = Primes.getMiddlePrime();
 
 		final Method[] methods = new Method[] { Method.MLP_BPROP, Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP,
 				Method.SVM };
 
 		for (Method method : methods) {
 
-			for (String folder : Folders.FOLDERS_LING) {
+			for (String folder : Folders.FOLDERS_MI) {
 
 				File hamFile = new File(folder + "/ham");
 				File spamFile = new File(folder + "/spam");
