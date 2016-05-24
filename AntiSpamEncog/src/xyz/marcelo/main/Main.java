@@ -30,7 +30,7 @@ public class Main {
 
 		final int seed = Primes.getMiddlePrime();
 
-		final Method[] methods = new Method[] { Method.MLP_BPROP, Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP,
+		final Method[] methods = new Method[] { Method.MLP_RPROP, Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP,
 				Method.SVM };
 
 		for (Method method : methods) {
@@ -55,7 +55,6 @@ public class Main {
 						dataSubset.getOutputDataAsPrimitiveMatrix());
 
 				dataSubset = dataSet.getSubset(60, 100);
-				dataSubset.insertEmptyPatterns(folder);
 				BasicMLDataSet testSet = new BasicMLDataSet(dataSubset.getInputDataAsPrimitiveMatrix(),
 						dataSubset.getOutputDataAsPrimitiveMatrix());
 

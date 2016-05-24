@@ -43,4 +43,9 @@ public class ActivationLogSig implements ActivationFunction {
 		return new ActivationLogSig();
 	}
 
+	@Override
+	public String getLabel() {
+		return this.getClass().getName();
+	}
+
 }

@@ -20,11 +20,6 @@
       <version>2.5</version>
     </dependency>
     <dependency>
-      <groupId>org.encog</groupId>
-      <artifactId>encog-core</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.0</version>
