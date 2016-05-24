@@ -1,58 +1,18 @@
+package data;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import weka.classifiers.Evaluation;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 
 public class DataConverter {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		try {
-
-			bin2csv("/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/ham",
-					"/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/spam",
-					"/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/data.csv");
-
-			csv2arff("/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/data.csv",
-					"/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/data.arff");
-			
-			FileReader fileReader = new FileReader("/home/marcelovca90/Mestrado/Vectors/Ling_2016/CHI2/20/data.arff");
-			Instances train = new Instances(fileReader);
-			train.setClassIndex(train.numAttributes() - 1);
-
-			//Instance of NN
-			MultilayerPerceptron mlp = new MultilayerPerceptron();
-
-			//Setting Parameters
-			mlp.setLearningRate(0.1);
-			mlp.setMomentum(0.2);
-			mlp.setTrainingTime(500);
-			mlp.setHiddenLayers("10,10");
-			mlp.buildClassifier(train);
-			
-			Evaluation eval = new Evaluation(train);
-			eval.evaluateModel(mlp, train);
-
-			System.out.println(eval.errorRate()); //Printing Training Mean root squared Error
-			System.out.println(eval.toSummaryString()); //Summary of Training
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
 
 	public static void bin2csv(String hamInput, String spamInput, String output) throws IOException {
 
@@ -113,6 +73,28 @@ public class DataConverter {
 		bufferedWriter.flush();
 
 		bufferedWriter.close();
+	}
+
+	public static double[][] bin2double(File file) throws IOException {
+
+		FileInputStream stream = new FileInputStream(file);
+		FileChannel channel = stream.getChannel();
+		ByteBuffer buffer = ByteBuffer.allocate((int) file.length());
+		channel.read(buffer);
+		channel.close();
+		stream.close();
+		buffer.flip();
+
+		int instanceAmount = buffer.getInt();
+		int featureAmount = buffer.getInt();
+
+		double[][] data = new double[instanceAmount][featureAmount];
+
+		for (int i = 0; i < instanceAmount; i++)
+			for (int j = 0; j < featureAmount; j++)
+				data[i][j] = buffer.getDouble();
+
+		return data;
 	}
 
 	public static void csv2arff(String input, String output) {
