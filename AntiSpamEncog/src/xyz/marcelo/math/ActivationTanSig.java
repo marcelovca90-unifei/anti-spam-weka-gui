@@ -42,5 +42,10 @@ public class ActivationTanSig implements ActivationFunction {
 	public ActivationFunction clone() {
 		return new ActivationTanSig();
 	}
+	
+	@Override
+	public String getLabel() {
+		return this.getClass().getName();
+	}
 
 }

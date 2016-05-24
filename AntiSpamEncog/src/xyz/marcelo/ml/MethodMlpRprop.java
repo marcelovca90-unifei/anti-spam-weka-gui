@@ -2,6 +2,7 @@ package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -30,13 +31,20 @@ public class MethodMlpRprop {
 		int outputCount = testSet.get(0).getIdeal().size();
 
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationTanSig(), false, inputCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
-		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 2 * hiddenCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, inputCount));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
+		network.addLayer(new BasicLayer(new ActivationTanSig(), true, 20));
 		network.addLayer(new BasicLayer(new ActivationLogSig(), false, outputCount));
 		network.getStructure().finalizeStructure();
 		network.reset(seed);
-
+		
 		ResilientPropagation resilientPropagation = new ResilientPropagation(network, trainingSet);
 		resilientPropagation.setBatchSize(0);
 		resilientPropagation.setThreadCount(0);
