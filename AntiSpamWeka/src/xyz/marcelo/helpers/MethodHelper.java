@@ -47,7 +47,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 	private static void runLibSVM() throws Exception {
@@ -68,7 +68,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 	public static void run() throws Exception {
@@ -111,7 +111,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 	private static void runRandomForest() throws Exception {
@@ -131,7 +131,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 	private static void runRBFClassifier() throws Exception {
@@ -151,7 +151,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 	private static void runSGD() throws Exception {
@@ -171,7 +171,7 @@ public class MethodHelper {
 		FormatHelper.setMethod(method);
 		FormatHelper.setTrainTime(trainEnd - trainStart);
 		FormatHelper.setTestTime(testEnd - testStart);
-		FormatHelper.printResults(evaluation);
+		FormatHelper.aggregateResult(evaluation);
 	}
 
 }

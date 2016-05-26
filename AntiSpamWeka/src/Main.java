@@ -15,7 +15,9 @@ public class Main {
 
 	private static final int SEED = 1;
 
-	public static void main(String[] args) {
+	private static final int NREP = 3;
+
+	public static void main(String[] args) throws Exception {
 
 		Method[] methods = new Method[] { Method.J48, Method.MLP, Method.RBF, Method.RF, Method.SGD, Method.SVM };
 
@@ -28,40 +30,44 @@ public class Main {
 		for (Method method : methods) {
 
 			FormatHelper.printHeader();
-			
+
 			for (String folder : folders) {
 
-				try {
+				String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
+				String hamFilePath = folder + File.separator + "ham";
+				String spamFilePath = folder + File.separator + "spam";
+				String dataCsvPath = folder + File.separator + "data.csv";
+				String dataArffPath = folder + File.separator + "data.arff";
 
-					String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
-					String hamFilePath = folder + File.separator + "ham";
-					String spamFilePath = folder + File.separator + "spam";
-					String dataCsvPath = folder + File.separator + "data.csv";
-					String dataArffPath = folder + File.separator + "data.arff";
+				DataHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
+				DataHelper.csv2arff(dataCsvPath, dataArffPath);
 
-					DataHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
-					DataHelper.csv2arff(dataCsvPath, dataArffPath);
+				FileReader fileReader = new FileReader(dataArffPath);
+				Instances dataSet = new Instances(fileReader);
 
-					FileReader fileReader = new FileReader(dataArffPath);
-					Instances dataSet = new Instances(fileReader);
-					dataSet.setClassIndex(dataSet.numAttributes() - 1);
-					dataSet.randomize(new Random(SEED));
+				for (int rep = 0; rep < NREP; rep++) {
 
-					int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
-					int testSize = dataSet.numInstances() - trainSize;
-					Instances trainSet = new Instances(dataSet, 0, trainSize);
-					Instances testSet = new Instances(dataSet, trainSize, testSize);
+					try {
 
-					MethodHelper.initialize(subFolder, method, trainSet, testSet);
+						dataSet.setClassIndex(dataSet.numAttributes() - 1);
+						dataSet.randomize(new Random(SEED));
 
-					MethodHelper.run();
+						int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
+						int testSize = dataSet.numInstances() - trainSize;
+						Instances trainSet = new Instances(dataSet, 0, trainSize);
+						Instances testSet = new Instances(dataSet, trainSize, testSize);
 
-				} catch (Exception ex) {
-					ex.printStackTrace();
+						MethodHelper.initialize(subFolder, method, trainSet, testSet);
+
+						MethodHelper.run();
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 
+				FormatHelper.printResult();
 			}
 		}
 	}
-
 }
