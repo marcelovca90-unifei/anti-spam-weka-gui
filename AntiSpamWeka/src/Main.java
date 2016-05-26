@@ -25,10 +25,10 @@ public class Main {
 		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
 
-		FormatHelper.printHeader();
-
 		for (Method method : methods) {
 
+			FormatHelper.printHeader();
+			
 			for (String folder : folders) {
 
 				try {
