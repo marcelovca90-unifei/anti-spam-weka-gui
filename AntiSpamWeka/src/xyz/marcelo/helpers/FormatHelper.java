@@ -27,29 +27,6 @@ public class FormatHelper {
 
 	private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
 
-	public static void debug() {
-		System.out.println("totalCorrect = " + totalCorrect);
-		System.out.println("totalIncorrect = " + totalIncorrect);
-		System.out.println("totalCorrectPercent = " + totalCorrectPercent);
-		System.out.println("totalIncorrectPercent = " + totalIncorrectPercent);
-		System.out.println("hamCorrect = " + hamCorrect);
-		System.out.println("hamIncorrect = " + hamIncorrect);
-		System.out.println("spamCorrect = " + spamCorrect);
-		System.out.println("spamIncorrect = " + spamIncorrect);
-		System.out.println("hamPrecision = " + hamPrecision);
-		System.out.println("hamRecall = " + hamRecall);
-		System.out.println("spamPrecision = " + spamPrecision);
-		System.out.println("spamRecall = " + spamRecall);
-	}
-
-	public static String formatLine(String line) {
-		return line.replaceAll("\\s+", "\t").trim();
-	}
-
-	public static void printHeader() {
-		System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
-	}
-
 	public static void aggregateResult(Evaluation evaluation) throws Exception {
 
 		String summary = evaluation.toSummaryString();
@@ -103,6 +80,33 @@ public class FormatHelper {
 		if (!keeper.containsKey(key))
 			keeper.put(key, new LinkedList<Double[]>());
 		keeper.get(key).add(value);
+	}
+
+	public static void debug() {
+		System.out.println("totalCorrect = " + totalCorrect);
+		System.out.println("totalIncorrect = " + totalIncorrect);
+		System.out.println("totalCorrectPercent = " + totalCorrectPercent);
+		System.out.println("totalIncorrectPercent = " + totalIncorrectPercent);
+		System.out.println("hamCorrect = " + hamCorrect);
+		System.out.println("hamIncorrect = " + hamIncorrect);
+		System.out.println("spamCorrect = " + spamCorrect);
+		System.out.println("spamIncorrect = " + spamIncorrect);
+		System.out.println("hamPrecision = " + hamPrecision);
+		System.out.println("hamRecall = " + hamRecall);
+		System.out.println("spamPrecision = " + spamPrecision);
+		System.out.println("spamRecall = " + spamRecall);
+	}
+
+	public static String formatLine(String line) {
+		return line.replaceAll("\\s+", "\t").trim();
+	}
+
+	public static void printFooter() {
+		System.out.println("--------------------------------" + System.lineSeparator());
+	}
+
+	public static void printHeader() {
+		System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
 	}
 
 	public static void printResult() {
