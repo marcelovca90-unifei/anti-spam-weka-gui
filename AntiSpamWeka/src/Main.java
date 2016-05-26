@@ -13,7 +13,7 @@ import xyz.marcelo.helpers.MethodHelper;
 
 public class Main {
 
-	private static final int SEED = 17;
+	private static final int SEED = 1;
 
 	public static void main(String[] args) {
 
