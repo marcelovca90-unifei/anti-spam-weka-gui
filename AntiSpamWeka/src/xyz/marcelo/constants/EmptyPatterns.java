@@ -1,4 +1,4 @@
-package constants;
+package xyz.marcelo.constants;
 
 import java.util.HashMap;
 
