@@ -12,5 +12,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/LibSVM.jar"/>
+	<classpathentry kind="lib" path="lib/RBFNetwork.jar"/>
+	<classpathentry kind="lib" path="lib/HMM.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
