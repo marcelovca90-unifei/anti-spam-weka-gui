@@ -1,7 +1,7 @@
 /**
  * 
  */
-package constants;
+package xyz.marcelo.constants;
 
 /**
  * The Class Folders.

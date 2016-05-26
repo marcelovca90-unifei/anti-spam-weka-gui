@@ -1,4 +1,4 @@
-package data;
+package xyz.marcelo.helpers;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +12,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 
-public class DataConverter {
+public class DataHelper {
 
 	public static void bin2csv(String hamInput, String spamInput, String output) throws IOException {
 
