@@ -55,6 +55,7 @@ public class MethodHelper {
 		libSVM.setOptions(Utils.splitOptions(Config.SVM.toString()));
 
 		trainStart = System.currentTimeMillis();
+		libSVM.setDebug(false);
 		libSVM.buildClassifier(trainSet);
 		trainEnd = System.currentTimeMillis();
 
