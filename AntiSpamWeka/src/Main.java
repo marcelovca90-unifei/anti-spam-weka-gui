@@ -2,8 +2,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Random;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 import constants.Folders;
 import data.DataConverter;
@@ -38,18 +38,19 @@ public class Main {
 				Instances trainSet = new Instances(dataSet, 0, trainSize);
 				Instances testSet = new Instances(dataSet, trainSize, testSize);
 
+				Classifiers.setTrainSet(trainSet);
+				Classifiers.setTestSet(testSet);
+				
 				// train step
-				MultilayerPerceptron mlp = new MultilayerPerceptron();
-				mlp.setLearningRate(0.1);
-				mlp.setMomentum(0.2);
-				mlp.setTrainingTime(1000);
-				mlp.setHiddenLayers("10,10");
-				mlp.setSeed(SEED);
-				mlp.buildClassifier(trainSet);
+				Classifier mlp = Classifiers.buildMutilayerPerceptron();
+				Classifier rbfClassifier = Classifiers.buildRBFClassifier();
+				Classifier libSVM = Classifiers.buildLibSVM();
+				Classifier randomForest = Classifiers.buildRandomForest();
+				Classifier sgd = Classifiers.buildSGD();
 
 				// test step
 				Evaluation eval = new Evaluation(dataSet);
-				eval.evaluateModel(mlp, testSet);
+				eval.evaluateModel(sgd, testSet);
 
 				// print results
 				System.out.println(eval.toSummaryString());
