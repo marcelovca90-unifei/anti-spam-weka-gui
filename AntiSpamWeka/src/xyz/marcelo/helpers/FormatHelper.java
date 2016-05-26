@@ -1,5 +1,8 @@
 package xyz.marcelo.helpers;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import weka.classifiers.Evaluation;
 import xyz.marcelo.enums.Method;
 
@@ -22,6 +25,8 @@ public class FormatHelper {
 	private static double spamPrecision = 0;
 	private static double spamRecall = 0;
 
+	private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
+
 	public static void debug() {
 		System.out.println("totalCorrect = " + totalCorrect);
 		System.out.println("totalIncorrect = " + totalIncorrect);
@@ -42,10 +47,10 @@ public class FormatHelper {
 	}
 
 	public static void printHeader() {
-		System.out.println("FOLDER\tMETHOD\tHP\tSP\tHR\tSR\tTrT\tTeT");
+		System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
 	}
 
-	public static void printResults(Evaluation evaluation) throws Exception {
+	public static void aggregateResult(Evaluation evaluation) throws Exception {
 
 		String summary = evaluation.toSummaryString();
 
@@ -91,12 +96,61 @@ public class FormatHelper {
 				spamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
 				spamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
 			}
-
 		}
 
-		System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.1f\t%.1f", folder, method, hamPrecision,
-				spamPrecision, hamRecall, spamRecall, trainTime, testTime));
+		String key = folder + "\t" + method;
+		Double[] value = new Double[] { hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime };
+		if (!keeper.containsKey(key))
+			keeper.put(key, new LinkedList<Double[]>());
+		keeper.get(key).add(value);
+	}
 
+	public static void printResult() {
+
+		String key = folder + "\t" + method;
+		LinkedList<Double[]> values = keeper.get(key);
+
+		LinkedList<Double> hamPrecisionValues = new LinkedList<Double>();
+		LinkedList<Double> spamPrecisionValues = new LinkedList<Double>();
+		LinkedList<Double> hamRecallValues = new LinkedList<Double>();
+		LinkedList<Double> spamRecallValues = new LinkedList<Double>();
+		LinkedList<Double> trainTimeValues = new LinkedList<Double>();
+		LinkedList<Double> testTimeValues = new LinkedList<Double>();
+
+		for (Double[] value : values) {
+			hamPrecisionValues.add(value[0]);
+			spamPrecisionValues.add(value[1]);
+			hamRecallValues.add(value[2]);
+			spamRecallValues.add(value[3]);
+			trainTimeValues.add(value[4]);
+			testTimeValues.add(value[5]);
+		}
+
+		double hamPrecisionAvg = StatHelper.average(hamPrecisionValues);
+		double hamPrecisionStdDev = StatHelper.standardDeviation(hamPrecisionValues);
+
+		double spamPrecisionAvg = StatHelper.average(spamPrecisionValues);
+		double spamPrecisionStdDev = StatHelper.standardDeviation(spamPrecisionValues);
+
+		double hamRecallAvg = StatHelper.average(hamRecallValues);
+		double hamRecallStdDev = StatHelper.standardDeviation(hamRecallValues);
+
+		double spamRecallAvg = StatHelper.average(spamRecallValues);
+		double spamRecallStdDev = StatHelper.standardDeviation(spamRecallValues);
+
+		double trainTimeAvg = StatHelper.average(trainTimeValues);
+		double trainTimeStdDev = StatHelper.standardDeviation(trainTimeValues);
+
+		double testTimeAvg = StatHelper.average(testTimeValues);
+		double testTimeStdDev = StatHelper.standardDeviation(testTimeValues);
+
+		System.out.println(String.format(
+				"%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder, method,
+				hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev, hamRecallAvg,
+				hamRecallStdDev, spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev, testTimeAvg,
+				testTimeStdDev));
+
+		keeper.clear();
 	}
 
 	public static void setFolder(String folder) {
