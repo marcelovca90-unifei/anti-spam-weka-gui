@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
+import xyz.marcelo.constants.EmptyPatterns;
 
 public class DataHelper {
 
@@ -95,6 +96,35 @@ public class DataHelper {
 				data[i][j] = buffer.getDouble();
 
 		return data;
+	}
+
+	public static void buildEmptyCsv(String folder, int featureAmount) throws IOException {
+
+		int emptyHamCount = EmptyPatterns.get(folder)[0];
+		int emptySpamCount = EmptyPatterns.get(folder)[1];
+
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < featureAmount; i++)
+			buffer.append("0.0,");
+
+		String emptyHam = buffer.toString() + "ham";
+		String emptySpam = buffer.toString() + "spam";
+
+		String output = folder + File.separator + "empty.csv";
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(output)));
+
+		for (int i = 0; i < featureAmount; i++)
+			bufferedWriter.write("x" + (i + 1) + ",");
+		bufferedWriter.write("class" + System.lineSeparator());
+
+		for (int i = 0; i < emptyHamCount; i++)
+			bufferedWriter.write(emptyHam + System.lineSeparator());
+
+		for (int i = 0; i < emptySpamCount; i++)
+			bufferedWriter.write(emptySpam + System.lineSeparator());
+
+		bufferedWriter.flush();
+		bufferedWriter.close();
 	}
 
 	public static void csv2arff(String input, String output) {

@@ -17,6 +17,8 @@ public class Main {
 
 	private static final int NREP = 3;
 
+	private static final Random RNG = new Random(SEED);
+
 	public static void main(String[] args) throws Exception {
 
 		Method[] methods = new Method[] { Method.J48, Method.MLP, Method.RBF, Method.RF, Method.SGD, Method.SVM };
@@ -34,28 +36,37 @@ public class Main {
 			for (String folder : folders) {
 
 				String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
+
+				// import data set
 				String hamFilePath = folder + File.separator + "ham";
 				String spamFilePath = folder + File.separator + "spam";
 				String dataCsvPath = folder + File.separator + "data.csv";
 				String dataArffPath = folder + File.separator + "data.arff";
-
 				DataHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
 				DataHelper.csv2arff(dataCsvPath, dataArffPath);
+				FileReader dataReader = new FileReader(dataArffPath);
+				Instances dataSet = new Instances(dataReader);
+				dataSet.setClassIndex(dataSet.numAttributes() - 1);
 
-				FileReader fileReader = new FileReader(dataArffPath);
-				Instances dataSet = new Instances(fileReader);
+				// build empty patterns set
+				String emptyCsvPath = folder + File.separator + "empty.csv";
+				String emptyArffPath = folder + File.separator + "empty.arff";
+				DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
+				DataHelper.csv2arff(emptyCsvPath, emptyArffPath);
+				FileReader emptyReader = new FileReader(emptyArffPath);
+				Instances emptySet = new Instances(emptyReader);
 
 				for (int rep = 0; rep < NREP; rep++) {
 
 					try {
 
-						dataSet.setClassIndex(dataSet.numAttributes() - 1);
-						dataSet.randomize(new Random(SEED));
-
+						// build test and train sets
+						dataSet.randomize(RNG);
 						int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
 						int testSize = dataSet.numInstances() - trainSize;
 						Instances trainSet = new Instances(dataSet, 0, trainSize);
 						Instances testSet = new Instances(dataSet, trainSize, testSize);
+						testSet.addAll(emptySet);
 
 						MethodHelper.initialize(subFolder, method, trainSet, testSet);
 
@@ -68,7 +79,7 @@ public class Main {
 
 				FormatHelper.printResult();
 			}
-			
+
 			FormatHelper.printFooter();
 		}
 	}
