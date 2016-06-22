@@ -15,11 +15,15 @@ public class Main {
 
 	private static final int SEED = 1;
 
-	private static final int NREP = 3;
+	private static final int NREP = 10;
 
 	private static final Random RNG = new Random(SEED);
 
 	public static void main(String[] args) throws Exception {
+		
+		Class.forName(DataHelper.class.getName());
+		Class.forName(FormatHelper.class.getName());
+		Class.forName(MethodHelper.class.getName());
 
 		Method[] methods = new Method[] { Method.J48, Method.MLP, Method.RBF, Method.RF, Method.SGD, Method.SVM };
 
@@ -28,7 +32,7 @@ public class Main {
 		folders.addAll(Arrays.asList(Folders.FOLDERS_SPAMASSASSIN));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
-
+		
 		for (Method method : methods) {
 
 			FormatHelper.printHeader();
@@ -72,12 +76,12 @@ public class Main {
 
 						MethodHelper.run();
 
+						FormatHelper.printResult();
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
 
-				FormatHelper.printResult();
 			}
 
 			FormatHelper.printFooter();
