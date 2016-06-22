@@ -43,7 +43,6 @@ public class ActivationTanSig implements ActivationFunction {
 		return new ActivationTanSig();
 	}
 	
-	@Override
 	public String getLabel() {
 		return this.getClass().getName();
 	}
