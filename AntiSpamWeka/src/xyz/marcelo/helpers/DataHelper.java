@@ -102,7 +102,7 @@ public class DataHelper {
 
 		int emptyHamCount = EmptyPatterns.get(folder)[0];
 		int emptySpamCount = EmptyPatterns.get(folder)[1];
-
+		
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < featureAmount; i++)
 			buffer.append("0.0,");

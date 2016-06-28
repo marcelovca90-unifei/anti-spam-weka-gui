@@ -27,7 +27,7 @@ public class FormatHelper {
 
 	private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
 
-	public static void aggregateResult(MethodEvaluation methodEvaluation) throws Exception {
+	public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printResult) throws Exception {
 
 		folder = methodEvaluation.getFolder();
 
@@ -88,6 +88,10 @@ public class FormatHelper {
 		if (!keeper.containsKey(key))
 			keeper.put(key, new LinkedList<Double[]>());
 		keeper.get(key).add(value);
+
+		if (printResult)
+			System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method, hamPrecision,
+					spamPrecision, hamRecall, spamRecall, trainTime, testTime));
 	}
 
 	public static void debug() {
@@ -117,7 +121,7 @@ public class FormatHelper {
 		System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
 	}
 
-	public static void printResult() {
+	public static void printResults() {
 
 		String key = folder + "\t" + method;
 		LinkedList<Double[]> values = keeper.get(key);

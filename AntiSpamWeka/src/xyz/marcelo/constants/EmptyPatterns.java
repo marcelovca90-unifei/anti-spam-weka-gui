@@ -22,7 +22,14 @@ public class EmptyPatterns {
 	public static int[] get(String folder) {
 
 		if (map.size() == 0) {
-
+			
+			// WarmUp
+			map.put("/WarmUp/Ling_2016_CHI2_10", new int[] { 0, 0 });
+			map.put("/WarmUp/SmapAssassin_2016_CHI2_10", new int[] { 0, 0 });
+			map.put("/WarmUp/TREC-2005-2006-2007_2016_CHI2_10", new int[] { 0, 0 });
+			map.put("/WarmUp/Unifei_2016_CHI2_10", new int[] { 0, 0 });
+			
+			// LingSpam
 			map.put("/Ling_2016/CHI2/10", new int[] { 6563, 1407 });
 			map.put("/Ling_2016/CHI2/20", new int[] { 6537, 1395 });
 			map.put("/Ling_2016/CHI2/30", new int[] { 6518, 1383 });
@@ -53,6 +60,8 @@ public class EmptyPatterns {
 			map.put("/Ling_2016/MI/80", new int[] { 0, 0 });
 			map.put("/Ling_2016/MI/90", new int[] { 0, 0 });
 			map.put("/Ling_2016/MI/100", new int[] { 0, 0 });
+			
+			// SpamAssassin
 			map.put("/SpamAssassin_2016/CHI2/10", new int[] { 177, 223 });
 			map.put("/SpamAssassin_2016/CHI2/20", new int[] { 159, 197 });
 			map.put("/SpamAssassin_2016/CHI2/30", new int[] { 146, 180 });
@@ -83,6 +92,8 @@ public class EmptyPatterns {
 			map.put("/SpamAssassin_2016/MI/80", new int[] { 0, 3 });
 			map.put("/SpamAssassin_2016/MI/90", new int[] { 0, 3 });
 			map.put("/SpamAssassin_2016/MI/100", new int[] { 0, 3 });
+			
+			// TREC
 			map.put("/TREC-2005-2006-2007_2016/CHI2/10", new int[] { 79197, 124419 });
 			map.put("/TREC-2005-2006-2007_2016/CHI2/20", new int[] { 78073, 123752 });
 			map.put("/TREC-2005-2006-2007_2016/CHI2/30", new int[] { 77990, 123649 });
@@ -113,6 +124,8 @@ public class EmptyPatterns {
 			map.put("/TREC-2005-2006-2007_2016/MI/80", new int[] { 1944, 6337 });
 			map.put("/TREC-2005-2006-2007_2016/MI/90", new int[] { 1944, 6333 });
 			map.put("/TREC-2005-2006-2007_2016/MI/100", new int[] { 1944, 6331 });
+			
+			// Unifei
 			map.put("/Unifei_2016/CHI2/10", new int[] { 3834, 14843 });
 			map.put("/Unifei_2016/CHI2/20", new int[] { 3803, 14630 });
 			map.put("/Unifei_2016/CHI2/30", new int[] { 3781, 14450 });

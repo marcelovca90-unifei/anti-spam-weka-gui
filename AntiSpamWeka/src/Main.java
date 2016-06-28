@@ -27,6 +27,7 @@ public class Main {
 				MethodName.SGD, MethodName.SVM };
 
 		LinkedList<String> folders = new LinkedList<String>();
+		folders.addAll(Arrays.asList(Folders.FOLDERS_WARMUP));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_LING));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_SPAMASSASSIN));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
@@ -77,10 +78,12 @@ public class Main {
 						methodEvaluation.setFolder(subFolder);
 						methodEvaluation.setMethod(method);
 
-						FormatHelper.aggregateResult(methodEvaluation);
+						if (!folder.contains("WarmUp"))
+							FormatHelper.aggregateResult(methodEvaluation, true);
 					}
 
-					FormatHelper.printResult();
+					if (!folder.contains("WarmUp"))
+						FormatHelper.printResults();
 
 				} catch (Exception ex) {
 					ex.printStackTrace();
