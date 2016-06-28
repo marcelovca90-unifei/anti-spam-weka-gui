@@ -1,6 +1,6 @@
-package xyz.marcelo.entity;
+package xyz.marcelo.method;
 
-public enum Config {
+public enum MethodConfiguration {
 
 	// http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html
 	J48("-C 0.25 -M 2 -Q 1"),
@@ -18,11 +18,11 @@ public enum Config {
 	SGD("-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1"),
 
 	// http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
-	SVM("-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /home/marcelovca90/Mestrado/weka-3-8-0 -seed 1");
+	SVM("-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /home/marcelo/Mestrado/weka-3-8-0 -seed 1");
 
 	private final String value;
 
-	private Config(final String value) {
+	private MethodConfiguration(final String value) {
 		this.value = value;
 	}
 

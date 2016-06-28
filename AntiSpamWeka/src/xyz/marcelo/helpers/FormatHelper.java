@@ -3,13 +3,13 @@ package xyz.marcelo.helpers;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import xyz.marcelo.constants.EnhancedEvaluation;
-import xyz.marcelo.entity.Method;
+import xyz.marcelo.method.MethodEvaluation;
+import xyz.marcelo.method.MethodName;
 
 public class FormatHelper {
 
 	private static String folder;
-	private static Method method;
+	private static MethodName method;
 	private static double trainTime;
 	private static double testTime;
 	private static int totalCorrect = 0;
@@ -27,21 +27,21 @@ public class FormatHelper {
 
 	private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
 
-	public static void aggregateResult(EnhancedEvaluation enhancedEvaluation) throws Exception {
-		
-		folder = enhancedEvaluation.getFolder();
-		
-		method = enhancedEvaluation.getMethod();
-		
-		trainTime = (enhancedEvaluation.getTrainEnd() - enhancedEvaluation.getTrainStart());
-		
-		testTime = (enhancedEvaluation.getTestEnd() - enhancedEvaluation.getTestStart());
+	public static void aggregateResult(MethodEvaluation methodEvaluation) throws Exception {
 
-		String summary = enhancedEvaluation.getEvaluation().toSummaryString();
+		folder = methodEvaluation.getFolder();
 
-		String confusionMatrix = enhancedEvaluation.getEvaluation().toMatrixString();
+		method = methodEvaluation.getMethod();
 
-		String classDetail = enhancedEvaluation.getEvaluation().toClassDetailsString();
+		trainTime = (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
+
+		testTime = (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
+
+		String summary = methodEvaluation.getEvaluation().toSummaryString();
+
+		String confusionMatrix = methodEvaluation.getEvaluation().toMatrixString();
+
+		String classDetail = methodEvaluation.getEvaluation().toClassDetailsString();
 
 		String lines[] = (summary + System.lineSeparator() + confusionMatrix + System.lineSeparator() + classDetail)
 				.split("\\r?\\n");
@@ -156,11 +156,11 @@ public class FormatHelper {
 		double testTimeAvg = StatHelper.average(testTimeValues);
 		double testTimeStdDev = StatHelper.standardDeviation(testTimeValues);
 
-		System.out.println(String.format(
-				"%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder, method,
-				hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev, hamRecallAvg,
-				hamRecallStdDev, spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev, testTimeAvg,
-				testTimeStdDev));
+		System.out.println(
+				String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f",
+						folder, method, hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev,
+						hamRecallAvg, hamRecallStdDev, spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev,
+						testTimeAvg, testTimeStdDev));
 
 		keeper.clear();
 	}
@@ -169,7 +169,7 @@ public class FormatHelper {
 		FormatHelper.folder = folder;
 	}
 
-	public static void setMethod(Method method) {
+	public static void setMethod(MethodName method) {
 		FormatHelper.method = method;
 	}
 

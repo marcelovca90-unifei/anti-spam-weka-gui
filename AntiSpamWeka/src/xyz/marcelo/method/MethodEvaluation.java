@@ -1,13 +1,12 @@
-package xyz.marcelo.constants;
+package xyz.marcelo.method;
 
 import weka.classifiers.Evaluation;
-import xyz.marcelo.entity.Method;
 
-public class EnhancedEvaluation {
+public class MethodEvaluation {
 
 	private Evaluation evaluation;
 	private String folder;
-	private Method method;
+	private MethodName method;
 	private long trainStart;
 	private long trainEnd;
 	private long testStart;
@@ -29,11 +28,11 @@ public class EnhancedEvaluation {
 		this.folder = folder;
 	}
 
-	public Method getMethod() {
+	public MethodName getMethod() {
 		return method;
 	}
 
-	public void setMethod(Method method) {
+	public void setMethod(MethodName method) {
 		this.method = method;
 	}
 

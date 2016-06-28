@@ -6,12 +6,12 @@ import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
-import xyz.marcelo.constants.EnhancedEvaluation;
 import xyz.marcelo.constants.Folders;
-import xyz.marcelo.entity.Method;
 import xyz.marcelo.helpers.DataHelper;
 import xyz.marcelo.helpers.FormatHelper;
 import xyz.marcelo.helpers.MethodHelper;
+import xyz.marcelo.method.MethodEvaluation;
+import xyz.marcelo.method.MethodName;
 
 public class Main {
 
@@ -23,7 +23,8 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
-		Method[] methods = new Method[] { Method.J48, Method.MLP, Method.RBF, Method.RF, Method.SGD, Method.SVM };
+		MethodName[] methods = new MethodName[] { MethodName.J48, MethodName.MLP, MethodName.RBF, MethodName.RF,
+				MethodName.SGD, MethodName.SVM };
 
 		LinkedList<String> folders = new LinkedList<String>();
 		folders.addAll(Arrays.asList(Folders.FOLDERS_LING));
@@ -31,7 +32,7 @@ public class Main {
 		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
 
-		for (Method method : methods) {
+		for (MethodName method : methods) {
 
 			FormatHelper.printHeader();
 
@@ -72,11 +73,11 @@ public class Main {
 
 						AbstractClassifier classifier = MethodHelper.build(method);
 
-						EnhancedEvaluation enhancedEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-						enhancedEvaluation.setFolder(subFolder);
-						enhancedEvaluation.setMethod(method);
+						MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
+						methodEvaluation.setFolder(subFolder);
+						methodEvaluation.setMethod(method);
 
-						FormatHelper.aggregateResult(enhancedEvaluation);
+						FormatHelper.aggregateResult(methodEvaluation);
 					}
 
 					FormatHelper.printResult();
