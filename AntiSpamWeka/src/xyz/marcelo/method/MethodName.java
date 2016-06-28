@@ -1,6 +1,6 @@
-package xyz.marcelo.entity;
+package xyz.marcelo.method;
 
-public enum Method {
+public enum MethodName {
 
 	J48("C4.5 algorithm"),
 
@@ -17,7 +17,7 @@ public enum Method {
 	@SuppressWarnings("unused")
 	private final String value;
 
-	private Method(final String value) {
+	private MethodName(final String value) {
 		this.value = value;
 	}
 
