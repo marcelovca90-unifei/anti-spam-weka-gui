@@ -1,4 +1,4 @@
-package xyz.marcelo.enums;
+package xyz.marcelo.entity;
 
 public enum Method {
 

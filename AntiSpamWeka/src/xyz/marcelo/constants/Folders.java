@@ -11,7 +11,7 @@ package xyz.marcelo.constants;
 public class Folders {
 
 	/** The parent folder for the data set folders. */
-	public static final String BASE_FOLDER = "/home/marcelovca90/Mestrado/Vectors";
+	public static final String BASE_FOLDER = "/home/marcelo/Mestrado/Vectors";
 
 	/** LingSpam data set folders. */
 	public static final String[] FOLDERS_LING = new String[] { BASE_FOLDER + "/Ling_2016/CHI2/10",

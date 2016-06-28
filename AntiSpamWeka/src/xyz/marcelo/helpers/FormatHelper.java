@@ -3,8 +3,8 @@ package xyz.marcelo.helpers;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import weka.classifiers.Evaluation;
-import xyz.marcelo.enums.Method;
+import xyz.marcelo.constants.EnhancedEvaluation;
+import xyz.marcelo.entity.Method;
 
 public class FormatHelper {
 
@@ -27,13 +27,21 @@ public class FormatHelper {
 
 	private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
 
-	public static void aggregateResult(Evaluation evaluation) throws Exception {
+	public static void aggregateResult(EnhancedEvaluation enhancedEvaluation) throws Exception {
+		
+		folder = enhancedEvaluation.getFolder();
+		
+		method = enhancedEvaluation.getMethod();
+		
+		trainTime = (enhancedEvaluation.getTrainEnd() - enhancedEvaluation.getTrainStart());
+		
+		testTime = (enhancedEvaluation.getTestEnd() - enhancedEvaluation.getTestStart());
 
-		String summary = evaluation.toSummaryString();
+		String summary = enhancedEvaluation.getEvaluation().toSummaryString();
 
-		String confusionMatrix = evaluation.toMatrixString();
+		String confusionMatrix = enhancedEvaluation.getEvaluation().toMatrixString();
 
-		String classDetail = evaluation.toClassDetailsString();
+		String classDetail = enhancedEvaluation.getEvaluation().toClassDetailsString();
 
 		String lines[] = (summary + System.lineSeparator() + confusionMatrix + System.lineSeparator() + classDetail)
 				.split("\\r?\\n");
