@@ -6,10 +6,13 @@ import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
+import xyz.marcelo.constants.EmptyPatterns;
 import xyz.marcelo.constants.Folders;
 import xyz.marcelo.helpers.DataHelper;
 import xyz.marcelo.helpers.FormatHelper;
 import xyz.marcelo.helpers.MethodHelper;
+import xyz.marcelo.helpers.StatHelper;
+import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 import xyz.marcelo.method.MethodName;
 
@@ -21,7 +24,15 @@ public class Main {
 
 	private static final Random RNG = new Random(SEED);
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws Exception {
+
+		Class[] classes = new Class[] { Main.class, EmptyPatterns.class, Folders.class, DataHelper.class,
+				FormatHelper.class, MethodHelper.class, StatHelper.class, MethodConfiguration.class,
+				MethodEvaluation.class, MethodName.class };
+		
+		for (Class clazz : classes)
+			Class.forName(clazz.getName());
 
 		MethodName[] methods = new MethodName[] { MethodName.J48, MethodName.MLP, MethodName.RBF, MethodName.RF,
 				MethodName.SGD, MethodName.SVM };
