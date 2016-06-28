@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
+import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
+import xyz.marcelo.constants.EnhancedEvaluation;
 import xyz.marcelo.constants.Folders;
-import xyz.marcelo.enums.Method;
+import xyz.marcelo.entity.Method;
 import xyz.marcelo.helpers.DataHelper;
 import xyz.marcelo.helpers.FormatHelper;
 import xyz.marcelo.helpers.MethodHelper;
@@ -20,10 +22,6 @@ public class Main {
 	private static final Random RNG = new Random(SEED);
 
 	public static void main(String[] args) throws Exception {
-		
-		Class.forName(DataHelper.class.getName());
-		Class.forName(FormatHelper.class.getName());
-		Class.forName(MethodHelper.class.getName());
 
 		Method[] methods = new Method[] { Method.J48, Method.MLP, Method.RBF, Method.RF, Method.SGD, Method.SVM };
 
@@ -32,7 +30,7 @@ public class Main {
 		folders.addAll(Arrays.asList(Folders.FOLDERS_SPAMASSASSIN));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
 		folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
-		
+
 		for (Method method : methods) {
 
 			FormatHelper.printHeader();
@@ -60,9 +58,9 @@ public class Main {
 				FileReader emptyReader = new FileReader(emptyArffPath);
 				Instances emptySet = new Instances(emptyReader);
 
-				for (int rep = 0; rep < NREP; rep++) {
+				try {
 
-					try {
+					for (int i = 1; i <= NREP; i++) {
 
 						// build test and train sets
 						dataSet.randomize(RNG);
@@ -72,14 +70,19 @@ public class Main {
 						Instances testSet = new Instances(dataSet, trainSize, testSize);
 						testSet.addAll(emptySet);
 
-						MethodHelper.initialize(subFolder, method, trainSet, testSet);
+						AbstractClassifier classifier = MethodHelper.build(method);
 
-						MethodHelper.run();
+						EnhancedEvaluation enhancedEvaluation = MethodHelper.run(classifier, trainSet, testSet);
+						enhancedEvaluation.setFolder(subFolder);
+						enhancedEvaluation.setMethod(method);
 
-						FormatHelper.printResult();
-					} catch (Exception ex) {
-						ex.printStackTrace();
+						FormatHelper.aggregateResult(enhancedEvaluation);
 					}
+
+					FormatHelper.printResult();
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 
 			}
