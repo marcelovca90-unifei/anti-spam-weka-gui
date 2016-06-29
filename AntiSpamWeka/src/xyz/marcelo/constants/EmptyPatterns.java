@@ -25,7 +25,7 @@ public class EmptyPatterns {
 			
 			// WarmUp
 			map.put("/WarmUp/Ling_2016_CHI2_10", new int[] { 0, 0 });
-			map.put("/WarmUp/SmapAssassin_2016_CHI2_10", new int[] { 0, 0 });
+			map.put("/WarmUp/SpamAssassin_2016_CHI2_10", new int[] { 0, 0 });
 			map.put("/WarmUp/TREC-2005-2006-2007_2016_CHI2_10", new int[] { 0, 0 });
 			map.put("/WarmUp/Unifei_2016_CHI2_10", new int[] { 0, 0 });
 			
@@ -158,7 +158,7 @@ public class EmptyPatterns {
 			map.put("/Unifei_2016/MI/100", new int[] { 16, 151 });
 		}
 
-		String folderSuffix = folder.replace(Folders.BASE_FOLDER, "");
+		String folderSuffix = folder.replace(FoldersLocal.BASE_FOLDER, "");
 
 		if (map.containsKey(folder))
 			return map.get(folder);

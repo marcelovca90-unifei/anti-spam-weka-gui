@@ -8,14 +8,14 @@ package xyz.marcelo.constants;
  * 
  * @author marcelovca90
  */
-public class Folders {
+public class FoldersLocal {
 
 	/** The parent folder for the data set folders. */
 	public static final String BASE_FOLDER = "/home/marcelo/Mestrado/Vectors";
 
 	/** WarmUp data set folders. */
 	public static final String[] FOLDERS_WARMUP = new String[] { BASE_FOLDER + "/WarmUp/Ling_2016_CHI2_10",
-			BASE_FOLDER + "/WarmUp/SmapAssassin_2016_CHI2_10", BASE_FOLDER + "/WarmUp/TREC-2005-2006-2007_2016_CHI2_10",
+			BASE_FOLDER + "/WarmUp/SpamAssassin_2016_CHI2_10", BASE_FOLDER + "/WarmUp/TREC-2005-2006-2007_2016_CHI2_10",
 			BASE_FOLDER + "/WarmUp/Unifei_2016_CHI2_10" };
 
 	/** LingSpam data set folders. */
