@@ -1,7 +1,7 @@
 package xyz.marcelo.method;
 
-public enum MethodConfiguration {
-
+public enum MethodConfiguration
+{
 	// http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html
 	J48("-C 0.25 -M 2 -Q 1"),
 
@@ -22,12 +22,14 @@ public enum MethodConfiguration {
 
 	private final String value;
 
-	private MethodConfiguration(final String value) {
+	private MethodConfiguration(final String value)
+	{
 		this.value = value;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return value;
 	}
 

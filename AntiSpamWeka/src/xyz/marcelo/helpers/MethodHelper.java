@@ -14,14 +14,17 @@ import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 import xyz.marcelo.method.MethodName;
 
-public class MethodHelper {
-
-	public static AbstractClassifier build(MethodName method) {
+public class MethodHelper
+{
+	public static AbstractClassifier build(MethodName method)
+	{
 
 		AbstractClassifier classifier = null;
 
-		try {
-			switch (method) {
+		try
+		{
+			switch (method)
+			{
 			case J48:
 				classifier = new J48();
 				classifier.setOptions(Utils.splitOptions(MethodConfiguration.J48.toString()));
@@ -47,18 +50,21 @@ public class MethodHelper {
 				classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.toString()));
 				break;
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 
 		return classifier;
 	}
 
-	public static MethodEvaluation run(AbstractClassifier classifier, Instances trainSet, Instances testSet) {
+	public static MethodEvaluation run(AbstractClassifier classifier, Instances trainSet, Instances testSet)
+	{
 
 		MethodEvaluation methodEvaluation = null;
 
-		try {
+		try
+		{
 
 			methodEvaluation = new MethodEvaluation();
 
@@ -75,7 +81,8 @@ public class MethodHelper {
 
 			methodEvaluation.setEvaluation(evaluation);
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 

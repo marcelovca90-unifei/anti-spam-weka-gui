@@ -9,12 +9,13 @@ package xyz.marcelo.common;
  * 
  * @author marcelovca90
  */
-public class Enumerates {
-
+public class Enumerates
+{
 	/**
 	 * Represents a type of message (ham or spam).
 	 */
-	public static enum MessageLabel {
+	public static enum MessageLabel
+	{
 
 		/** Represents a ham. */
 		HAM(new Double[] { 1.0, 0.0 }),
@@ -31,7 +32,8 @@ public class Enumerates {
 		 * @param value
 		 *            the value
 		 */
-		MessageLabel(Double[] value) {
+		MessageLabel(Double[] value)
+		{
 			this.value = value;
 		}
 
@@ -40,7 +42,8 @@ public class Enumerates {
 		 * 
 		 * @return the value
 		 */
-		public Double[] getValue() {
+		public Double[] getValue()
+		{
 			return value;
 		}
 	}
@@ -48,7 +51,8 @@ public class Enumerates {
 	/**
 	 * The Enum Method.
 	 */
-	public static enum Method {
+	public static enum Method
+	{
 
 		/** The mlp bprop. */
 		MLP_BPROP("Multilayer Perceptron (Backpropagation)"),
@@ -74,7 +78,8 @@ public class Enumerates {
 		 * @param name
 		 *            the name
 		 */
-		Method(String name) {
+		Method(String name)
+		{
 			this.name = name;
 		}
 
@@ -83,7 +88,8 @@ public class Enumerates {
 		 * 
 		 * @return the name
 		 */
-		public String getName() {
+		public String getName()
+		{
 			return name;
 		}
 	}

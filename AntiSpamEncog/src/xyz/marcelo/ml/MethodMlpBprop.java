@@ -20,12 +20,13 @@ import xyz.marcelo.math.ActivationTanSig;
  * @author marcelovca90
  * 
  */
-public class MethodMlpBprop {
-
+public class MethodMlpBprop
+{
 	private static final Logger logger = LogManager.getLogger(MethodMlpBprop.class);
 
 	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
-			BasicMLDataSet testSet, int seed) {
+			BasicMLDataSet testSet, int seed)
+	{
 
 		int inputCount = testSet.get(0).getInput().size();
 		// int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount,
@@ -35,9 +36,11 @@ public class MethodMlpBprop {
 		double bestHamPrecision = 0, bestSpamPrecision = 0, bestPrecision = Double.MAX_VALUE;
 		String bestStructure = "";
 
-		for (int h1 = Math.min(inputCount, outputCount); h1 <= Math.max(inputCount, outputCount); h1++) {
+		for (int h1 = Math.min(inputCount, outputCount); h1 <= Math.max(inputCount, outputCount); h1++)
+		{
 
-			for (int h2 = 1; h2 <= h1; h2++) {
+			for (int h2 = 1; h2 <= h1; h2++)
+			{
 
 				BasicNetwork network = new BasicNetwork();
 				network.addLayer(new BasicLayer(new ActivationTanSig(), true, inputCount));
@@ -54,7 +57,8 @@ public class MethodMlpBprop {
 				double trainingErrorBefore = Double.MAX_VALUE, trainingErrorAfter = Double.MAX_VALUE;
 				double validationErrorBefore = Double.MAX_VALUE, validationErrorAfter = Double.MAX_VALUE;
 
-				do {
+				do
+				{
 
 					trainingErrorBefore = backpropagation.getError();
 					validationErrorBefore = validationErrorAfter;
@@ -64,10 +68,12 @@ public class MethodMlpBprop {
 					trainingErrorAfter = backpropagation.getError();
 					validationErrorAfter = network.calculateError(validationSet);
 
-					if (trainingErrorAfter < trainingErrorBefore) {
+					if (trainingErrorAfter < trainingErrorBefore)
+					{
 						backpropagation.setLearningRate(1.02 * backpropagation.getLearningRate());
 						backpropagation.setMomentum(backpropagation.getMomentum());
-					} else {
+					} else
+					{
 						backpropagation.setLearningRate(0.50 * backpropagation.getLearningRate());
 						backpropagation.setMomentum(0);
 					}
@@ -87,20 +93,25 @@ public class MethodMlpBprop {
 				int hamCount = 0, hamCorrect = 0;
 				int spamCount = 0, spamCorrect = 0;
 
-				for (MLDataPair pair : testSet) {
+				for (MLDataPair pair : testSet)
+				{
 
 					MLData input = pair.getInput();
 					MLData ideal = pair.getIdeal();
 					MLData output = network.compute(input);
 
-					if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+					if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM)
+					{
 						hamCount++;
-						if (MethodUtil.infer(output.getData()) == MessageLabel.HAM) {
+						if (MethodUtil.infer(output.getData()) == MessageLabel.HAM)
+						{
 							hamCorrect++;
 						}
-					} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+					} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM)
+					{
 						spamCount++;
-						if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM) {
+						if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM)
+						{
 							spamCorrect++;
 						}
 					}
@@ -111,7 +122,8 @@ public class MethodMlpBprop {
 				double precision = 100.0 * (double) (hamCorrect + spamCorrect) / (double) (hamCount + spamCount);
 				String structure = Arrays.toString(network.getFlat().getLayerCounts());
 
-				if (precision < bestPrecision) {
+				if (precision < bestPrecision)
+				{
 					bestHamPrecision = hamPrecision;
 					bestSpamPrecision = spamPrecision;
 					bestPrecision = precision;
@@ -122,9 +134,11 @@ public class MethodMlpBprop {
 						seed, folder.replace(Folders.BASE_FOLDER, ""), hamPrecision, hamCorrect, hamCount,
 						spamPrecision, spamCorrect, spamCount, precision));
 
-				try {
+				try
+				{
 					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 					e.printStackTrace();
 				}
 			}

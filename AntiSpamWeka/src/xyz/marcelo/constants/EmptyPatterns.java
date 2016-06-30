@@ -7,8 +7,8 @@ import java.util.HashMap;
  * 
  * @author marcelovca90
  */
-public class EmptyPatterns {
-
+public class EmptyPatterns
+{
 	/** The map. */
 	private static HashMap<String, int[]> map = new HashMap<String, int[]>();
 
@@ -19,16 +19,18 @@ public class EmptyPatterns {
 	 *            the data set folder
 	 * @return the amount of [0] empty hams and [1] spams
 	 */
-	public static int[] get(String folder) {
+	public static int[] get(String folder)
+	{
 
-		if (map.size() == 0) {
-			
+		if (map.size() == 0)
+		{
+
 			// WarmUp
 			map.put("/WarmUp/Ling_2016_CHI2_10", new int[] { 0, 0 });
 			map.put("/WarmUp/SpamAssassin_2016_CHI2_10", new int[] { 0, 0 });
 			map.put("/WarmUp/TREC-2005-2006-2007_2016_CHI2_10", new int[] { 0, 0 });
 			map.put("/WarmUp/Unifei_2016_CHI2_10", new int[] { 0, 0 });
-			
+
 			// LingSpam
 			map.put("/Ling_2016/CHI2/10", new int[] { 6563, 1407 });
 			map.put("/Ling_2016/CHI2/20", new int[] { 6537, 1395 });
@@ -60,7 +62,7 @@ public class EmptyPatterns {
 			map.put("/Ling_2016/MI/80", new int[] { 0, 0 });
 			map.put("/Ling_2016/MI/90", new int[] { 0, 0 });
 			map.put("/Ling_2016/MI/100", new int[] { 0, 0 });
-			
+
 			// SpamAssassin
 			map.put("/SpamAssassin_2016/CHI2/10", new int[] { 177, 223 });
 			map.put("/SpamAssassin_2016/CHI2/20", new int[] { 159, 197 });
@@ -92,7 +94,7 @@ public class EmptyPatterns {
 			map.put("/SpamAssassin_2016/MI/80", new int[] { 0, 3 });
 			map.put("/SpamAssassin_2016/MI/90", new int[] { 0, 3 });
 			map.put("/SpamAssassin_2016/MI/100", new int[] { 0, 3 });
-			
+
 			// TREC
 			map.put("/TREC-2005-2006-2007_2016/CHI2/10", new int[] { 79197, 124419 });
 			map.put("/TREC-2005-2006-2007_2016/CHI2/20", new int[] { 78073, 123752 });
@@ -124,7 +126,7 @@ public class EmptyPatterns {
 			map.put("/TREC-2005-2006-2007_2016/MI/80", new int[] { 1944, 6337 });
 			map.put("/TREC-2005-2006-2007_2016/MI/90", new int[] { 1944, 6333 });
 			map.put("/TREC-2005-2006-2007_2016/MI/100", new int[] { 1944, 6331 });
-			
+
 			// Unifei
 			map.put("/Unifei_2016/CHI2/10", new int[] { 3834, 14843 });
 			map.put("/Unifei_2016/CHI2/20", new int[] { 3803, 14630 });

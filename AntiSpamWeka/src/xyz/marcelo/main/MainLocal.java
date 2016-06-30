@@ -18,8 +18,8 @@ import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 import xyz.marcelo.method.MethodName;
 
-public class MainLocal {
-
+public class MainLocal
+{
 	private static final int SEED = 1;
 
 	private static final int NREP = 10;
@@ -27,7 +27,8 @@ public class MainLocal {
 	private static final Random RNG = new Random(SEED);
 
 	@SuppressWarnings({ "rawtypes", "unused" })
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception
+	{
 
 		Class[] classes = new Class[] { MainLocal.class, EmptyPatterns.class, FoldersLocal.class, DataHelper.class,
 				FormatHelper.class, MethodHelper.class, StatHelper.class, MethodConfiguration.class,
@@ -46,11 +47,13 @@ public class MainLocal {
 		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_TREC));
 		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_UNIFEI));
 
-		for (MethodName method : methods) {
+		for (MethodName method : methods)
+		{
 
 			FormatHelper.printHeader();
 
-			for (String folder : folders) {
+			for (String folder : folders)
+			{
 
 				String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
 
@@ -68,15 +71,18 @@ public class MainLocal {
 				// build empty patterns set
 				String emptyCsvPath = folder + File.separator + "empty.csv";
 				String emptyArffPath = folder + File.separator + "empty.arff";
-				// DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
+				// DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() -
+				// 1);
 				// DataHelper.csv2arff(emptyCsvPath, emptyArffPath);
-				
+
 				FileReader emptyReader = new FileReader(emptyArffPath);
 				Instances emptySet = new Instances(emptyReader);
-				
-				try {
 
-					for (int i = 1; i <= NREP; i++) {
+				try
+				{
+
+					for (int i = 1; i <= NREP; i++)
+					{
 
 						// build test and train sets
 						dataSet.randomize(RNG);
@@ -99,7 +105,8 @@ public class MainLocal {
 					if (!folder.contains("WarmUp"))
 						FormatHelper.printResults();
 
-				} catch (Exception ex) {
+				} catch (Exception ex)
+				{
 					ex.printStackTrace();
 				}
 			}

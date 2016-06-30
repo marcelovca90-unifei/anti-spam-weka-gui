@@ -13,9 +13,10 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 import xyz.marcelo.constants.EmptyPatterns;
 
-public class DataHelper {
-
-	public static void bin2csv(String hamInput, String spamInput, String output) throws IOException {
+public class DataHelper
+{
+	public static void bin2csv(String hamInput, String spamInput, String output) throws IOException
+	{
 
 		File hamFile = new File(hamInput);
 		File spamFile = new File(spamInput);
@@ -41,8 +42,10 @@ public class DataHelper {
 		bufferedWriter.write("class" + System.lineSeparator());
 
 		// write ham data
-		for (int i = 0; i < hamInstanceAmount; i++) {
-			for (int j = 0; j < hamFeatureAmount; j++) {
+		for (int i = 0; i < hamInstanceAmount; i++)
+		{
+			for (int j = 0; j < hamFeatureAmount; j++)
+			{
 				hamData = hamBuffer.getDouble();
 				bufferedWriter.write(String.valueOf(hamData) + ",");
 			}
@@ -64,8 +67,10 @@ public class DataHelper {
 		double spamData;
 
 		// write spam data
-		for (int i = 0; i < spamInstanceAmount; i++) {
-			for (int j = 0; j < spamFeatureAmount; j++) {
+		for (int i = 0; i < spamInstanceAmount; i++)
+		{
+			for (int j = 0; j < spamFeatureAmount; j++)
+			{
 				spamData = spamBuffer.getDouble();
 				bufferedWriter.write(String.valueOf(spamData) + ",");
 			}
@@ -76,7 +81,8 @@ public class DataHelper {
 		bufferedWriter.close();
 	}
 
-	public static double[][] bin2double(File file) throws IOException {
+	public static double[][] bin2double(File file) throws IOException
+	{
 
 		FileInputStream stream = new FileInputStream(file);
 		FileChannel channel = stream.getChannel();
@@ -98,11 +104,12 @@ public class DataHelper {
 		return data;
 	}
 
-	public static void buildEmptyCsv(String folder, int featureAmount) throws IOException {
+	public static void buildEmptyCsv(String folder, int featureAmount) throws IOException
+	{
 
 		int emptyHamCount = EmptyPatterns.get(folder)[0];
 		int emptySpamCount = EmptyPatterns.get(folder)[1];
-		
+
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < featureAmount; i++)
 			buffer.append("0.0,");
@@ -127,9 +134,11 @@ public class DataHelper {
 		bufferedWriter.close();
 	}
 
-	public static void csv2arff(String input, String output) {
+	public static void csv2arff(String input, String output)
+	{
 
-		try {
+		try
+		{
 			// load CSV
 			CSVLoader loader = new CSVLoader();
 			loader.setSource(new File(input));
@@ -140,7 +149,8 @@ public class DataHelper {
 			saver.setFile(new File(output));
 			saver.setDestination(new File(output));
 			saver.writeBatch();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}

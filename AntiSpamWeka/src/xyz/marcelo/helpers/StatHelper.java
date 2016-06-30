@@ -6,10 +6,11 @@ import java.util.LinkedList;
  * @author marcelovca90
  * 
  */
-public class StatHelper {
-
+public class StatHelper
+{
 	// Calculates the average for a given list of values
-	public static Double average(LinkedList<Double> values) {
+	public static Double average(LinkedList<Double> values)
+	{
 		Double acc = 0.0;
 		for (Double v : values)
 			acc += v;
@@ -17,7 +18,8 @@ public class StatHelper {
 	}
 
 	// Calculates the sum for a given list of values
-	public static Double sum(LinkedList<Double> values) {
+	public static Double sum(LinkedList<Double> values)
+	{
 		Double acc = 0.0;
 		for (Double v : values)
 			acc += v;
@@ -25,7 +27,8 @@ public class StatHelper {
 	}
 
 	// Calculates the standard deviation for a given list of values
-	public static Double standardDeviation(LinkedList<Double> values) {
+	public static Double standardDeviation(LinkedList<Double> values)
+	{
 		Double acc = 0.0, avg = average(values);
 		for (Double v : values)
 			acc += Math.pow(v - avg, 2.0);

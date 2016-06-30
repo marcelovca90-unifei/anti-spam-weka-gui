@@ -7,8 +7,8 @@ import java.util.HashMap;
  * 
  * @author marcelovca90
  */
-public class EmptyPatterns {
-
+public class EmptyPatterns
+{
 	/** The map. */
 	private static HashMap<String, int[]> map = new HashMap<String, int[]>();
 
@@ -19,9 +19,11 @@ public class EmptyPatterns {
 	 *            the data set folder
 	 * @return the amount of [0] empty hams and [1] spams
 	 */
-	public static int[] get(String folder) {
+	public static int[] get(String folder)
+	{
 
-		if (map.size() == 0) {
+		if (map.size() == 0)
+		{
 
 			map.put("/Ling_2016/CHI2/10", new int[] { 6563, 1407 });
 			map.put("/Ling_2016/CHI2/20", new int[] { 6537, 1395 });

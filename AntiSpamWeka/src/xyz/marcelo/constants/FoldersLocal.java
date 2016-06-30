@@ -8,8 +8,8 @@ package xyz.marcelo.constants;
  * 
  * @author marcelovca90
  */
-public class FoldersLocal {
-
+public class FoldersLocal
+{
 	/** The parent folder for the data set folders. */
 	public static final String BASE_FOLDER = "/home/marcelo/Mestrado/Vectors";
 

@@ -2,8 +2,8 @@ package xyz.marcelo.method;
 
 import weka.classifiers.Evaluation;
 
-public class MethodEvaluation {
-
+public class MethodEvaluation
+{
 	private Evaluation evaluation;
 	private String folder;
 	private MethodName method;
@@ -12,59 +12,73 @@ public class MethodEvaluation {
 	private long testStart;
 	private long testEnd;
 
-	public Evaluation getEvaluation() {
+	public Evaluation getEvaluation()
+	{
 		return evaluation;
 	}
 
-	public void setEvaluation(Evaluation evaluation) {
+	public void setEvaluation(Evaluation evaluation)
+	{
 		this.evaluation = evaluation;
 	}
 
-	public String getFolder() {
+	public String getFolder()
+	{
 		return folder;
 	}
 
-	public void setFolder(String folder) {
+	public void setFolder(String folder)
+	{
 		this.folder = folder;
 	}
 
-	public MethodName getMethod() {
+	public MethodName getMethod()
+	{
 		return method;
 	}
 
-	public void setMethod(MethodName method) {
+	public void setMethod(MethodName method)
+	{
 		this.method = method;
 	}
 
-	public long getTrainStart() {
+	public long getTrainStart()
+	{
 		return trainStart;
 	}
 
-	public void setTrainStart(long trainStart) {
+	public void setTrainStart(long trainStart)
+	{
 		this.trainStart = trainStart;
 	}
 
-	public long getTrainEnd() {
+	public long getTrainEnd()
+	{
 		return trainEnd;
 	}
 
-	public void setTrainEnd(long trainEnd) {
+	public void setTrainEnd(long trainEnd)
+	{
 		this.trainEnd = trainEnd;
 	}
 
-	public long getTestStart() {
+	public long getTestStart()
+	{
 		return testStart;
 	}
 
-	public void setTestStart(long testStart) {
+	public void setTestStart(long testStart)
+	{
 		this.testStart = testStart;
 	}
 
-	public long getTestEnd() {
+	public long getTestEnd()
+	{
 		return testEnd;
 	}
 
-	public void setTestEnd(long testEnd) {
+	public void setTestEnd(long testEnd)
+	{
 		this.testEnd = testEnd;
 	}
 
