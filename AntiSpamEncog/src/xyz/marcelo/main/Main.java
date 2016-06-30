@@ -21,21 +21,24 @@ import xyz.marcelo.ml.MethodSvm;
  * @author marcelovca90
  * 
  */
-public class Main {
-
+public class Main
+{
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(Main.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 
 		final int seed = Primes.getMiddlePrime();
 
 		final Method[] methods = new Method[] { Method.MLP_RPROP, Method.MLP_RPROP, Method.NEAT, Method.RBF_QPROP,
 				Method.SVM };
 
-		for (Method method : methods) {
+		for (Method method : methods)
+		{
 
-			for (String folder : Folders.FOLDERS_MI) {
+			for (String folder : Folders.FOLDERS_MI)
+			{
 
 				File hamFile = new File(folder + "/ham");
 				File spamFile = new File(folder + "/spam");
@@ -58,7 +61,8 @@ public class Main {
 				BasicMLDataSet testSet = new BasicMLDataSet(dataSubset.getInputDataAsPrimitiveMatrix(),
 						dataSubset.getOutputDataAsPrimitiveMatrix());
 
-				switch (method) {
+				switch (method)
+				{
 				case MLP_BPROP:
 					MethodMlpBprop.run(folder, trainingSet, validationSet, testSet, seed);
 					break;

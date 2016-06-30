@@ -2,7 +2,6 @@ package xyz.marcelo.ml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -10,8 +9,8 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-import xyz.marcelo.common.Folders;
 import xyz.marcelo.common.Enumerates.MessageLabel;
+import xyz.marcelo.common.Folders;
 import xyz.marcelo.math.ActivationLogSig;
 import xyz.marcelo.math.ActivationTanSig;
 
@@ -19,14 +18,16 @@ import xyz.marcelo.math.ActivationTanSig;
  * @author marcelovca90
  * 
  */
-public class MethodMlpRprop {
-
+public class MethodMlpRprop
+{
 	private static final Logger logger = LogManager.getLogger(MethodMlpRprop.class);
 
 	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
-			BasicMLDataSet testSet, int seed) {
+			BasicMLDataSet testSet, int seed)
+	{
 
 		int inputCount = testSet.get(0).getInput().size();
+		@SuppressWarnings("unused")
 		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
 		int outputCount = testSet.get(0).getIdeal().size();
 
@@ -44,14 +45,15 @@ public class MethodMlpRprop {
 		network.addLayer(new BasicLayer(new ActivationLogSig(), false, outputCount));
 		network.getStructure().finalizeStructure();
 		network.reset(seed);
-		
+
 		ResilientPropagation resilientPropagation = new ResilientPropagation(network, trainingSet);
 		resilientPropagation.setBatchSize(0);
 		resilientPropagation.setThreadCount(0);
 
 		double validationErrorBefore = Double.MAX_VALUE, validationErrorAfter = Double.MAX_VALUE;
 
-		do {
+		do
+		{
 
 			validationErrorBefore = validationErrorAfter;
 
@@ -71,20 +73,25 @@ public class MethodMlpRprop {
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;
 
-		for (MLDataPair pair : testSet) {
+		for (MLDataPair pair : testSet)
+		{
 
 			MLData input = pair.getInput();
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM)
+			{
 				hamCount++;
-				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM)
+				{
 					hamCorrect++;
 				}
-			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM)
+			{
 				spamCount++;
-				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM)
+				{
 					spamCorrect++;
 				}
 			}

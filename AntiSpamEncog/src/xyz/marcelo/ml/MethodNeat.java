@@ -19,12 +19,13 @@ import xyz.marcelo.common.Folders;
  * @author marcelovca90
  * 
  */
-public class MethodNeat {
-
+public class MethodNeat
+{
 	private static final Logger logger = LogManager.getLogger(MethodNeat.class);
 
 	public static void run(String folder, BasicMLDataSet trainingSet, BasicMLDataSet validationSet,
-			BasicMLDataSet testSet, int seed) {
+			BasicMLDataSet testSet, int seed)
+	{
 
 		int inputCount = testSet.get(0).getInput().size();
 		int hiddenCount = MethodUtil.getHiddenNeuronsCount(inputCount, trainingSet.size());
@@ -42,7 +43,8 @@ public class MethodNeat {
 
 		double validationErrorBefore = Double.MAX_VALUE, validationErrorAfter = Double.MAX_VALUE;
 
-		do {
+		do
+		{
 
 			validationErrorBefore = validationErrorAfter;
 
@@ -64,20 +66,25 @@ public class MethodNeat {
 		int hamCount = 0, hamCorrect = 0;
 		int spamCount = 0, spamCorrect = 0;
 
-		for (MLDataPair pair : testSet) {
+		for (MLDataPair pair : testSet)
+		{
 
 			MLData input = pair.getInput();
 			MLData ideal = pair.getIdeal();
 			MLData output = network.compute(input);
 
-			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM) {
+			if (MethodUtil.infer(ideal.getData()) == MessageLabel.HAM)
+			{
 				hamCount++;
-				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.HAM)
+				{
 					hamCorrect++;
 				}
-			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM) {
+			} else if (MethodUtil.infer(ideal.getData()) == MessageLabel.SPAM)
+			{
 				spamCount++;
-				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM) {
+				if (MethodUtil.infer(output.getData()) == MessageLabel.SPAM)
+				{
 					spamCorrect++;
 				}
 			}

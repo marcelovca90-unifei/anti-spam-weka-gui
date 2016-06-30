@@ -1,7 +1,7 @@
 package xyz.marcelo.method;
 
-public enum MethodName {
-
+public enum MethodName
+{
 	J48("C4.5 algorithm"),
 
 	MLP("Multilayer perceptron"),
@@ -17,7 +17,8 @@ public enum MethodName {
 	@SuppressWarnings("unused")
 	private final String value;
 
-	private MethodName(final String value) {
+	private MethodName(final String value)
+	{
 		this.value = value;
 	}
 
