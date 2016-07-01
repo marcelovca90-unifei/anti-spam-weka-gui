@@ -1,4 +1,4 @@
-package xyz.marcelo.helpers;
+package xyz.marcelo.helper;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
