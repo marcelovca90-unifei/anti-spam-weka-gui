@@ -17,7 +17,6 @@ public class DataHelper
 {
 	public static void bin2csv(String hamInput, String spamInput, String output) throws IOException
 	{
-
 		File hamFile = new File(hamInput);
 		File spamFile = new File(spamInput);
 

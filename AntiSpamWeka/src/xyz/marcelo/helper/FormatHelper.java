@@ -29,7 +29,6 @@ public class FormatHelper
 
 	public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printResult) throws Exception
 	{
-
 		folder = methodEvaluation.getFolder();
 
 		method = methodEvaluation.getMethod();
@@ -56,13 +55,25 @@ public class FormatHelper
 			if (line.contains("Correctly Classified Instances"))
 			{
 				totalCorrect = Integer.parseInt(parts[3]);
-				totalCorrectPercent = Double.parseDouble(parts[4]);
+				try
+				{
+					totalCorrectPercent = Double.parseDouble(parts[4]);
+				} catch (NumberFormatException ex)
+				{
+					totalCorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
+				}
 			}
 
 			else if (line.contains("Incorrectly Classified Instances"))
 			{
 				totalIncorrect = Integer.parseInt(parts[3]);
-				totalIncorrectPercent = Double.parseDouble(parts[4]);
+				try
+				{
+					totalIncorrectPercent = Double.parseDouble(parts[4]);
+				} catch (NumberFormatException ex)
+				{
+					totalIncorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
+				}
 			}
 
 			else if (line.contains("|") && line.contains("ham"))
@@ -77,16 +88,30 @@ public class FormatHelper
 				spamIncorrect = Integer.parseInt(parts[1]);
 			}
 
-			else if (line.contains("0,") && line.contains("ham"))
+			else if ((line.contains("0.") || line.contains("0,")) && line.contains("ham"))
 			{
-				hamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
-				hamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
+				try
+				{
+					hamPrecision = 100 * Double.parseDouble(parts[4]);
+					hamRecall = 100 * Double.parseDouble(parts[5]);
+				} catch (NumberFormatException ex)
+				{
+					hamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
+					hamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
+				}
 			}
 
-			else if (line.contains("0,") && line.contains("spam"))
+			else if ((line.contains("0.") || line.contains("0,")) && line.contains("spam"))
 			{
-				spamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
-				spamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
+				try
+				{
+					spamPrecision = 100 * Double.parseDouble(parts[4]);
+					spamRecall = 100 * Double.parseDouble(parts[5]);
+				} catch (NumberFormatException ex)
+				{
+					spamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
+					spamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
+				}
 			}
 		}
 
@@ -97,8 +122,8 @@ public class FormatHelper
 		keeper.get(key).add(value);
 
 		if (printResult)
-			System.out.println(String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method, hamPrecision,
-					spamPrecision, hamRecall, spamRecall, trainTime, testTime));
+			System.out.println(String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method,
+					hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
 	}
 
 	public static void debug()

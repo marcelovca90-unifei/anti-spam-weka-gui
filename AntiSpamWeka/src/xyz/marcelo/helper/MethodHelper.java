@@ -18,7 +18,6 @@ public class MethodHelper
 {
 	public static AbstractClassifier build(MethodName method)
 	{
-
 		AbstractClassifier classifier = null;
 
 		try
