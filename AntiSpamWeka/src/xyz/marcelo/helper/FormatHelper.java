@@ -49,7 +49,6 @@ public class FormatHelper
 
 		for (String line : lines)
 		{
-
 			String cleanLine = formatLine(line);
 
 			String[] parts = cleanLine.split("\\t");
@@ -98,7 +97,7 @@ public class FormatHelper
 		keeper.get(key).add(value);
 
 		if (printResult)
-			System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method, hamPrecision,
+			System.out.println(String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method, hamPrecision,
 					spamPrecision, hamRecall, spamRecall, trainTime, testTime));
 	}
 
