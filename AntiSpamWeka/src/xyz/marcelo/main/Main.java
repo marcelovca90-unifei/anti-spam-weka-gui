@@ -92,7 +92,7 @@ public class Main
 						methodEvaluation.setMethod(method);
 
 						if (!folder.contains(Folders.WARMUP_TAG))
-							FormatHelper.aggregateResult(methodEvaluation, false);
+							FormatHelper.aggregateResult(methodEvaluation, true);
 					}
 
 					if (!folder.contains(Folders.WARMUP_TAG))
