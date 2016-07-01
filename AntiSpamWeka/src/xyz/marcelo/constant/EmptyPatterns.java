@@ -1,4 +1,4 @@
-package xyz.marcelo.constants;
+package xyz.marcelo.constant;
 
 import java.util.HashMap;
 
@@ -160,7 +160,7 @@ public class EmptyPatterns
 			map.put("/Unifei_2016/MI/100", new int[] { 16, 151 });
 		}
 
-		String folderSuffix = folder.replace(FoldersLocal.BASE_FOLDER, "");
+		String folderSuffix = folder.replace(Folders.BASE_FOLDER, "");
 
 		if (map.containsKey(folder))
 			return map.get(folder);

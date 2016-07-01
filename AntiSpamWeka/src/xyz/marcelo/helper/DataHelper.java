@@ -1,4 +1,4 @@
-package xyz.marcelo.helpers;
+package xyz.marcelo.helper;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,7 +11,7 @@ import java.nio.channels.FileChannel;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
-import xyz.marcelo.constants.EmptyPatterns;
+import xyz.marcelo.constant.EmptyPatterns;
 
 public class DataHelper
 {

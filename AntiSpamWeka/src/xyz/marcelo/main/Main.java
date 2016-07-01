@@ -8,17 +8,17 @@ import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
-import xyz.marcelo.constants.EmptyPatterns;
-import xyz.marcelo.constants.FoldersLocal;
-import xyz.marcelo.helpers.DataHelper;
-import xyz.marcelo.helpers.FormatHelper;
-import xyz.marcelo.helpers.MethodHelper;
-import xyz.marcelo.helpers.StatHelper;
+import xyz.marcelo.constant.EmptyPatterns;
+import xyz.marcelo.constant.Folders;
+import xyz.marcelo.helper.DataHelper;
+import xyz.marcelo.helper.FormatHelper;
+import xyz.marcelo.helper.MethodHelper;
+import xyz.marcelo.helper.StatHelper;
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 import xyz.marcelo.method.MethodName;
 
-public class MainLocal
+public class Main
 {
 	private static final int SEED = 1;
 
@@ -29,8 +29,7 @@ public class MainLocal
 	@SuppressWarnings({ "rawtypes", "unused" })
 	public static void main(String[] args) throws Exception
 	{
-
-		Class[] classes = new Class[] { MainLocal.class, EmptyPatterns.class, FoldersLocal.class, DataHelper.class,
+		Class[] classes = new Class[] { Main.class, EmptyPatterns.class, Folders.class, DataHelper.class,
 				FormatHelper.class, MethodHelper.class, StatHelper.class, MethodConfiguration.class,
 				MethodEvaluation.class, MethodName.class };
 
@@ -41,20 +40,18 @@ public class MainLocal
 				MethodName.SGD, MethodName.SVM };
 
 		LinkedList<String> folders = new LinkedList<String>();
-		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_WARMUP));
-		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_LING));
-		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_SPAMASSASSIN));
-		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_TREC));
-		folders.addAll(Arrays.asList(FoldersLocal.FOLDERS_UNIFEI));
+		folders.addAll(Arrays.asList(Folders.FOLDERS_WARMUP));
+		folders.addAll(Arrays.asList(Folders.FOLDERS_LING));
+		folders.addAll(Arrays.asList(Folders.FOLDERS_SPAMASSASSIN));
+		folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
+		folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
 
 		for (MethodName method : methods)
 		{
-
 			FormatHelper.printHeader();
 
 			for (String folder : folders)
 			{
-
 				String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
 
 				// import data set
@@ -71,19 +68,15 @@ public class MainLocal
 				// build empty patterns set
 				String emptyCsvPath = folder + File.separator + "empty.csv";
 				String emptyArffPath = folder + File.separator + "empty.arff";
-				// DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() -
-				// 1);
+				// DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
 				// DataHelper.csv2arff(emptyCsvPath, emptyArffPath);
-
 				FileReader emptyReader = new FileReader(emptyArffPath);
 				Instances emptySet = new Instances(emptyReader);
 
 				try
 				{
-
 					for (int i = 1; i <= NREP; i++)
 					{
-
 						// build test and train sets
 						dataSet.randomize(RNG);
 						int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
@@ -98,17 +91,18 @@ public class MainLocal
 						methodEvaluation.setFolder(subFolder);
 						methodEvaluation.setMethod(method);
 
-						if (!folder.contains("WarmUp"))
+						if (!folder.contains(Folders.WARMUP_TAG))
 							FormatHelper.aggregateResult(methodEvaluation, false);
 					}
 
-					if (!folder.contains("WarmUp"))
+					if (!folder.contains(Folders.WARMUP_TAG))
 						FormatHelper.printResults();
 
 				} catch (Exception ex)
 				{
 					ex.printStackTrace();
 				}
+
 			}
 
 			FormatHelper.printFooter();
