@@ -11,10 +11,11 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/HMM.jar"/>
-	<classpathentry kind="lib" path="lib/libsvm.jar"/>
-	<classpathentry kind="lib" path="lib/LibSVM.jar"/>
-	<classpathentry kind="lib" path="lib/RBFNetwork.jar"/>
+	<classpathentry kind="lib" path="packages/HMM/HMM.jar"/>
+	<classpathentry kind="lib" path="packages/LibLINEAR/LibLINEAR.jar"/>
+	<classpathentry kind="lib" path="packages/LibSVM/lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="packages/LibSVM/LibSVM.jar"/>
+	<classpathentry kind="lib" path="packages/RBFNetwork/RBFNetwork.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
