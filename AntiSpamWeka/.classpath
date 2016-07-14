@@ -6,16 +6,16 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="packages/HMM/HMM.jar"/>
-	<classpathentry kind="lib" path="packages/LibLINEAR/LibLINEAR.jar"/>
-	<classpathentry kind="lib" path="packages/LibSVM/lib/libsvm.jar"/>
-	<classpathentry kind="lib" path="packages/LibSVM/LibSVM.jar"/>
-	<classpathentry kind="lib" path="packages/RBFNetwork/RBFNetwork.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/HMM.jar"/>
+	<classpathentry kind="lib" path="lib/LibLINEAR.jar"/>
+	<classpathentry kind="lib" path="lib/LibSVM-Weka.jar"/>
+	<classpathentry kind="lib" path="lib/RBFNetwork.jar"/>
+	<classpathentry kind="lib" path="lib/LibSVM-CJLin.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
