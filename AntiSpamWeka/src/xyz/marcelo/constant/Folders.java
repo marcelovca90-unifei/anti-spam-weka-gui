@@ -16,7 +16,7 @@ public class Folders
 	public static final String SLASH = File.separator;
 	
 	/** The parent folder for the data set folders. */
-	public static final String BASE_FOLDER = "/home/marcelo/Mestrado/Vectors";
+	public static final String BASE_FOLDER = "C:\\Users\\marce\\Mestrado\\Vectors";
 
 	/** The warm up folder tag. */
 	public static final String WARMUP_TAG = "WarmUp";
