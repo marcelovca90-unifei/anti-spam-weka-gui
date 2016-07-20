@@ -14,8 +14,8 @@
 Início:
 - [x] Ler trabalhos anteriores
 - [x] Ler artigos sobre o assunto
-- [x] Estudar a biblioteca ~~Encog~~ Weka
-- [ ] Salvar e carregar ~~métodos~~ modelos do ~~Encog~~ Weka
+- [x] Estudar a biblioteca Weka
+- [ ] Salvar e carregar modelos do Weka
 
 Bases de dados:
 - [x] LingSpam (de 10 a 100 features - CHI2, DF e MI)
@@ -25,12 +25,12 @@ Bases de dados:
 - [ ] Quantidade de features proporcional aos padrões zerados
 
 Métodos de classificação:
-- [ ] MLP Backpropagation (Unifei)
-- [x] MLP Backpropagation (~~Encog~~ Weka)
-- [x] ~~MLP Resilient Propagation (Encog)~~
-- [x] RBF Encog (Encog)
-- [x] SVM Encog (Encog/LibSVM)
-- [x] NEAT Encog (Encog)
+- [x] (J48 (C4.5 decision tree))[http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html]
+- [x] (Multilayer Perceptron (usando backpropagation)): [http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html]
+- [x] (Radial Basis Function Network (usando o método BFGS para treinamento e K­Means para determinar os parâmetros iniciais das funções de base radial)): [http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html]
+- [x] (RF (Random Forests): [http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html]
+- [x] (SGD (Stochastic Gradient Descent): [http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html]
+- [x] (SVM (Support Vector Machine, baseada na LibSVM): [http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html]
 
 Implementar as seguintes métricas:
 - [x] Porcentagem de acertos na classificação de hams
@@ -39,6 +39,7 @@ Implementar as seguintes métricas:
 - [x] Tempo de classificação
 
 Fim:
-- [ ] **Melhorar os resultados**
+- [ ] **Melhorar e investigar aleatoriedade dos resultados**
 - [ ] Comparar os resultados com trabalhos anteriores
+- [ ] Escrever artigo
 - [ ] Escrever dissertação
