@@ -25,12 +25,12 @@ Bases de dados:
 - [ ] Quantidade de features proporcional aos padrões zerados
 
 Métodos de classificação:
-- [x] (J48 - C4.5 decision tree)[http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html]
-- [x] (MLP - Multilayer Perceptron com backpropagation e momentum) [http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html]
-- [x] (RBF - Radial Basis Function Network usando o método BFGS para treinamento e K-Means para determinar os parâmetros iniciais das funções de base radial)[http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html]
-- [x] (RF - Random Forests)[http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html]
-- [x] (SGD - Stochastic Gradient Descent)[http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html]
-- [x] (SVM - Support Vector Machine, baseada na LibSVM) [http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html]
+- [x] [J48 - C4.5 decision tree](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html)
+- [x] [MLP - Multilayer Perceptron com backpropagation e momentum] (http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html)
+- [x] [RBF - Radial Basis Function Network usando o método BFGS para treinamento e K-Means para determinar os parâmetros iniciais das funções de base radial](http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html)
+- [x] [RF - Random Forests](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html)
+- [x] [SGD - Stochastic Gradient Descent](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html)
+- [x] [SVM - Support Vector Machine, baseada na LibSVM] (http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html)
 
 Implementar as seguintes métricas:
 - [x] Porcentagem de acertos na classificação de hams
