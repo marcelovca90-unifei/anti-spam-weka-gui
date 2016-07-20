@@ -14,19 +14,20 @@
 Início:
 - [x] Ler trabalhos anteriores
 - [x] Ler artigos sobre o assunto
-- [x] Estudar a biblioteca Encog
-- [x] Salvar e carregar métodos do Encog
+- [x] Estudar a biblioteca ~~Encog~~ Weka
+- [ ] Salvar e carregar ~~métodos~~ modelos do ~~Encog~~ Weka
 
 Bases de dados:
 - [x] LingSpam (de 10 a 100 features - CHI2, DF e MI)
 - [x] SpamAssassin (de 10 a 100 features - CHI2, DF e MI)
 - [x] TREC (de 10 a 100 features - CHI2, DF e MI)
-- [x] Outro (de 10 a 100 features - CHI2, DF e MI)
+- [x] Unifei (de 10 a 100 features - CHI2, DF e MI)
+- [ ] Quantidade de features proporcional aos padrões zerados
 
 Métodos de classificação:
-- [ ] MLP Backpropagation (Outro)
-- [x] MLP Backpropagation (Encog)
-- [x] MLP Resilient Propagation (Encog)
+- [ ] MLP Backpropagation (Unifei)
+- [x] MLP Backpropagation (~~Encog~~ Weka)
+- [x] ~~MLP Resilient Propagation (Encog)~~
 - [x] RBF Encog (Encog)
 - [x] SVM Encog (Encog/LibSVM)
 - [x] NEAT Encog (Encog)
