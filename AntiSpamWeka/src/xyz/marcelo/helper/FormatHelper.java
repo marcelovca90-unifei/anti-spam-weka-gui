@@ -48,7 +48,7 @@ public class FormatHelper
 
         for (String line : lines)
         {
-            String cleanLine = formatLine(line);
+            String cleanLine = line.replaceAll("\\s+", "\t").trim();
 
             String[] parts = cleanLine.split("\\t");
 
@@ -141,11 +141,6 @@ public class FormatHelper
         System.out.println("hamRecall = " + hamRecall);
         System.out.println("spamPrecision = " + spamPrecision);
         System.out.println("spamRecall = " + spamRecall);
-    }
-
-    public static String formatLine(String line)
-    {
-        return line.replaceAll("\\s+", "\t").trim();
     }
 
     public static void printFooter()
