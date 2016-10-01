@@ -3,13 +3,13 @@ package xyz.marcelo.helper;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
-import xyz.marcelo.method.MethodName;
 
 public class FormatHelper
 {
     private static String folder;
-    private static MethodName method;
+    private static MethodConfiguration methodConfiguration;
     private static double trainTime;
     private static double testTime;
     private static int totalCorrect = 0;
@@ -27,11 +27,11 @@ public class FormatHelper
 
     private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
 
-    public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printResult) throws Exception
+    public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printPartialResult) throws Exception
     {
         folder = methodEvaluation.getFolder();
 
-        method = methodEvaluation.getMethod();
+        methodConfiguration = methodEvaluation.getMethodConfiguration();
 
         trainTime = (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
 
@@ -115,15 +115,16 @@ public class FormatHelper
             }
         }
 
-        String key = folder + "\t" + method;
+        String key = folder + "\t" + methodConfiguration.getPseudoHashCode();
         Double[] value = new Double[] { hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime };
         if (!keeper.containsKey(key))
             keeper.put(key, new LinkedList<Double[]>());
         keeper.get(key).add(value);
 
-        if (printResult)
-            System.out.println(String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, method,
-                    hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
+        if (printPartialResult)
+            System.out.println(
+                    String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, methodConfiguration.name(),
+                            hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
     }
 
     public static void debug()
@@ -159,8 +160,7 @@ public class FormatHelper
 
     public static void printResults()
     {
-
-        String key = folder + "\t" + method;
+        String key = folder + "\t" + methodConfiguration.getPseudoHashCode();
         LinkedList<Double[]> values = keeper.get(key);
 
         LinkedList<Double> hamPrecisionValues = new LinkedList<Double>();
@@ -200,9 +200,9 @@ public class FormatHelper
 
         System.out.println(
                 String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f",
-                        folder, method, hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev,
-                        hamRecallAvg, hamRecallStdDev, spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev,
-                        testTimeAvg, testTimeStdDev));
+                        folder, methodConfiguration.name(), hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg,
+                        spamPrecisionStdDev, hamRecallAvg, hamRecallStdDev, spamRecallAvg, spamRecallStdDev,
+                        trainTimeAvg, trainTimeStdDev, testTimeAvg, testTimeStdDev));
 
         keeper.clear();
     }
@@ -212,9 +212,9 @@ public class FormatHelper
         FormatHelper.folder = folder;
     }
 
-    public static void setMethod(MethodName method)
+    public static void setMethodConfiguration(MethodConfiguration methodConfiguration)
     {
-        FormatHelper.method = method;
+        FormatHelper.methodConfiguration = methodConfiguration;
     }
 
     public static void setTestTime(double testTime)

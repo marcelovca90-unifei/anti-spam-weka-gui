@@ -6,47 +6,51 @@ import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.RBFClassifier;
 import weka.classifiers.functions.SGD;
+import weka.classifiers.misc.FLR;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.Utils;
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
-import xyz.marcelo.method.MethodName;
 
 public class MethodHelper
 {
-    public static AbstractClassifier build(MethodName method)
+    public static AbstractClassifier build(MethodConfiguration methodConfiguration)
     {
         AbstractClassifier classifier = null;
 
         try
         {
-            switch (method)
+            switch (methodConfiguration)
             {
+            case FLR:
+                classifier = new FLR();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.FLR.getConfig()));
+                break;
             case J48:
                 classifier = new J48();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.J48.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.J48.getConfig()));
                 break;
             case MLP:
                 classifier = new MultilayerPerceptron();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.MLP.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.MLP.getConfig()));
                 break;
             case RBF:
                 classifier = new RBFClassifier();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RBF.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RBF.getConfig()));
                 break;
             case RF:
                 classifier = new RandomForest();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RF.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RF.getConfig()));
                 break;
             case SGD:
                 classifier = new SGD();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SGD.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SGD.getConfig()));
                 break;
             case SVM:
                 classifier = new LibSVM();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.toString()));
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.getConfig()));
                 break;
             }
         } catch (Exception e)

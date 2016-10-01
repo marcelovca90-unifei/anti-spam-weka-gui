@@ -14,17 +14,15 @@ public class EmptyPatterns
 
     /**
      * Gets the the amount of empty hams and spams for a given data set folder.
-     * 
+     *
      * @param folder
      *            the data set folder
      * @return the amount of [0] empty hams and [1] spams
      */
     public static int[] get(String folder)
     {
-
         if (map.size() == 0)
         {
-
             // WarmUp
             map.put("/WarmUp/Ling_2016_CHI2_10", new int[] { 0, 0 });
             map.put("/WarmUp/SpamAssassin_2016_CHI2_10", new int[] { 0, 0 });
