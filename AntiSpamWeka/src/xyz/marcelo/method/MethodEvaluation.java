@@ -6,7 +6,7 @@ public class MethodEvaluation
 {
     private Evaluation evaluation;
     private String folder;
-    private MethodName method;
+    private MethodConfiguration methodConfiguration;
     private long trainStart;
     private long trainEnd;
     private long testStart;
@@ -32,14 +32,14 @@ public class MethodEvaluation
         this.folder = folder;
     }
 
-    public MethodName getMethod()
+    public MethodConfiguration getMethodConfiguration()
     {
-        return method;
+        return methodConfiguration;
     }
 
-    public void setMethod(MethodName method)
+    public void setMethodConfiguration(MethodConfiguration methodConfiguration)
     {
-        this.method = method;
+        this.methodConfiguration = methodConfiguration;
     }
 
     public long getTrainStart()

@@ -16,7 +16,6 @@ import xyz.marcelo.helper.MethodHelper;
 import xyz.marcelo.helper.StatHelper;
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
-import xyz.marcelo.method.MethodName;
 
 public class Main
 {
@@ -31,13 +30,14 @@ public class Main
     {
         Class<?>[] classes = new Class[] { Main.class, EmptyPatterns.class, Folders.class, DataHelper.class,
                 FormatHelper.class, MethodHelper.class, StatHelper.class, MethodConfiguration.class,
-                MethodEvaluation.class, MethodName.class };
+                MethodEvaluation.class, MethodConfiguration.class };
 
         for (Class<?> clazz : classes)
             Class.forName(clazz.getName());
 
-        MethodName[] methods = new MethodName[] { MethodName.J48, MethodName.MLP, MethodName.RBF, MethodName.RF,
-                MethodName.SGD, MethodName.SVM };
+        MethodConfiguration[] methodConfigurations = new MethodConfiguration[] { MethodConfiguration.FLR,
+                MethodConfiguration.J48, MethodConfiguration.MLP, MethodConfiguration.RBF, MethodConfiguration.RF,
+                MethodConfiguration.SGD, MethodConfiguration.SVM };
 
         LinkedList<String> folders = new LinkedList<String>();
         folders.addAll(Arrays.asList(Folders.FOLDERS_WARMUP));
@@ -46,7 +46,7 @@ public class Main
         folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
         folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
 
-        for (MethodName method : methods)
+        for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
 
@@ -86,11 +86,11 @@ public class Main
                         Instances testSet = new Instances(dataSet, trainSize, testSize);
                         testSet.addAll(emptySet);
 
-                        AbstractClassifier classifier = MethodHelper.build(method);
+                        AbstractClassifier classifier = MethodHelper.build(methodConfiguration);
 
                         MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
                         methodEvaluation.setFolder(subFolder);
-                        methodEvaluation.setMethod(method);
+                        methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                         if (!folder.contains(Folders.WARMUP_TAG))
                             FormatHelper.aggregateResult(methodEvaluation, true);
