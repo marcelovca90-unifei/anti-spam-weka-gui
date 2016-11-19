@@ -2,12 +2,18 @@ package xyz.marcelo.helper;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.HMM;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.RBFClassifier;
 import weka.classifiers.functions.SGD;
+import weka.classifiers.functions.SPegasos;
+import weka.classifiers.misc.CHIRP;
 import weka.classifiers.misc.FLR;
+import weka.classifiers.rules.JRip;
+import weka.classifiers.rules.MultiObjectiveEvolutionaryFuzzyClassifier;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -24,6 +30,30 @@ public class MethodHelper
         {
             switch (methodConfiguration)
             {
+            case MOEFC:
+                classifier = new MultiObjectiveEvolutionaryFuzzyClassifier();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.MOEFC.getConfig()));
+                break;
+            case NBTREE:
+                classifier = new NBTree();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.NBTREE.getConfig()));
+                break;
+            case JRIP:
+                classifier = new JRip();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.JRIP.getConfig()));
+                break;
+            case SPEGASOS:
+                classifier = new SPegasos();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SPEGASOS.getConfig()));
+                break;
+            case CHIRP:
+                classifier = new CHIRP();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.CHIRP.getConfig()));
+                break;
+            case HMM:
+                classifier = new HMM();
+                classifier.setOptions(Utils.splitOptions(MethodConfiguration.HMM.getConfig()));
+                break;
             case FLR:
                 classifier = new FLR();
                 classifier.setOptions(Utils.splitOptions(MethodConfiguration.FLR.getConfig()));
@@ -68,7 +98,6 @@ public class MethodHelper
 
         try
         {
-
             methodEvaluation = new MethodEvaluation();
 
             // train the classifier

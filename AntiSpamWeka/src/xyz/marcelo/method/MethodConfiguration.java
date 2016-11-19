@@ -2,6 +2,25 @@ package xyz.marcelo.method;
 
 public enum MethodConfiguration
 {
+    // http://weka.sourceforge.net/packageMetaData/MultiObjectiveEvolutionaryFuzzyClassifier/index.html
+    MOEFC("Multiobjective Evolutionary Fuzzy Classifier",
+            "-g 10 -ps 100 -s 1 -ms 0.1 -minv 30.0 -maxv 2.0 -maxr -1 -ev 0 -a 0 -report-frequency 10"),
+
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
+    NBTREE("Decision tree with naive Bayes classifiers at the leaves", ""),
+
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/JRip.html
+    JRIP("Repeated Incremental Pruning to Produce Error Reduction", "-F 3 -N 2.0 -O 2 -S 1"),
+
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
+    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500"),
+
+    // http://weka.sourceforge.net/packageMetaData/CHIRP/index.html
+    CHIRP("Composite Hypercubes on Iterated Random Projections", "-V 7 -S 1"),
+
+    // http://weka.sourceforge.net/packageMetaData/HMM/index.html
+    HMM("Hidden Markov Model", "\"-S 6\" \"-I 0.01\" \"-C FULL\" -Dfalse -Lfalse -Rfalse"),
+
     // http://weka.sourceforge.net/packageMetaData/fuzzyLaticeReasoning/index.html
     FLR("Fuzzy lattice reasoning", "-R 0.5 -Y"),
 
