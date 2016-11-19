@@ -35,16 +35,23 @@ public class Main
         for (Class<?> clazz : classes)
             Class.forName(clazz.getName());
 
-        MethodConfiguration[] methodConfigurations = new MethodConfiguration[] { MethodConfiguration.FLR,
-                MethodConfiguration.J48, MethodConfiguration.MLP, MethodConfiguration.RBF, MethodConfiguration.RF,
-                MethodConfiguration.SGD, MethodConfiguration.SVM };
+        MethodConfiguration[] methodConfigurations = new MethodConfiguration[] { MethodConfiguration.MOEFC,
+                MethodConfiguration.NBTREE, MethodConfiguration.JRIP, MethodConfiguration.SPEGASOS,
+                MethodConfiguration.CHIRP, MethodConfiguration.HMM, MethodConfiguration.FLR,
+                // MethodConfiguration.J48,
+                // MethodConfiguration.MLP,
+                // MethodConfiguration.RBF,
+                // MethodConfiguration.RF,
+                // MethodConfiguration.SGD,
+                // MethodConfiguration.SVM
+        };
 
-        LinkedList<String> folders = new LinkedList<String>();
+        LinkedList<String> folders = new LinkedList<>();
         folders.addAll(Arrays.asList(Folders.FOLDERS_WARMUP));
         folders.addAll(Arrays.asList(Folders.FOLDERS_LING));
         folders.addAll(Arrays.asList(Folders.FOLDERS_SPAMASSASSIN));
         folders.addAll(Arrays.asList(Folders.FOLDERS_TREC));
-        folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
+        // folders.addAll(Arrays.asList(Folders.FOLDERS_UNIFEI));
 
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
