@@ -94,7 +94,6 @@ public class MethodHelper
 
     public static MethodEvaluation run(AbstractClassifier classifier, Instances trainSet, Instances testSet)
     {
-
         MethodEvaluation methodEvaluation = null;
 
         try
@@ -113,7 +112,6 @@ public class MethodHelper
             methodEvaluation.setTestEnd(System.currentTimeMillis());
 
             methodEvaluation.setEvaluation(evaluation);
-
         }
         catch (Exception e)
         {
