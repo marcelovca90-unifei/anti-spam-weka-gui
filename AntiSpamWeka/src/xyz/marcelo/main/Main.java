@@ -24,7 +24,7 @@ public class Main
 
     public static void main(String[] args) throws Exception
     {
-        MethodConfiguration[] methodConfigurations = new MethodConfiguration[] { MethodConfiguration.RF };
+        MethodConfiguration[] methodConfigurations = MethodConfiguration.getTraditionalMethods();
 
         List<String> folders = Folders.getFolders();
 
@@ -34,9 +34,6 @@ public class Main
 
             for (String folder : folders)
             {
-                System.out.println(folder);
-                String subFolder = folder.substring(folder.indexOf("Vectors") + "Vectors".length());
-
                 // import data set
                 String hamFilePath = folder + File.separator + "ham";
                 String spamFilePath = folder + File.separator + "spam";
@@ -71,7 +68,7 @@ public class Main
 
                     // evaluate the classifier
                     MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-                    methodEvaluation.setFolder(subFolder);
+                    methodEvaluation.setFolder(Folders.shortenFolderName(folder, 3));
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                     // log the partial result for this configuration
