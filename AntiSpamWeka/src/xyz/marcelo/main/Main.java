@@ -16,11 +16,9 @@ import xyz.marcelo.method.MethodEvaluation;
 
 public class Main
 {
-    private static final int SEED = 1;
+    private static final int[] PRIME_SEEDS = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
-    private static final int NREP = 3;
-
-    private static final Random RNG = new Random(SEED);
+    private static final int NUMBER_OF_REPETITIONS = 5;
 
     public static void main(String[] args) throws Exception
     {
@@ -53,10 +51,13 @@ public class Main
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
-                for (int i = 1; i <= NREP; i++)
+                for (int i = 0; i < NUMBER_OF_REPETITIONS; i++)
                 {
+                    // initialize random number generator
+                    Random random = new Random(PRIME_SEEDS[i]);
+
                     // build test and train sets
-                    dataSet.randomize(RNG);
+                    dataSet.randomize(random);
                     int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
                     int testSize = dataSet.numInstances() - trainSize;
                     Instances trainSet = new Instances(dataSet, 0, trainSize);
