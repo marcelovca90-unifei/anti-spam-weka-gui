@@ -11,7 +11,6 @@ import java.nio.channels.FileChannel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 import xyz.marcelo.constant.EmptyPatterns;
 
@@ -142,12 +141,12 @@ public class DataHelper
             CSVLoader loader = new CSVLoader();
             loader.setSource(new File(input));
             Instances data = loader.getDataSet();
+
             // save ARFF
-            ArffSaver saver = new ArffSaver();
-            saver.setInstances(data);
-            saver.setFile(new File(output));
-            saver.setDestination(new File(output));
-            saver.writeBatch();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(output));
+            writer.write(data.toString());
+            writer.flush();
+            writer.close();
         }
         catch (IOException e)
         {
