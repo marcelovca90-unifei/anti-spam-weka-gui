@@ -2,7 +2,6 @@ package xyz.marcelo.helper;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.HMM;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.RBFClassifier;
@@ -44,10 +43,6 @@ public class MethodHelper
             case CHIRP:
                 classifier = new CHIRP();
                 classifier.setOptions(Utils.splitOptions(MethodConfiguration.CHIRP.getConfig()));
-                break;
-            case HMM:
-                classifier = new HMM();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.HMM.getConfig()));
                 break;
             case FLR:
                 classifier = new FLR();

@@ -13,7 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/autoweka.jar"/>
 	<classpathentry kind="lib" path="lib/fuzzyLaticeReasoning.jar"/>
-	<classpathentry kind="lib" path="lib/HMM.jar"/>
 	<classpathentry kind="lib" path="lib/LibLINEAR.jar"/>
 	<classpathentry kind="lib" path="lib/LibSVM-CJLin.jar"/>
 	<classpathentry kind="lib" path="lib/LibSVM-Weka.jar"/>
