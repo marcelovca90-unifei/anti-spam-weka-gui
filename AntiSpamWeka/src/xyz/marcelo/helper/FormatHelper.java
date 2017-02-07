@@ -122,6 +122,9 @@ public class FormatHelper
         Double[] value = new Double[] { hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime };
         if (!keeper.containsKey(key))
             keeper.put(key, new LinkedList<Double[]>());
+
+        // TODO: try to detect outlier; if not, then add
+
         keeper.get(key).add(value);
 
         if (printPartialResult)
@@ -177,22 +180,22 @@ public class FormatHelper
             testTimeValues.add(value[5]);
         }
 
-        double hamPrecisionAvg = StatHelper.average(hamPrecisionValues);
+        double hamPrecisionAvg = StatHelper.mean(hamPrecisionValues);
         double hamPrecisionStdDev = StatHelper.standardDeviation(hamPrecisionValues);
 
-        double spamPrecisionAvg = StatHelper.average(spamPrecisionValues);
+        double spamPrecisionAvg = StatHelper.mean(spamPrecisionValues);
         double spamPrecisionStdDev = StatHelper.standardDeviation(spamPrecisionValues);
 
-        double hamRecallAvg = StatHelper.average(hamRecallValues);
+        double hamRecallAvg = StatHelper.mean(hamRecallValues);
         double hamRecallStdDev = StatHelper.standardDeviation(hamRecallValues);
 
-        double spamRecallAvg = StatHelper.average(spamRecallValues);
+        double spamRecallAvg = StatHelper.mean(spamRecallValues);
         double spamRecallStdDev = StatHelper.standardDeviation(spamRecallValues);
 
-        double trainTimeAvg = StatHelper.average(trainTimeValues);
+        double trainTimeAvg = StatHelper.mean(trainTimeValues);
         double trainTimeStdDev = StatHelper.standardDeviation(trainTimeValues);
 
-        double testTimeAvg = StatHelper.average(testTimeValues);
+        double testTimeAvg = StatHelper.mean(testTimeValues);
         double testTimeStdDev = StatHelper.standardDeviation(testTimeValues);
 
         System.out.println(String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder,

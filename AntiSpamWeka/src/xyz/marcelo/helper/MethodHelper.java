@@ -11,7 +11,6 @@ import weka.classifiers.functions.SPegasos;
 import weka.classifiers.misc.CHIRP;
 import weka.classifiers.misc.FLR;
 import weka.classifiers.rules.JRip;
-import weka.classifiers.rules.MultiObjectiveEvolutionaryFuzzyClassifier;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
@@ -30,10 +29,6 @@ public class MethodHelper
         {
             switch (methodConfiguration)
             {
-            case MOEFC:
-                classifier = new MultiObjectiveEvolutionaryFuzzyClassifier();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.MOEFC.getConfig()));
-                break;
             case NBTREE:
                 classifier = new NBTree();
                 classifier.setOptions(Utils.splitOptions(MethodConfiguration.NBTREE.getConfig()));
