@@ -2,9 +2,6 @@ package xyz.marcelo.method;
 
 public enum MethodConfiguration
 {
-    // http://weka.sourceforge.net/packageMetaData/MultiObjectiveEvolutionaryFuzzyClassifier/index.html
-    MOEFC("Multiobjective Evolutionary Fuzzy Classifier", "-g 10 -ps 100 -s 1 -ms 0.1 -minv 30.0 -maxv 2.0 -maxr -1 -ev 0 -a 0 -report-frequency 10"),
-
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", ""),
 
@@ -67,7 +64,7 @@ public enum MethodConfiguration
 
     public static MethodConfiguration[] getFancyMethods()
     {
-        return new MethodConfiguration[] { J48, FLR, HMM, SPEGASOS, JRIP, SPEGASOS, MOEFC };
+        return new MethodConfiguration[] { J48, FLR, HMM, SPEGASOS, JRIP, SPEGASOS };
     }
 
     public static MethodConfiguration[] getTraditionalMethods()

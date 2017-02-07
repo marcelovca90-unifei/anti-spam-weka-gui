@@ -19,7 +19,6 @@
 	<classpathentry kind="lib" path="lib/LibSVM-Weka.jar"/>
 	<classpathentry kind="lib" path="lib/RBFNetwork.jar"/>
 	<classpathentry kind="lib" path="lib/CHIRP.jar"/>
-	<classpathentry kind="lib" path="lib/MultiObjectiveEvolutionaryFuzzyClassifier.jar"/>
 	<classpathentry kind="lib" path="lib/naiveBayesTree.jar"/>
 	<classpathentry kind="lib" path="lib/SPegasos.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
