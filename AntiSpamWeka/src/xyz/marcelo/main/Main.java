@@ -68,7 +68,7 @@ public class Main
 
                     // evaluate the classifier
                     MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-                    methodEvaluation.setFolder(Folders.shortenFolderName(folder, 3));
+                    methodEvaluation.setFolder(Folders.shortenFolderName(folder));
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                     // log the partial result for this configuration
