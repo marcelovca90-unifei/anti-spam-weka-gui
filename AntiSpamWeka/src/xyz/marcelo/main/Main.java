@@ -75,6 +75,12 @@ public class Main
                     FormatHelper.aggregateResult(methodEvaluation, true);
                 }
 
+                // optional: delete temporary .csv and .arff files
+                new File(dataCsvPath).delete();
+                new File(dataArffPath).delete();
+                new File(emptyCsvPath).delete();
+                new File(emptyArffPath).delete();
+
                 // log the final result for this configuration
                 FormatHelper.printResults();
             }
