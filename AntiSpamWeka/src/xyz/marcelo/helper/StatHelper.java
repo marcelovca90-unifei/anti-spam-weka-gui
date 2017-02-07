@@ -2,10 +2,6 @@ package xyz.marcelo.helper;
 
 import java.util.LinkedList;
 
-/**
- * @author marcelovca90
- *
- */
 public class StatHelper
 {
     // Calculates the average for a given list of values
@@ -34,5 +30,4 @@ public class StatHelper
             acc += Math.pow(v - avg, 2.0);
         return Math.sqrt((acc / values.size()));
     }
-
 }

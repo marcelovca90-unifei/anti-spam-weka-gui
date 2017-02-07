@@ -25,7 +25,7 @@ public class FormatHelper
     private static double spamPrecision = 0;
     private static double spamRecall = 0;
 
-    private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<String, LinkedList<Double[]>>();
+    private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<>();
 
     public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printPartialResult) throws Exception
     {
@@ -43,8 +43,7 @@ public class FormatHelper
 
         String classDetail = methodEvaluation.getEvaluation().toClassDetailsString();
 
-        String lines[] = (summary + System.lineSeparator() + confusionMatrix + System.lineSeparator() + classDetail)
-                .split("\\r?\\n");
+        String lines[] = (summary + System.lineSeparator() + confusionMatrix + System.lineSeparator() + classDetail).split("\\r?\\n");
 
         for (String line : lines)
         {
@@ -58,7 +57,8 @@ public class FormatHelper
                 try
                 {
                     totalCorrectPercent = Double.parseDouble(parts[4]);
-                } catch (NumberFormatException ex)
+                }
+                catch (NumberFormatException ex)
                 {
                     totalCorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
                 }
@@ -70,7 +70,8 @@ public class FormatHelper
                 try
                 {
                     totalIncorrectPercent = Double.parseDouble(parts[4]);
-                } catch (NumberFormatException ex)
+                }
+                catch (NumberFormatException ex)
                 {
                     totalIncorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
                 }
@@ -94,7 +95,8 @@ public class FormatHelper
                 {
                     hamPrecision = 100 * Double.parseDouble(parts[4]);
                     hamRecall = 100 * Double.parseDouble(parts[5]);
-                } catch (NumberFormatException ex)
+                }
+                catch (NumberFormatException ex)
                 {
                     hamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
                     hamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
@@ -107,7 +109,8 @@ public class FormatHelper
                 {
                     spamPrecision = 100 * Double.parseDouble(parts[4]);
                     spamRecall = 100 * Double.parseDouble(parts[5]);
-                } catch (NumberFormatException ex)
+                }
+                catch (NumberFormatException ex)
                 {
                     spamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
                     spamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
@@ -122,9 +125,8 @@ public class FormatHelper
         keeper.get(key).add(value);
 
         if (printPartialResult)
-            System.out.println(
-                    String.format("!%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, methodConfiguration.name(),
-                            hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
+            System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, methodConfiguration.name(), hamPrecision, spamPrecision,
+                    hamRecall, spamRecall, trainTime, testTime));
     }
 
     public static void debug()
@@ -158,12 +160,12 @@ public class FormatHelper
         String key = folder + "\t" + methodConfiguration.getPseudoHashCode();
         LinkedList<Double[]> values = keeper.get(key);
 
-        LinkedList<Double> hamPrecisionValues = new LinkedList<Double>();
-        LinkedList<Double> spamPrecisionValues = new LinkedList<Double>();
-        LinkedList<Double> hamRecallValues = new LinkedList<Double>();
-        LinkedList<Double> spamRecallValues = new LinkedList<Double>();
-        LinkedList<Double> trainTimeValues = new LinkedList<Double>();
-        LinkedList<Double> testTimeValues = new LinkedList<Double>();
+        LinkedList<Double> hamPrecisionValues = new LinkedList<>();
+        LinkedList<Double> spamPrecisionValues = new LinkedList<>();
+        LinkedList<Double> hamRecallValues = new LinkedList<>();
+        LinkedList<Double> spamRecallValues = new LinkedList<>();
+        LinkedList<Double> trainTimeValues = new LinkedList<>();
+        LinkedList<Double> testTimeValues = new LinkedList<>();
 
         for (Double[] value : values)
         {
@@ -193,11 +195,9 @@ public class FormatHelper
         double testTimeAvg = StatHelper.average(testTimeValues);
         double testTimeStdDev = StatHelper.standardDeviation(testTimeValues);
 
-        System.out.println(
-                String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f",
-                        folder, methodConfiguration.name(), hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg,
-                        spamPrecisionStdDev, hamRecallAvg, hamRecallStdDev, spamRecallAvg, spamRecallStdDev,
-                        trainTimeAvg, trainTimeStdDev, testTimeAvg, testTimeStdDev));
+        System.out.println(String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder,
+                methodConfiguration.name(), hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev, hamRecallAvg, hamRecallStdDev,
+                spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev, testTimeAvg, testTimeStdDev));
 
         keeper.clear();
     }
@@ -221,5 +221,4 @@ public class FormatHelper
     {
         FormatHelper.trainTime = trainTime;
     }
-
 }

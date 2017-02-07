@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
@@ -82,7 +84,6 @@ public class DataHelper
 
     public static double[][] bin2double(File file) throws IOException
     {
-
         FileInputStream stream = new FileInputStream(file);
         FileChannel channel = stream.getChannel();
         ByteBuffer buffer = ByteBuffer.allocate((int) file.length());
@@ -105,9 +106,9 @@ public class DataHelper
 
     public static void buildEmptyCsv(String folder, int featureAmount) throws IOException
     {
-
-        int emptyHamCount = EmptyPatterns.get(folder)[0];
-        int emptySpamCount = EmptyPatterns.get(folder)[1];
+        Pair<Integer, Integer> emptyPatterns = EmptyPatterns.get(folder);
+        int emptyHamCount = emptyPatterns.getLeft();
+        int emptySpamCount = emptyPatterns.getRight();
 
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < featureAmount; i++)
@@ -135,7 +136,6 @@ public class DataHelper
 
     public static void csv2arff(String input, String output)
     {
-
         try
         {
             // load CSV
@@ -148,10 +148,10 @@ public class DataHelper
             saver.setFile(new File(output));
             saver.setDestination(new File(output));
             saver.writeBatch();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
     }
-
 }

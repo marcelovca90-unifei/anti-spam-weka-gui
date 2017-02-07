@@ -81,5 +81,4 @@ public class MethodEvaluation
     {
         this.testEnd = testEnd;
     }
-
 }
