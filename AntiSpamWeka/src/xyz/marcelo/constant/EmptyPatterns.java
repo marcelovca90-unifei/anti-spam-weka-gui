@@ -1,173 +1,126 @@
 package xyz.marcelo.constant;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-/**
- * The Class EmptyPatterns.
- *
- * @author marcelovca90
- */
+import org.apache.commons.lang3.tuple.Pair;
+
 public class EmptyPatterns
 {
-    /** The map. */
-    private static HashMap<String, int[]> map = new HashMap<String, int[]>();
+    private static Map<String, Pair<Integer, Integer>> hashMap = initialize();
 
-    /**
-     * Gets the the amount of empty hams and spams for a given data set folder.
-     *
-     * @param folder
-     *            the data set folder
-     * @return the amount of [0] empty hams and [1] spams
-     */
-    public static int[] get(String folder)
+    private static Map<String, Pair<Integer, Integer>> initialize()
     {
-        if (map.size() == 0)
-        {
-            // WarmUp
-            map.put("/WarmUp/Ling_2016_CHI2_10", new int[] { 0, 0 });
-            map.put("/WarmUp/SpamAssassin_2016_CHI2_10", new int[] { 0, 0 });
-            map.put("/WarmUp/TREC-2005-2006-2007_2016_CHI2_10", new int[] { 0, 0 });
-            map.put("/WarmUp/Unifei_2016_CHI2_10", new int[] { 0, 0 });
+        Map<String, Pair<Integer, Integer>> map = new HashMap<>();
 
-            // LingSpam
-            map.put("/Ling_2016/CHI2/10", new int[] { 6563, 1407 });
-            map.put("/Ling_2016/CHI2/20", new int[] { 6537, 1395 });
-            map.put("/Ling_2016/CHI2/30", new int[] { 6518, 1383 });
-            map.put("/Ling_2016/CHI2/40", new int[] { 6492, 1373 });
-            map.put("/Ling_2016/CHI2/50", new int[] { 6469, 1365 });
-            map.put("/Ling_2016/CHI2/60", new int[] { 6447, 1361 });
-            map.put("/Ling_2016/CHI2/70", new int[] { 6418, 1353 });
-            map.put("/Ling_2016/CHI2/80", new int[] { 6385, 1343 });
-            map.put("/Ling_2016/CHI2/90", new int[] { 6357, 1333 });
-            map.put("/Ling_2016/CHI2/100", new int[] { 6324, 1325 });
-            map.put("/Ling_2016/FD/10", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/20", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/30", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/40", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/50", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/60", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/70", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/80", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/90", new int[] { 0, 0 });
-            map.put("/Ling_2016/FD/100", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/10", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/20", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/30", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/40", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/50", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/60", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/70", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/80", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/90", new int[] { 0, 0 });
-            map.put("/Ling_2016/MI/100", new int[] { 0, 0 });
+        map.put("LING_SPAM/CHI2/8", Pair.of(6567, 1409));
+        map.put("LING_SPAM/CHI2/16", Pair.of(6551, 1399));
+        map.put("LING_SPAM/CHI2/32", Pair.of(6510, 1381));
+        map.put("LING_SPAM/CHI2/64", Pair.of(6432, 1359));
+        map.put("LING_SPAM/CHI2/128", Pair.of(6239, 1325));
+        map.put("LING_SPAM/CHI2/256", Pair.of(5850, 1325));
+        map.put("LING_SPAM/CHI2/512", Pair.of(5247, 1325));
+        map.put("LING_SPAM/FD/8", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/16", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/32", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/64", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/128", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/256", Pair.of(0, 0));
+        map.put("LING_SPAM/FD/512", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/8", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/16", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/32", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/64", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/128", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/256", Pair.of(0, 0));
+        map.put("LING_SPAM/MI/512", Pair.of(0, 0));
+        map.put("SPAM_ASSASSIN/CHI2/8", Pair.of(178, 218));
+        map.put("SPAM_ASSASSIN/CHI2/16", Pair.of(163, 186));
+        map.put("SPAM_ASSASSIN/CHI2/32", Pair.of(145, 171));
+        map.put("SPAM_ASSASSIN/CHI2/64", Pair.of(110, 159));
+        map.put("SPAM_ASSASSIN/CHI2/128", Pair.of(83, 122));
+        map.put("SPAM_ASSASSIN/CHI2/256", Pair.of(24, 12));
+        map.put("SPAM_ASSASSIN/CHI2/512", Pair.of(24, 12));
+        map.put("SPAM_ASSASSIN/FD/8", Pair.of(0, 14));
+        map.put("SPAM_ASSASSIN/FD/16", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/FD/32", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/FD/64", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/FD/128", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/FD/256", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/FD/512", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/MI/8", Pair.of(0, 19));
+        map.put("SPAM_ASSASSIN/MI/16", Pair.of(0, 17));
+        map.put("SPAM_ASSASSIN/MI/32", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/MI/64", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/MI/128", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/MI/256", Pair.of(0, 3));
+        map.put("SPAM_ASSASSIN/MI/512", Pair.of(0, 3));
+        map.put("TREC/CHI2/8", Pair.of(124549, 79403));
+        map.put("TREC/CHI2/16", Pair.of(123891, 78219));
+        map.put("TREC/CHI2/32", Pair.of(123634, 78036));
+        map.put("TREC/CHI2/64", Pair.of(122781, 77532));
+        map.put("TREC/CHI2/128", Pair.of(121511, 75894));
+        map.put("TREC/CHI2/256", Pair.of(117642, 73723));
+        map.put("TREC/CHI2/512", Pair.of(102781, 62899));
+        map.put("TREC/FD/8", Pair.of(5520, 1951));
+        map.put("TREC/FD/16", Pair.of(5414, 1948));
+        map.put("TREC/FD/32", Pair.of(5207, 1937));
+        map.put("TREC/FD/64", Pair.of(5145, 1929));
+        map.put("TREC/FD/128", Pair.of(5056, 1919));
+        map.put("TREC/FD/256", Pair.of(4998, 1888));
+        map.put("TREC/FD/512", Pair.of(4934, 1875));
+        map.put("TREC/MI/8", Pair.of(9690, 2411));
+        map.put("TREC/MI/16", Pair.of(7348, 2400));
+        map.put("TREC/MI/32", Pair.of(5500, 2248));
+        map.put("TREC/MI/64", Pair.of(5363, 1943));
+        map.put("TREC/MI/128", Pair.of(5328, 1941));
+        map.put("TREC/MI/256", Pair.of(5301, 1920));
+        map.put("TREC/MI/512", Pair.of(5214, 1887));
+        map.put("UNIFEI_2017/CHI2/8", Pair.of(352209, 508321));
+        map.put("UNIFEI_2017/CHI2/16", Pair.of(348045, 503329));
+        map.put("UNIFEI_2017/CHI2/32", Pair.of(347591, 502947));
+        map.put("UNIFEI_2017/CHI2/64", Pair.of(346991, 502862));
+        map.put("UNIFEI_2017/CHI2/128", Pair.of(345507, 502563));
+        map.put("UNIFEI_2017/CHI2/256", Pair.of(337363, 498522));
+        map.put("UNIFEI_2017/CHI2/512", Pair.of(304883, 449219));
+        map.put("UNIFEI_2017/FD/8", Pair.of(2892, 10485));
+        map.put("UNIFEI_2017/FD/16", Pair.of(2846, 10455));
+        map.put("UNIFEI_2017/FD/32", Pair.of(2835, 10455));
+        map.put("UNIFEI_2017/FD/64", Pair.of(2814, 10441));
+        map.put("UNIFEI_2017/FD/128", Pair.of(2807, 10436));
+        map.put("UNIFEI_2017/FD/256", Pair.of(2754, 10436));
+        map.put("UNIFEI_2017/FD/512", Pair.of(2673, 10408));
+        map.put("UNIFEI_2017/MI/8", Pair.of(53238, 75774));
+        map.put("UNIFEI_2017/MI/16", Pair.of(16589, 34168));
+        map.put("UNIFEI_2017/MI/32", Pair.of(16500, 34077));
+        map.put("UNIFEI_2017/MI/64", Pair.of(2867, 10465));
+        map.put("UNIFEI_2017/MI/128", Pair.of(2835, 10465));
+        map.put("UNIFEI_2017/MI/256", Pair.of(2795, 10436));
+        map.put("UNIFEI_2017/MI/512", Pair.of(2760, 10436));
 
-            // SpamAssassin
-            map.put("/SpamAssassin_2016/CHI2/10", new int[] { 177, 223 });
-            map.put("/SpamAssassin_2016/CHI2/20", new int[] { 159, 197 });
-            map.put("/SpamAssassin_2016/CHI2/30", new int[] { 146, 180 });
-            map.put("/SpamAssassin_2016/CHI2/40", new int[] { 130, 171 });
-            map.put("/SpamAssassin_2016/CHI2/50", new int[] { 119, 166 });
-            map.put("/SpamAssassin_2016/CHI2/60", new int[] { 112, 164 });
-            map.put("/SpamAssassin_2016/CHI2/70", new int[] { 105, 164 });
-            map.put("/SpamAssassin_2016/CHI2/80", new int[] { 100, 157 });
-            map.put("/SpamAssassin_2016/CHI2/90", new int[] { 95, 152 });
-            map.put("/SpamAssassin_2016/CHI2/100", new int[] { 95, 150 });
-            map.put("/SpamAssassin_2016/FD/10", new int[] { 0, 14 });
-            map.put("/SpamAssassin_2016/FD/20", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/30", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/40", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/50", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/60", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/70", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/80", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/90", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/FD/100", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/10", new int[] { 0, 18 });
-            map.put("/SpamAssassin_2016/MI/20", new int[] { 0, 17 });
-            map.put("/SpamAssassin_2016/MI/30", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/40", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/50", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/60", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/70", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/80", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/90", new int[] { 0, 3 });
-            map.put("/SpamAssassin_2016/MI/100", new int[] { 0, 3 });
-
-            // TREC
-            map.put("/TREC-2005-2006-2007_2016/CHI2/10", new int[] { 79197, 124419 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/20", new int[] { 78073, 123752 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/30", new int[] { 77990, 123649 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/40", new int[] { 77909, 123545 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/50", new int[] { 77660, 122822 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/60", new int[] { 77525, 122787 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/70", new int[] { 77393, 122750 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/80", new int[] { 77054, 122433 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/90", new int[] { 77037, 122260 });
-            map.put("/TREC-2005-2006-2007_2016/CHI2/100", new int[] { 77026, 122088 });
-            map.put("/TREC-2005-2006-2007_2016/FD/10", new int[] { 1953, 6913 });
-            map.put("/TREC-2005-2006-2007_2016/FD/20", new int[] { 1948, 5409 });
-            map.put("/TREC-2005-2006-2007_2016/FD/30", new int[] { 1947, 5214 });
-            map.put("/TREC-2005-2006-2007_2016/FD/40", new int[] { 1937, 5205 });
-            map.put("/TREC-2005-2006-2007_2016/FD/50", new int[] { 1933, 5194 });
-            map.put("/TREC-2005-2006-2007_2016/FD/60", new int[] { 1931, 5166 });
-            map.put("/TREC-2005-2006-2007_2016/FD/70", new int[] { 1928, 5140 });
-            map.put("/TREC-2005-2006-2007_2016/FD/80", new int[] { 1928, 5118 });
-            map.put("/TREC-2005-2006-2007_2016/FD/90", new int[] { 1921, 5101 });
-            map.put("/TREC-2005-2006-2007_2016/FD/100", new int[] { 1921, 5093 });
-            map.put("/TREC-2005-2006-2007_2016/MI/10", new int[] { 2411, 9152 });
-            map.put("/TREC-2005-2006-2007_2016/MI/20", new int[] { 2254, 6753 });
-            map.put("/TREC-2005-2006-2007_2016/MI/30", new int[] { 2249, 6748 });
-            map.put("/TREC-2005-2006-2007_2016/MI/40", new int[] { 1948, 6368 });
-            map.put("/TREC-2005-2006-2007_2016/MI/50", new int[] { 1947, 6365 });
-            map.put("/TREC-2005-2006-2007_2016/MI/60", new int[] { 1945, 6358 });
-            map.put("/TREC-2005-2006-2007_2016/MI/70", new int[] { 1945, 6350 });
-            map.put("/TREC-2005-2006-2007_2016/MI/80", new int[] { 1944, 6337 });
-            map.put("/TREC-2005-2006-2007_2016/MI/90", new int[] { 1944, 6333 });
-            map.put("/TREC-2005-2006-2007_2016/MI/100", new int[] { 1944, 6331 });
-
-            // Unifei
-            map.put("/Unifei_2016/CHI2/10", new int[] { 3834, 14843 });
-            map.put("/Unifei_2016/CHI2/20", new int[] { 3803, 14630 });
-            map.put("/Unifei_2016/CHI2/30", new int[] { 3781, 14450 });
-            map.put("/Unifei_2016/CHI2/40", new int[] { 3712, 14343 });
-            map.put("/Unifei_2016/CHI2/50", new int[] { 3596, 14308 });
-            map.put("/Unifei_2016/CHI2/60", new int[] { 3351, 13083 });
-            map.put("/Unifei_2016/CHI2/70", new int[] { 3346, 12931 });
-            map.put("/Unifei_2016/CHI2/80", new int[] { 3341, 12787 });
-            map.put("/Unifei_2016/CHI2/90", new int[] { 3229, 12520 });
-            map.put("/Unifei_2016/CHI2/100", new int[] { 3128, 12375 });
-            map.put("/Unifei_2016/FD/10", new int[] { 17, 151 });
-            map.put("/Unifei_2016/FD/20", new int[] { 17, 151 });
-            map.put("/Unifei_2016/FD/30", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/40", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/50", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/60", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/70", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/80", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/90", new int[] { 16, 151 });
-            map.put("/Unifei_2016/FD/100", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/10", new int[] { 26, 239 });
-            map.put("/Unifei_2016/MI/20", new int[] { 21, 220 });
-            map.put("/Unifei_2016/MI/30", new int[] { 21, 220 });
-            map.put("/Unifei_2016/MI/40", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/50", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/60", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/70", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/80", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/90", new int[] { 16, 151 });
-            map.put("/Unifei_2016/MI/100", new int[] { 16, 151 });
-        }
-
-        String folderSuffix = folder.replace(Folders.BASE_FOLDER, "");
-
-        if (map.containsKey(folder))
-            return map.get(folder);
-
-        else if (map.containsKey(folderSuffix))
-            return map.get(folderSuffix);
-
-        else
-            return null;
+        return map;
     }
 
+    public static Pair<Integer, Integer> get(String folder)
+    {
+        String key = folder;
+
+        for (Entry<String, Pair<Integer, Integer>> entry : hashMap.entrySet())
+            if (key.contains(entry.getKey()))
+                return entry.getValue();
+
+        return null;
+    }
+
+    public static Pair<Integer, Integer> get(String dataSet, String statMethod, Integer featureAmount)
+    {
+        String key = dataSet + "/" + statMethod + "/" + featureAmount;
+
+        for (Entry<String, Pair<Integer, Integer>> entry : hashMap.entrySet())
+            if (key.contains(entry.getKey()))
+                return entry.getValue();
+
+        return null;
+    }
 }

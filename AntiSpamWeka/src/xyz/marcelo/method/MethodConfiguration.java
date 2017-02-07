@@ -3,8 +3,7 @@ package xyz.marcelo.method;
 public enum MethodConfiguration
 {
     // http://weka.sourceforge.net/packageMetaData/MultiObjectiveEvolutionaryFuzzyClassifier/index.html
-    MOEFC("Multiobjective Evolutionary Fuzzy Classifier",
-            "-g 10 -ps 100 -s 1 -ms 0.1 -minv 30.0 -maxv 2.0 -maxr -1 -ev 0 -a 0 -report-frequency 10"),
+    MOEFC("Multiobjective Evolutionary Fuzzy Classifier", "-g 10 -ps 100 -s 1 -ms 0.1 -minv 30.0 -maxv 2.0 -maxr -1 -ev 0 -a 0 -report-frequency 10"),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", ""),
@@ -40,8 +39,7 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1"),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
-    SVM("Support vector machine",
-            "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /home/marcelo/Mestrado/weka-3-8-0 -seed 1");
+    SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /home/marcelo/Mestrado/weka-3-8-0 -seed 1");
 
     private final String fullName;
     private final String config;
@@ -67,4 +65,13 @@ public enum MethodConfiguration
         return (fullName + config).toUpperCase().replace(" ", "").trim();
     }
 
+    public static MethodConfiguration[] getFancyMethods()
+    {
+        return new MethodConfiguration[] { J48, FLR, HMM, SPEGASOS, JRIP, SPEGASOS, MOEFC };
+    }
+
+    public static MethodConfiguration[] getTraditionalMethods()
+    {
+        return new MethodConfiguration[] { MLP, RBF, RF, SGD, SVM, NBTREE };
+    }
 }

@@ -83,7 +83,8 @@ public class MethodHelper
                 classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.getConfig()));
                 break;
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -113,12 +114,12 @@ public class MethodHelper
 
             methodEvaluation.setEvaluation(evaluation);
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
 
         return methodEvaluation;
     }
-
 }
