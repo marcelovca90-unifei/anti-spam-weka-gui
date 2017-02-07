@@ -2,6 +2,7 @@ package xyz.marcelo.main;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 
@@ -22,9 +23,22 @@ public class Main
 
     public static void main(String[] args) throws Exception
     {
-        MethodConfiguration[] methodConfigurations = MethodConfiguration.getTraditionalMethods();
+        // exits if no data set folder was provided
+        if (args.length != 1)
+        {
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\"");
+            System.exit(1);
+        }
+        // exits if a invalid data set folder was provided
+        else if (!Files.exists(new File(args[0]).toPath()))
+        {
+            System.out.println("The specified data set folder " + args[0] + " does not exist.");
+            System.exit(1);
+        }
 
-        List<String> folders = Folders.getFolders();
+        List<String> folders = Folders.getFolders(args[0]);
+
+        MethodConfiguration[] methodConfigurations = MethodConfiguration.getTraditionalMethods();
 
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
@@ -69,7 +83,7 @@ public class Main
 
                     // evaluate the classifier
                     MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-                    methodEvaluation.setFolder(Folders.shortenFolderName(folder));
+                    methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                     // log the partial result for this configuration
