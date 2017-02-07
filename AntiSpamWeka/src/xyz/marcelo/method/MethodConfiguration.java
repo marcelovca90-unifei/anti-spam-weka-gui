@@ -14,9 +14,6 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/packageMetaData/CHIRP/index.html
     CHIRP("Composite Hypercubes on Iterated Random Projections", "-V 7 -S 1"),
 
-    // http://weka.sourceforge.net/packageMetaData/HMM/index.html
-    HMM("Hidden Markov Model", "\"-S 6\" \"-I 0.01\" \"-C FULL\" -Dfalse -Lfalse -Rfalse"),
-
     // http://weka.sourceforge.net/packageMetaData/fuzzyLaticeReasoning/index.html
     FLR("Fuzzy lattice reasoning", "-R 0.5 -Y"),
 
@@ -64,7 +61,7 @@ public enum MethodConfiguration
 
     public static MethodConfiguration[] getFancyMethods()
     {
-        return new MethodConfiguration[] { J48, FLR, HMM, SPEGASOS, JRIP, SPEGASOS };
+        return new MethodConfiguration[] { J48, FLR, SPEGASOS, JRIP, SPEGASOS };
     }
 
     public static MethodConfiguration[] getTraditionalMethods()
