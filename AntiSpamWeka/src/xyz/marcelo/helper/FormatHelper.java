@@ -187,28 +187,21 @@ public class FormatHelper
     {
         String key = buildHashMapKey();
 
-        String outlier = null;
+        String outlierName = null;
 
         for (Entry<String, DescriptiveStatistics> entry : resultKeeper.get(key).entrySet())
         {
             // only try to detect outliers in ham and spam precision
-            // if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION))
-            // continue;
-            if (verbose)
-                System.out.println("Calculating z-scores for " + entry.getKey() + ":");
-            double[] values = entry.getValue().getValues();
-            for (int i = 0; i < values.length; i++)
+            if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION))
+                continue;
+            if (StatHelper.containsOutlier(entry.getValue()))
             {
-                double zScore = Math.abs(StatHelper.zScore(values, values[i]));
-                outlier = (zScore < 0.5 || zScore > 2.0 ? entry.getKey() : null);
-                if (verbose)
-                    System.out.println("Experiment #" + i + " -> zScore = " + zScore + " -> outlier: " + outlier);
-                if (outlier != null)
-                    break;
+                outlierName = entry.getKey();
+                break;
             }
         }
 
-        return outlier;
+        return outlierName;
     }
 
     public static void handleAllExperiments()

@@ -42,4 +42,18 @@ public class StatHelper
 
         return ((value - stat.getMean()) / stat.getStandardDeviation());
     }
+
+    public static boolean containsOutlier(DescriptiveStatistics stats)
+    {
+        double stdDev = stats.getStandardDeviation();
+        double[] values = stats.getValues();
+        boolean outlierCheck = false;
+        for (int i = 0; i < values.length && !outlierCheck; i++)
+        {
+            double zScore = StatHelper.zScore(values, values[i]);
+            double absZS = Math.abs(zScore), absSD = Math.abs(stdDev);
+            outlierCheck = ((absZS > absSD) ? (absZS / absSD) : (absSD / absZS)) > 3;
+        }
+        return outlierCheck;
+    }
 }

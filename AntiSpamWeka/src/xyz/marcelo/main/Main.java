@@ -65,7 +65,7 @@ public class Main
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
-                for (int i = 0; i < NUMBER_OF_REPETITIONS; i++)
+                for (int i = 0; i <= NUMBER_OF_REPETITIONS; i++)
                 {
                     // initialize random number generator
                     Random random = new Random(PRIME_SEEDS[i]);
@@ -86,7 +86,11 @@ public class Main
                     methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
-                    // log the partial result for this configuration
+                    // skip the first iteration for warm-up purposes
+                    if (i == 0)
+                        continue;
+
+                    // if the experiment is valid, log the partial result for this configuration
                     boolean experimentValidity = FormatHelper.handleSingleExperiment(methodEvaluation, true, true);
 
                     // if the experiment is invalid (due to positive outlier checking), repeat the iteration
