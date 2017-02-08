@@ -87,7 +87,11 @@ public class Main
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                     // log the partial result for this configuration
-                    FormatHelper.aggregateResult(methodEvaluation, true);
+                    boolean experimentValidity = FormatHelper.handleSingleExperiment(methodEvaluation, true, true);
+
+                    // if the experiment is invalid (due to positive outlier checking), repeat the iteration
+                    if (!experimentValidity)
+                        i--;
                 }
 
                 // optional: delete temporary .csv and .arff files
@@ -97,7 +101,7 @@ public class Main
                 new File(emptyArffPath).delete();
 
                 // log the final result for this configuration
-                FormatHelper.printResults();
+                FormatHelper.handleAllExperiments();
             }
 
             FormatHelper.printFooter();

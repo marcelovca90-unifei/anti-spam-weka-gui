@@ -1,15 +1,20 @@
 package xyz.marcelo.helper;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 
+@SuppressWarnings("unused")
 public class FormatHelper
 {
     private static String folder;
-    private static MethodConfiguration methodConfiguration;
+    private static MethodConfiguration methodConfig;
+
     private static double trainTime;
     private static double testTime;
     private static int totalCorrect = 0;
@@ -25,13 +30,20 @@ public class FormatHelper
     private static double spamPrecision = 0;
     private static double spamRecall = 0;
 
-    private static HashMap<String, LinkedList<Double[]>> keeper = new HashMap<>();
+    private static final String TEST_TIME = "testTime";
+    private static final String TRAIN_TIME = "trainTime";
+    private static final String SPAM_RECALL = "spamRecall";
+    private static final String HAM_RECALL = "hamRecall";
+    private static final String SPAM_PRECISION = "spamPrecision";
+    private static final String HAM_PRECISION = "hamPrecision";
 
-    public static void aggregateResult(MethodEvaluation methodEvaluation, boolean printPartialResult) throws Exception
+    private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
+
+    public static boolean handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult, boolean tryDetectOutlier) throws Exception
     {
         folder = methodEvaluation.getFolder();
 
-        methodConfiguration = methodEvaluation.getMethodConfiguration();
+        methodConfig = methodEvaluation.getMethodConfiguration();
 
         trainTime = (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
 
@@ -54,27 +66,13 @@ public class FormatHelper
             if (line.contains("Correctly Classified Instances"))
             {
                 totalCorrect = Integer.parseInt(parts[3]);
-                try
-                {
-                    totalCorrectPercent = Double.parseDouble(parts[4]);
-                }
-                catch (NumberFormatException ex)
-                {
-                    totalCorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
-                }
+                totalCorrectPercent = parseDoubleCommaOrPeriod(parts[4]);
             }
 
             else if (line.contains("Incorrectly Classified Instances"))
             {
                 totalIncorrect = Integer.parseInt(parts[3]);
-                try
-                {
-                    totalIncorrectPercent = Double.parseDouble(parts[4]);
-                }
-                catch (NumberFormatException ex)
-                {
-                    totalIncorrectPercent = Double.parseDouble(parts[4].replace(',', '.'));
-                }
+                totalIncorrectPercent = parseDoubleCommaOrPeriod(parts[4]);
             }
 
             else if (line.contains("|") && line.contains("ham"))
@@ -91,66 +89,88 @@ public class FormatHelper
 
             else if ((line.contains("0.") || line.contains("0,")) && line.contains("ham"))
             {
-                try
-                {
-                    hamPrecision = 100 * Double.parseDouble(parts[4]);
-                    hamRecall = 100 * Double.parseDouble(parts[5]);
-                }
-                catch (NumberFormatException ex)
-                {
-                    hamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
-                    hamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
-                }
+                hamPrecision = 100 * parseDoubleCommaOrPeriod(parts[4]);
+                hamRecall = 100 * parseDoubleCommaOrPeriod(parts[5]);
             }
 
             else if ((line.contains("0.") || line.contains("0,")) && line.contains("spam"))
             {
-                try
-                {
-                    spamPrecision = 100 * Double.parseDouble(parts[4]);
-                    spamRecall = 100 * Double.parseDouble(parts[5]);
-                }
-                catch (NumberFormatException ex)
-                {
-                    spamPrecision = 100 * Double.parseDouble(parts[4].replace(',', '.'));
-                    spamRecall = 100 * Double.parseDouble(parts[5].replace(',', '.'));
-                }
+                spamPrecision = 100 * parseDoubleCommaOrPeriod(parts[4]);
+                spamRecall = 100 * parseDoubleCommaOrPeriod(parts[5]);
             }
         }
 
-        String key = folder + "\t" + methodConfiguration.getPseudoHashCode();
-        Double[] value = new Double[] { hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime };
-        if (!keeper.containsKey(key))
-            keeper.put(key, new LinkedList<Double[]>());
+        String key = buildHashMapKey();
 
-        // TODO: try to detect outlier; if not, then add
+        if (!resultKeeper.containsKey(key))
+            resultKeeper.put(key, new LinkedHashMap<String, DescriptiveStatistics>());
 
-        keeper.get(key).add(value);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, HAM_PRECISION, hamPrecision);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_PRECISION, spamPrecision);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, HAM_RECALL, hamRecall);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_RECALL, spamRecall);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TRAIN_TIME, trainTime);
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TEST_TIME, testTime);
 
-        if (printPartialResult)
-            System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", folder, methodConfiguration.name(), hamPrecision, spamPrecision,
-                    hamRecall, spamRecall, trainTime, testTime));
+        if (tryDetectOutlier)
+        {
+            String outlier = detectOutlier(false);
+
+            if (outlier != null)
+            {
+                resultKeeper.get(key).get(HAM_PRECISION).removeMostRecentValue();
+                resultKeeper.get(key).get(SPAM_PRECISION).removeMostRecentValue();
+                resultKeeper.get(key).get(HAM_RECALL).removeMostRecentValue();
+                resultKeeper.get(key).get(SPAM_RECALL).removeMostRecentValue();
+                resultKeeper.get(key).get(TRAIN_TIME).removeMostRecentValue();
+                resultKeeper.get(key).get(TEST_TIME).removeMostRecentValue();
+            }
+
+            if (printPartialResult)
+            {
+                String outlierMessage = (outlier == null ? "" : "Outlier detected (" + outlier + "); rolling back.");
+                System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%s", folder, methodConfig.name(), hamPrecision, spamPrecision,
+                        hamRecall, spamRecall, trainTime, testTime, outlierMessage));
+            }
+
+            return (outlier == null);
+        }
+        else
+        {
+            if (printPartialResult)
+            {
+                System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", folder, methodConfig.name(), hamPrecision, spamPrecision,
+                        hamRecall, spamRecall, trainTime, testTime));
+            }
+
+            return true;
+        }
     }
 
-    public static void debug()
+    private static double parseDoubleCommaOrPeriod(String value)
     {
-        System.out.println("totalCorrect = " + totalCorrect);
-        System.out.println("totalIncorrect = " + totalIncorrect);
-        System.out.println("totalCorrectPercent = " + totalCorrectPercent);
-        System.out.println("totalIncorrectPercent = " + totalIncorrectPercent);
-        System.out.println("hamCorrect = " + hamCorrect);
-        System.out.println("hamIncorrect = " + hamIncorrect);
-        System.out.println("spamCorrect = " + spamCorrect);
-        System.out.println("spamIncorrect = " + spamIncorrect);
-        System.out.println("hamPrecision = " + hamPrecision);
-        System.out.println("hamRecall = " + hamRecall);
-        System.out.println("spamPrecision = " + spamPrecision);
-        System.out.println("spamRecall = " + spamRecall);
+        try
+        {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException e)
+        {
+            return Double.parseDouble(value.replace(',', '.'));
+        }
     }
 
-    public static void printFooter()
+    private static String buildHashMapKey()
     {
-        System.out.println("--------------------------------" + System.lineSeparator());
+        return folder + "\t" + methodConfig.getPseudoHashCode();
+    }
+
+    public static void putValueAndCreatingKeysIfNotPresent(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
+    {
+        if (!resultKeeper.containsKey(outerKey))
+            resultKeeper.put(outerKey, new LinkedHashMap<String, DescriptiveStatistics>());
+        if (!resultKeeper.get(outerKey).containsKey(innerKey))
+            resultKeeper.get(outerKey).put(innerKey, new DescriptiveStatistics());
+        resultKeeper.get(outerKey).get(innerKey).addValue(value);
     }
 
     public static void printHeader()
@@ -158,51 +178,52 @@ public class FormatHelper
         System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
     }
 
-    public static void printResults()
+    public static void printFooter()
     {
-        String key = folder + "\t" + methodConfiguration.getPseudoHashCode();
-        LinkedList<Double[]> values = keeper.get(key);
+        System.out.println("--------------------------------" + System.lineSeparator());
+    }
 
-        LinkedList<Double> hamPrecisionValues = new LinkedList<>();
-        LinkedList<Double> spamPrecisionValues = new LinkedList<>();
-        LinkedList<Double> hamRecallValues = new LinkedList<>();
-        LinkedList<Double> spamRecallValues = new LinkedList<>();
-        LinkedList<Double> trainTimeValues = new LinkedList<>();
-        LinkedList<Double> testTimeValues = new LinkedList<>();
+    public static String detectOutlier(boolean verbose)
+    {
+        String key = buildHashMapKey();
 
-        for (Double[] value : values)
+        String outlier = null;
+
+        for (Entry<String, DescriptiveStatistics> entry : resultKeeper.get(key).entrySet())
         {
-            hamPrecisionValues.add(value[0]);
-            spamPrecisionValues.add(value[1]);
-            hamRecallValues.add(value[2]);
-            spamRecallValues.add(value[3]);
-            trainTimeValues.add(value[4]);
-            testTimeValues.add(value[5]);
+            // only try to detect outliers in ham and spam precision
+            // if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION))
+            // continue;
+            if (verbose)
+                System.out.println("Calculating z-scores for " + entry.getKey() + ":");
+            double[] values = entry.getValue().getValues();
+            for (int i = 0; i < values.length; i++)
+            {
+                double zScore = Math.abs(StatHelper.zScore(values, values[i]));
+                outlier = (zScore < 0.5 || zScore > 2.0 ? entry.getKey() : null);
+                if (verbose)
+                    System.out.println("Experiment #" + i + " -> zScore = " + zScore + " -> outlier: " + outlier);
+                if (outlier != null)
+                    break;
+            }
         }
 
-        double hamPrecisionAvg = StatHelper.mean(hamPrecisionValues);
-        double hamPrecisionStdDev = StatHelper.standardDeviation(hamPrecisionValues);
+        return outlier;
+    }
 
-        double spamPrecisionAvg = StatHelper.mean(spamPrecisionValues);
-        double spamPrecisionStdDev = StatHelper.standardDeviation(spamPrecisionValues);
+    public static void handleAllExperiments()
+    {
+        String key = buildHashMapKey();
 
-        double hamRecallAvg = StatHelper.mean(hamRecallValues);
-        double hamRecallStdDev = StatHelper.standardDeviation(hamRecallValues);
+        System.out.println(String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder, methodConfig.name(),
+                resultKeeper.get(key).get(HAM_PRECISION).getMean(), resultKeeper.get(key).get(HAM_PRECISION).getStandardDeviation(),
+                resultKeeper.get(key).get(SPAM_PRECISION).getMean(), resultKeeper.get(key).get(SPAM_PRECISION).getStandardDeviation(),
+                resultKeeper.get(key).get(HAM_RECALL).getMean(), resultKeeper.get(key).get(HAM_RECALL).getStandardDeviation(),
+                resultKeeper.get(key).get(SPAM_RECALL).getMean(), resultKeeper.get(key).get(SPAM_RECALL).getStandardDeviation(),
+                resultKeeper.get(key).get(TRAIN_TIME).getMean(), resultKeeper.get(key).get(TRAIN_TIME).getStandardDeviation(),
+                resultKeeper.get(key).get(TEST_TIME).getMean(), resultKeeper.get(key).get(TEST_TIME).getStandardDeviation()));
 
-        double spamRecallAvg = StatHelper.mean(spamRecallValues);
-        double spamRecallStdDev = StatHelper.standardDeviation(spamRecallValues);
-
-        double trainTimeAvg = StatHelper.mean(trainTimeValues);
-        double trainTimeStdDev = StatHelper.standardDeviation(trainTimeValues);
-
-        double testTimeAvg = StatHelper.mean(testTimeValues);
-        double testTimeStdDev = StatHelper.standardDeviation(testTimeValues);
-
-        System.out.println(String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder,
-                methodConfiguration.name(), hamPrecisionAvg, hamPrecisionStdDev, spamPrecisionAvg, spamPrecisionStdDev, hamRecallAvg, hamRecallStdDev,
-                spamRecallAvg, spamRecallStdDev, trainTimeAvg, trainTimeStdDev, testTimeAvg, testTimeStdDev));
-
-        keeper.clear();
+        resultKeeper.clear();
     }
 
     public static void setFolder(String folder)
@@ -210,9 +231,9 @@ public class FormatHelper
         FormatHelper.folder = folder;
     }
 
-    public static void setMethodConfiguration(MethodConfiguration methodConfiguration)
+    public static void setMethodConfig(MethodConfiguration methodConfig)
     {
-        FormatHelper.methodConfiguration = methodConfiguration;
+        FormatHelper.methodConfig = methodConfig;
     }
 
     public static void setTestTime(double testTime)
