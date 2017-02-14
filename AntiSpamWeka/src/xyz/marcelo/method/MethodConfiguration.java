@@ -21,7 +21,7 @@ public enum MethodConfiguration
     J48("C4.5 algorithm", "-C 0.25 -M 2 -Q 1"),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html
-    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 500 -V 20 -S 1 -E 20 -H a"),
+    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 1000 -V 20 -S 1 -E 50 -H a"),
 
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html
     RBF("Radial basis function network", "-N 2 -R 0.01 -L 1.0E-6 -C 2 -P 1 -E 1 -S 1"),
