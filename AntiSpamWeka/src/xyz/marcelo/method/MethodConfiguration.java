@@ -66,7 +66,7 @@ public enum MethodConfiguration
 
     public static MethodConfiguration[] getFancyMethods()
     {
-        return new MethodConfiguration[] { J48, FLR, SPEGASOS, JRIP, SPEGASOS };
+        return new MethodConfiguration[] { J48, FLR, CHIRP, JRIP, SPEGASOS };
     }
 
     public static MethodConfiguration[] getTraditionalMethods()
