@@ -35,18 +35,18 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
     SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /home/marcelo/Mestrado/weka-3-8-0 -seed 1");
 
-    private final String fullName;
+    private final String name;
     private final String config;
 
-    private MethodConfiguration(final String fullName, final String config)
+    private MethodConfiguration(final String name, final String config)
     {
-        this.fullName = fullName;
+        this.name = name;
         this.config = config;
     }
 
-    public String getFullName()
+    public String getName()
     {
-        return fullName;
+        return name;
     }
 
     public String getConfig()
@@ -56,7 +56,12 @@ public enum MethodConfiguration
 
     public String getPseudoHashCode()
     {
-        return (fullName + config).toUpperCase().replace(" ", "").trim();
+        return (name + config).toUpperCase().replace(" ", "").trim();
+    }
+
+    public static MethodConfiguration[] getAvailableMethods()
+    {
+        return MethodConfiguration.values();
     }
 
     public static MethodConfiguration[] getFancyMethods()

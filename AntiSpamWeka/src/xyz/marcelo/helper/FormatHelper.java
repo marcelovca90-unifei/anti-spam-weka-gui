@@ -103,7 +103,9 @@ public class FormatHelper
         String key = buildHashMapKey();
 
         if (!resultKeeper.containsKey(key))
+        {
             resultKeeper.put(key, new LinkedHashMap<String, DescriptiveStatistics>());
+        }
 
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, HAM_PRECISION, hamPrecision);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_PRECISION, spamPrecision);
@@ -167,9 +169,13 @@ public class FormatHelper
     public static void putValueAndCreatingKeysIfNotPresent(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
     {
         if (!resultKeeper.containsKey(outerKey))
+        {
             resultKeeper.put(outerKey, new LinkedHashMap<String, DescriptiveStatistics>());
+        }
         if (!resultKeeper.get(outerKey).containsKey(innerKey))
+        {
             resultKeeper.get(outerKey).put(innerKey, new DescriptiveStatistics());
+        }
         resultKeeper.get(outerKey).get(innerKey).addValue(value);
     }
 
@@ -192,8 +198,7 @@ public class FormatHelper
         for (Entry<String, DescriptiveStatistics> entry : resultKeeper.get(key).entrySet())
         {
             // only try to detect outliers in ham and spam precision
-            if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION))
-                continue;
+            if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION)) continue;
             if (StatHelper.containsOutlier(entry.getValue()))
             {
                 outlierName = entry.getKey();
