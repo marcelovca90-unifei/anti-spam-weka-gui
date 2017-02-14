@@ -2,7 +2,9 @@ package xyz.marcelo.main;
 
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Files;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -19,26 +21,47 @@ public class Main
 {
     private static final int[] PRIME_SEEDS = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
-    private static final int NUMBER_OF_REPETITIONS = 5;
-
     public static void main(String[] args) throws Exception
     {
-        // exits if no data set folder was provided
-        if (args.length != 1)
+        List<String> folders = new ArrayList<>();
+        List<MethodConfiguration> methodConfigurations = new ArrayList<>();
+        Integer numberOfRepetitions = 0;
+
+        // exits if the wrong number of arguments was provided
+        if (args.length != 3)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\"");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
+            System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.getAvailableMethods()));
             System.exit(1);
         }
-        // exits if a invalid data set folder was provided
-        else if (!Files.exists(new File(args[0]).toPath()))
+        else
         {
-            System.out.println("The specified data set folder " + args[0] + " does not exist.");
-            System.exit(1);
+            // tries to build the folder and method configuration lists
+            try
+            {
+                folders = Folders.getFolders(args[0]);
+                for (String methodString : args[1].split(","))
+                    methodConfigurations.add(MethodConfiguration.valueOf(methodString));
+                numberOfRepetitions = Integer.parseInt(args[2]);
+            }
+            catch (Exception e)
+            {
+                // if an invalid data set folder was provided
+                if (e instanceof IOException)
+                    System.out.println("The specified data set folder is invalid.");
+
+                // or if an invalid method was provided
+                else if ((e instanceof IllegalArgumentException) && !(e instanceof NumberFormatException))
+                    System.out.println("One or more specified method(s) does not exist.");
+
+                // or if an invalid number of repetitions was provided
+                else if ((e instanceof IllegalArgumentException) && (e instanceof NumberFormatException))
+                    System.out.println("The specified number of repetitions is invalid.");
+
+                // exit the program
+                System.exit(1);
+            }
         }
-
-        List<String> folders = Folders.getFolders(args[0]);
-
-        MethodConfiguration[] methodConfigurations = MethodConfiguration.getTraditionalMethods();
 
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
@@ -65,7 +88,7 @@ public class Main
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
-                for (int i = 0; i <= NUMBER_OF_REPETITIONS; i++)
+                for (int i = 0; i <= numberOfRepetitions; i++)
                 {
                     // initialize random number generator
                     Random random = new Random(PRIME_SEEDS[i]);
@@ -87,15 +110,13 @@ public class Main
                     methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                     // skip the first iteration for warm-up purposes
-                    if (i == 0)
-                        continue;
+                    if (i == 0) continue;
 
                     // if the experiment is valid, log the partial result for this configuration
-                    boolean experimentValidity = FormatHelper.handleSingleExperiment(methodEvaluation, true, true);
+                    boolean experimentValidity = FormatHelper.handleSingleExperiment(methodEvaluation, true, false);
 
                     // if the experiment is invalid (due to positive outlier checking), repeat the iteration
-                    if (!experimentValidity)
-                        i--;
+                    if (!experimentValidity) i--;
                 }
 
                 // optional: delete temporary .csv and .arff files
