@@ -2,13 +2,13 @@ package xyz.marcelo.helper;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
+import weka.classifiers.bayes.AveragedNDependenceEstimators.A2DE;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.RBFClassifier;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SPegasos;
-import weka.classifiers.misc.CHIRP;
-import weka.classifiers.misc.FLR;
 import weka.classifiers.rules.JRip;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.NBTree;
@@ -28,50 +28,50 @@ public class MethodHelper
         {
             switch (methodConfiguration)
             {
-            case NBTREE:
-                classifier = new NBTree();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.NBTREE.getConfig()));
-                break;
-            case JRIP:
-                classifier = new JRip();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.JRIP.getConfig()));
-                break;
-            case SPEGASOS:
-                classifier = new SPegasos();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SPEGASOS.getConfig()));
-                break;
-            case CHIRP:
-                classifier = new CHIRP();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.CHIRP.getConfig()));
-                break;
-            case FLR:
-                classifier = new FLR();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.FLR.getConfig()));
-                break;
-            case J48:
-                classifier = new J48();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.J48.getConfig()));
-                break;
-            case MLP:
-                classifier = new MultilayerPerceptron();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.MLP.getConfig()));
-                break;
-            case RBF:
-                classifier = new RBFClassifier();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RBF.getConfig()));
-                break;
-            case RF:
-                classifier = new RandomForest();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.RF.getConfig()));
-                break;
-            case SGD:
-                classifier = new SGD();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SGD.getConfig()));
-                break;
-            case SVM:
-                classifier = new LibSVM();
-                classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.getConfig()));
-                break;
+                case SPEGASOS:
+                    classifier = new SPegasos();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.SPEGASOS.getConfig()));
+                    break;
+                case NBTREE:
+                    classifier = new NBTree();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.NBTREE.getConfig()));
+                    break;
+                case JRIP:
+                    classifier = new JRip();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.JRIP.getConfig()));
+                    break;
+                case J48:
+                    classifier = new J48();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.J48.getConfig()));
+                    break;
+                case A2DE:
+                    classifier = new A2DE();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.A2DE.getConfig()));
+                    break;
+                case A1DE:
+                    classifier = new A1DE();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.A1DE.getConfig()));
+                    break;
+                case SVM:
+                    classifier = new LibSVM();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.SVM.getConfig()));
+                    break;
+                case SGD:
+                    classifier = new SGD();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.SGD.getConfig()));
+                    break;
+                case RF:
+                    classifier = new RandomForest();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.RF.getConfig()));
+                    break;
+                case RBF:
+                    classifier = new RBFClassifier();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.RBF.getConfig()));
+                    break;
+                case MLP:
+                    classifier = new MultilayerPerceptron();
+                    classifier.setOptions(Utils.splitOptions(MethodConfiguration.MLP.getConfig()));
+                    break;
             }
         }
         catch (Exception e)
