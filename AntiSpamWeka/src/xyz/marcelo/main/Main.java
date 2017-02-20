@@ -107,7 +107,7 @@ public class Main
                     dataSet.stratify(numberOfFolds);
 
                     // create the objects that will hold the evaluation results
-                    TimedEvaluation timedEvaluation = new TimedEvaluation(args[0], methodConfiguration);
+                    TimedEvaluation timedEvaluation = new TimedEvaluation(folder, methodConfiguration);
                     Evaluation evaluation = new Evaluation(dataSet);
 
                     // build the base classifier
