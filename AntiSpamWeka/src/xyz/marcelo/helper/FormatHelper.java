@@ -2,7 +2,6 @@ package xyz.marcelo.helper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -39,7 +38,7 @@ public class FormatHelper
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
-    public static boolean handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult, boolean tryDetectOutlier) throws Exception
+    public static void handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult, boolean tryDetectOutlier) throws Exception
     {
         folder = methodEvaluation.getFolder();
 
@@ -114,38 +113,10 @@ public class FormatHelper
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TRAIN_TIME, trainTime);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TEST_TIME, testTime);
 
-        if (tryDetectOutlier)
+        if (printPartialResult)
         {
-            String outlier = detectOutlier(false);
-
-            if (outlier != null)
-            {
-                resultKeeper.get(key).get(HAM_PRECISION).removeMostRecentValue();
-                resultKeeper.get(key).get(SPAM_PRECISION).removeMostRecentValue();
-                resultKeeper.get(key).get(HAM_RECALL).removeMostRecentValue();
-                resultKeeper.get(key).get(SPAM_RECALL).removeMostRecentValue();
-                resultKeeper.get(key).get(TRAIN_TIME).removeMostRecentValue();
-                resultKeeper.get(key).get(TEST_TIME).removeMostRecentValue();
-            }
-
-            if (printPartialResult)
-            {
-                String outlierMessage = (outlier == null ? "" : "Outlier detected (" + outlier + "); rolling back.");
-                System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%s", folder, methodConfig.name(), hamPrecision, spamPrecision,
-                        hamRecall, spamRecall, trainTime, testTime, outlierMessage));
-            }
-
-            return (outlier == null);
-        }
-        else
-        {
-            if (printPartialResult)
-            {
-                System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", folder, methodConfig.name(), hamPrecision, spamPrecision,
-                        hamRecall, spamRecall, trainTime, testTime));
-            }
-
-            return true;
+            System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", folder, methodConfig.name(), hamPrecision, spamPrecision,
+                    hamRecall, spamRecall, trainTime, testTime));
         }
     }
 
@@ -187,26 +158,6 @@ public class FormatHelper
     public static void printFooter()
     {
         System.out.println("--------------------------------" + System.lineSeparator());
-    }
-
-    public static String detectOutlier(boolean verbose)
-    {
-        String key = buildHashMapKey();
-
-        String outlierName = null;
-
-        for (Entry<String, DescriptiveStatistics> entry : resultKeeper.get(key).entrySet())
-        {
-            // only try to detect outliers in ham and spam precision
-            if (!entry.getKey().equals(HAM_PRECISION) && !entry.getKey().equals(SPAM_PRECISION)) continue;
-            if (StatHelper.containsOutlier(entry.getValue()))
-            {
-                outlierName = entry.getKey();
-                break;
-            }
-        }
-
-        return outlierName;
     }
 
     public static void handleAllExperiments()

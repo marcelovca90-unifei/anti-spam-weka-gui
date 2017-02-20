@@ -98,6 +98,9 @@ public class Main
                     // randomize data set using n-th prime
                     dataSet.randomize(random);
 
+                    // stratify to almost-equalize number of instances of each class
+                    dataSet.stratify(numberOfFolds);
+
                     for (int fold = 0; fold < numberOfFolds; fold++)
                     {
                         Instances trainSet = dataSet.trainCV(numberOfFolds, fold, random);
