@@ -19,7 +19,7 @@ import xyz.marcelo.method.MethodEvaluation;
 
 public class Main
 {
-    private static final int[] PRIME_SEEDS = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
+    private static final int[] PRIME_NUMBERS = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
     public static void main(String[] args) throws Exception
     {
@@ -31,8 +31,8 @@ public class Main
         // exits if the wrong number of arguments was provided
         if (args.length != 4)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
-            System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.getAvailableMethods()));
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS NUMBER_OF_FOLDS");
+            System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.values()));
             System.exit(1);
         }
         else
@@ -96,7 +96,7 @@ public class Main
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
                     // set random number generator's seed
-                    random.setSeed(PRIME_SEEDS[repetition]);
+                    random.setSeed(PRIME_NUMBERS[repetition]);
 
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
@@ -122,7 +122,7 @@ public class Main
                         methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
                         methodEvaluation.setMethodConfiguration(methodConfiguration);
 
-                        // if the experiment is valid, log the partial result for this configuration
+                        // log the partial result for this configuration
                         FormatHelper.handleSingleExperiment(methodEvaluation, true);
                     }
                 }

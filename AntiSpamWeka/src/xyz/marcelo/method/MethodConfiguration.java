@@ -73,9 +73,4 @@ public enum MethodConfiguration
     {
         return (name + config).toUpperCase().replace(" ", "").trim();
     }
-
-    public static MethodConfiguration[] getAvailableMethods()
-    {
-        return MethodConfiguration.values();
-    }
 }
