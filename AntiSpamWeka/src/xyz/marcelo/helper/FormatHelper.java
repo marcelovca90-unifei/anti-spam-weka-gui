@@ -124,24 +124,4 @@ public class FormatHelper
 
         resultKeeper.clear();
     }
-
-    public static void setFolder(String folder)
-    {
-        FormatHelper.folder = folder;
-    }
-
-    public static void setMethodConfig(MethodConfiguration methodConfig)
-    {
-        FormatHelper.methodConfig = methodConfig;
-    }
-
-    public static void setTestTime(double testTime)
-    {
-        FormatHelper.testTime = testTime;
-    }
-
-    public static void setTrainTime(double trainTime)
-    {
-        FormatHelper.trainTime = trainTime;
-    }
 }

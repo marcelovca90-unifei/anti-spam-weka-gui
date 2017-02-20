@@ -3,6 +3,7 @@ package xyz.marcelo.method;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
+import xyz.marcelo.constant.Folders;
 
 public class TimedEvaluation
 {
@@ -67,7 +68,7 @@ public class TimedEvaluation
 
     public TimedEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
-        this.folder = folder;
+        this.folder = Folders.shortenFolderName(folder);
         this.methodConfiguration = methodConfiguration;
     }
 

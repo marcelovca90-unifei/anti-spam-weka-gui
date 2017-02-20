@@ -29,19 +29,19 @@ public class Folders
         return folders;
     }
 
-    public static String shortenFolderName(String baseFolder, String folder)
+    public static String shortenFolderName(String folder)
     {
-        return shortenFolderName(baseFolder, folder, 3);
+        return shortenFolderName(folder, 3);
     }
 
-    public static String shortenFolderName(String baseFolder, String folder, int maxLength)
+    public static String shortenFolderName(String folder, int maxLength)
     {
-        String[] parts = baseFolder.split("\\" + SEPARATOR);
+        String[] parts = folder.split("\\" + SEPARATOR);
         for (String part : parts)
         {
-            if (folder.contains(part))
+            if (part.length() > maxLength)
             {
-                folder = folder.replaceAll(part, part.length() > maxLength ? part.substring(0, maxLength) + "~" : part);
+                folder = folder.replaceAll(part, part.substring(0, maxLength) + "~");
             }
         }
         return folder;
