@@ -12,9 +12,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
-import xyz.marcelo.constant.EmptyPatterns;
 
-public class DataHelper
+public class InputOutputHelper
 {
     public static void bin2csv(String hamInput, String spamInput, String output) throws IOException
     {
@@ -105,7 +104,7 @@ public class DataHelper
 
     public static void buildEmptyCsv(String folder, int featureAmount) throws IOException
     {
-        Pair<Integer, Integer> emptyPatterns = EmptyPatterns.get(folder);
+        Pair<Integer, Integer> emptyPatterns = EmptyPatternHelper.getEmptyPatternCountsByFolder(folder);
         int emptyHamCount = emptyPatterns.getLeft();
         int emptySpamCount = emptyPatterns.getRight();
 

@@ -1,16 +1,17 @@
-package xyz.marcelo.method;
+package xyz.marcelo.eval;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import xyz.marcelo.constant.Folders;
+import xyz.marcelo.helper.DataSetHelper;
+import xyz.marcelo.helper.MethodHelper;
 
 public class TimedEvaluation
 {
     private Classifier classifier;
     private Evaluation evaluation;
     private String folder;
-    private MethodConfiguration methodConfiguration;
+    private MethodHelper methodConfiguration;
     private long trainStart;
     private long trainEnd;
     private long testStart;
@@ -41,7 +42,7 @@ public class TimedEvaluation
         return folder;
     }
 
-    public MethodConfiguration getMethodConfiguration()
+    public MethodHelper getMethodConfiguration()
     {
         return methodConfiguration;
     }
@@ -66,9 +67,9 @@ public class TimedEvaluation
         return testEnd;
     }
 
-    public TimedEvaluation(String folder, MethodConfiguration methodConfiguration)
+    public TimedEvaluation(String folder, MethodHelper methodConfiguration)
     {
-        this.folder = Folders.shortenFolderName(folder);
+        this.folder = DataSetHelper.shortenFolderName(folder);
         this.methodConfiguration = methodConfiguration;
     }
 

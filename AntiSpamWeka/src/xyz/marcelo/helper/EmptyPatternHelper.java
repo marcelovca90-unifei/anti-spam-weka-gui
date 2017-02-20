@@ -1,6 +1,6 @@
-package xyz.marcelo.constant;
+package xyz.marcelo.helper;
 
-import static xyz.marcelo.constant.Folders.SEPARATOR;
+import static xyz.marcelo.helper.DataSetHelper.SEPARATOR;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,11 +8,11 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public class EmptyPatterns
+public class EmptyPatternHelper
 {
-    private static Map<String, Pair<Integer, Integer>> hashMap = initialize();
+    private static Map<String, Pair<Integer, Integer>> hashMap = populateHashMap();
 
-    private static Map<String, Pair<Integer, Integer>> initialize()
+    private static Map<String, Pair<Integer, Integer>> populateHashMap()
     {
         Map<String, Pair<Integer, Integer>> map = new HashMap<>();
 
@@ -104,24 +104,12 @@ public class EmptyPatterns
         return map;
     }
 
-    public static Pair<Integer, Integer> get(String folder)
+    public static Pair<Integer, Integer> getEmptyPatternCountsByFolder(String folder)
     {
         String key = folder;
 
         for (Entry<String, Pair<Integer, Integer>> entry : hashMap.entrySet())
-            if (key.contains(entry.getKey()))
-                return entry.getValue();
-
-        return null;
-    }
-
-    public static Pair<Integer, Integer> get(String dataSet, String statMethod, Integer featureAmount)
-    {
-        String key = dataSet + SEPARATOR + statMethod + SEPARATOR + featureAmount;
-
-        for (Entry<String, Pair<Integer, Integer>> entry : hashMap.entrySet())
-            if (key.contains(entry.getKey()))
-                return entry.getValue();
+            if (key.contains(entry.getKey())) return entry.getValue();
 
         return null;
     }

@@ -1,11 +1,11 @@
-package xyz.marcelo.constant;
+package xyz.marcelo.helper;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Folders
+public class DataSetHelper
 {
     public static String SEPARATOR = File.separator;
 

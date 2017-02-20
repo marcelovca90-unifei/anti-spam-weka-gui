@@ -12,11 +12,11 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import xyz.marcelo.constant.Folders;
-import xyz.marcelo.helper.DataHelper;
+import xyz.marcelo.eval.TimedEvaluation;
+import xyz.marcelo.helper.InputOutputHelper;
+import xyz.marcelo.helper.DataSetHelper;
 import xyz.marcelo.helper.FormatHelper;
-import xyz.marcelo.method.MethodConfiguration;
-import xyz.marcelo.method.TimedEvaluation;
+import xyz.marcelo.helper.MethodHelper;
 
 public class Main
 {
@@ -25,7 +25,7 @@ public class Main
     public static void main(String[] args) throws Exception
     {
         List<String> folders = new ArrayList<>();
-        List<MethodConfiguration> methodConfigurations = new ArrayList<>();
+        List<MethodHelper> methodConfigurations = new ArrayList<>();
         Integer numberOfRepetitions = 0;
         Integer numberOfFolds = 0;
 
@@ -33,7 +33,7 @@ public class Main
         if (args.length != 4)
         {
             System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS NUMBER_OF_FOLDS");
-            System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.values()));
+            System.out.println("Available classification methods: " + Arrays.toString(MethodHelper.values()));
             System.exit(1);
         }
         else
@@ -41,9 +41,9 @@ public class Main
             // tries to build the folder and method configuration lists
             try
             {
-                folders = Folders.getFolders(args[0]);
+                folders = DataSetHelper.getFolders(args[0]);
                 for (String methodString : args[1].split(","))
-                    methodConfigurations.add(MethodConfiguration.valueOf(methodString));
+                    methodConfigurations.add(MethodHelper.valueOf(methodString));
                 numberOfRepetitions = Integer.parseInt(args[2]);
                 numberOfFolds = Integer.parseInt(args[3]);
             }
@@ -66,7 +66,7 @@ public class Main
             }
         }
 
-        for (MethodConfiguration methodConfiguration : methodConfigurations)
+        for (MethodHelper methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
 
@@ -77,8 +77,8 @@ public class Main
                 String spamFilePath = folder + File.separator + "spam";
                 String dataCsvPath = folder + File.separator + "data.csv";
                 String dataArffPath = folder + File.separator + "data.arff";
-                DataHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
-                DataHelper.csv2arff(dataCsvPath, dataArffPath);
+                InputOutputHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
+                InputOutputHelper.csv2arff(dataCsvPath, dataArffPath);
                 FileReader dataReader = new FileReader(dataArffPath);
                 Instances dataSet = new Instances(dataReader);
                 dataSet.setClassIndex(dataSet.numAttributes() - 1);
@@ -86,8 +86,8 @@ public class Main
                 // build empty patterns set
                 String emptyCsvPath = folder + File.separator + "empty.csv";
                 String emptyArffPath = folder + File.separator + "empty.arff";
-                DataHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
-                DataHelper.csv2arff(emptyCsvPath, emptyArffPath);
+                InputOutputHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
+                InputOutputHelper.csv2arff(emptyCsvPath, emptyArffPath);
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
@@ -110,7 +110,7 @@ public class Main
                     Evaluation evaluation = new Evaluation(dataSet);
 
                     // build the base classifier
-                    Classifier classifierBase = MethodConfiguration.buildClassifierFor(methodConfiguration);
+                    Classifier classifierBase = MethodHelper.buildClassifierFor(methodConfiguration);
 
                     // perform a k-fold cross-validation
                     for (int fold = 0; fold < numberOfFolds; fold++)

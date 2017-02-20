@@ -6,14 +6,13 @@ import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import weka.classifiers.Evaluation;
-import xyz.marcelo.method.MethodConfiguration;
-import xyz.marcelo.method.TimedEvaluation;
+import xyz.marcelo.eval.TimedEvaluation;
 
 @SuppressWarnings("unused")
 public class FormatHelper
 {
     private static String folder;
-    private static MethodConfiguration methodConfig;
+    private static MethodHelper methodConfig;
 
     private static double trainTime = 0;
     private static double testTime = 0;

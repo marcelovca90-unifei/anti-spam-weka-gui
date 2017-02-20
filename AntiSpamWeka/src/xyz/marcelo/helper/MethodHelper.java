@@ -1,4 +1,4 @@
-package xyz.marcelo.method;
+package xyz.marcelo.helper;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -20,7 +20,7 @@ import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Utils;
 
-public enum MethodConfiguration
+public enum MethodHelper
 {
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
     SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -seed 1", LibSVM.class),
@@ -74,7 +74,7 @@ public enum MethodConfiguration
     private final String config;
     private final Class<? extends Classifier> clazz;
 
-    private MethodConfiguration(final String name, final String config, final Class<? extends Classifier> clazz)
+    private MethodHelper(final String name, final String config, final Class<? extends Classifier> clazz)
     {
         this.name = name;
         this.config = config;
@@ -101,7 +101,7 @@ public enum MethodConfiguration
         return (name + config).toUpperCase().replace(" ", "").trim();
     }
 
-    public static Classifier buildClassifierFor(MethodConfiguration methodConfiguration)
+    public static Classifier buildClassifierFor(MethodHelper methodConfiguration)
     {
         Classifier classifier = null;
 
