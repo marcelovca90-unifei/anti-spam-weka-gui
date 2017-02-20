@@ -7,7 +7,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import weka.classifiers.Evaluation;
 import xyz.marcelo.method.MethodConfiguration;
-import xyz.marcelo.method.MethodEvaluation;
+import xyz.marcelo.method.TimedEvaluation;
 
 @SuppressWarnings("unused")
 public class FormatHelper
@@ -37,7 +37,7 @@ public class FormatHelper
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
-    public static void handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult) throws Exception
+    public static void handleSingleExperiment(TimedEvaluation methodEvaluation, boolean printPartialResult) throws Exception
     {
         folder = methodEvaluation.getFolder();
 
