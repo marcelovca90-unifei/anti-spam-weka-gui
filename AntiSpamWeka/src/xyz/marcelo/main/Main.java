@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import xyz.marcelo.constant.Folders;
 import xyz.marcelo.helper.DataHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.MethodHelper;
 import xyz.marcelo.method.MethodConfiguration;
-import xyz.marcelo.method.MethodEvaluation;
+import xyz.marcelo.method.TimedEvaluation;
 
 public class Main
 {
@@ -104,6 +106,13 @@ public class Main
                     // stratify the data set to balance each class' instances in each fold
                     dataSet.stratify(numberOfFolds);
 
+                    // create the objects that will hold the evaluation results
+                    TimedEvaluation timedEvaluation = new TimedEvaluation(args[0], methodConfiguration);
+                    Evaluation evaluation = new Evaluation(dataSet);
+
+                    // build the base classifier
+                    Classifier classifierBase = MethodHelper.build(methodConfiguration);
+
                     // perform a k-fold cross-validation
                     for (int fold = 0; fold < numberOfFolds; fold++)
                     {
@@ -114,17 +123,15 @@ public class Main
                         // add empty patterns to test set
                         testSet.addAll(emptySet);
 
-                        // build the classifier
-                        AbstractClassifier classifier = MethodHelper.build(methodConfiguration);
-
                         // evaluate the classifier
-                        MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-                        methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
-                        methodEvaluation.setMethodConfiguration(methodConfiguration);
-
-                        // log the partial result for this configuration
-                        FormatHelper.handleSingleExperiment(methodEvaluation, true);
+                        Classifier classifierCopy = AbstractClassifier.makeCopy(classifierBase);
+                        timedEvaluation.setClassifier(classifierCopy);
+                        timedEvaluation.setEvaluation(evaluation);
+                        timedEvaluation.run(trainSet, testSet);
                     }
+
+                    // log the partial result for this configuration
+                    FormatHelper.handleSingleExperiment(timedEvaluation, true);
                 }
 
                 // delete temporary .csv and .arff files
