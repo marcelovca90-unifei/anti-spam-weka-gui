@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import weka.classifiers.Evaluation;
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.MethodEvaluation;
 
@@ -14,21 +15,19 @@ public class FormatHelper
     private static String folder;
     private static MethodConfiguration methodConfig;
 
-    private static double trainTime;
-    private static double testTime;
-    private static int totalCorrect = 0;
-    private static int totalIncorrect = 0;
+    private static double trainTime = 0;
+    private static double testTime = 0;
+    private static double totalCorrect = 0;
+    private static double totalIncorrect = 0;
     private static double totalCorrectPercent = 0;
     private static double totalIncorrectPercent = 0;
-    private static int hamCorrect = 0;
-    private static int hamIncorrect = 0;
-    private static int spamCorrect = 0;
-    private static int spamIncorrect = 0;
     private static double hamPrecision = 0;
     private static double hamRecall = 0;
     private static double spamPrecision = 0;
     private static double spamRecall = 0;
 
+    private static final int CLASS_HAM = 0;
+    private static final int CLASS_SPAM = 1;
     private static final String TEST_TIME = "testTime";
     private static final String TRAIN_TIME = "trainTime";
     private static final String SPAM_RECALL = "spamRecall";
@@ -38,7 +37,7 @@ public class FormatHelper
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
-    public static void handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult, boolean tryDetectOutlier) throws Exception
+    public static void handleSingleExperiment(MethodEvaluation methodEvaluation, boolean printPartialResult) throws Exception
     {
         folder = methodEvaluation.getFolder();
 
@@ -48,56 +47,19 @@ public class FormatHelper
 
         testTime = (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
 
-        String summary = methodEvaluation.getEvaluation().toSummaryString();
+        Evaluation evaluation = methodEvaluation.getEvaluation();
 
-        String confusionMatrix = methodEvaluation.getEvaluation().toMatrixString();
+        totalCorrect = evaluation.correct();
+        totalCorrectPercent = 100.0 * evaluation.pctCorrect();
 
-        String classDetail = methodEvaluation.getEvaluation().toClassDetailsString();
+        totalIncorrect = evaluation.incorrect();
+        totalIncorrectPercent = 100.0 * evaluation.pctIncorrect();
 
-        String lines[] = (summary + System.lineSeparator() + confusionMatrix + System.lineSeparator() + classDetail).split("\\r?\\n");
+        hamPrecision = 100.0 * evaluation.precision(CLASS_HAM);
+        hamRecall = 100.0 * evaluation.recall(CLASS_HAM);
 
-        for (String line : lines)
-        {
-            String cleanLine = line.replaceAll("\\s+", "\t").trim();
-
-            String[] parts = cleanLine.split("\\t");
-
-            if (line.contains("Correctly Classified Instances"))
-            {
-                totalCorrect = Integer.parseInt(parts[3]);
-                totalCorrectPercent = parseDoubleCommaOrPeriod(parts[4]);
-            }
-
-            else if (line.contains("Incorrectly Classified Instances"))
-            {
-                totalIncorrect = Integer.parseInt(parts[3]);
-                totalIncorrectPercent = parseDoubleCommaOrPeriod(parts[4]);
-            }
-
-            else if (line.contains("|") && line.contains("ham"))
-            {
-                hamCorrect = Integer.parseInt(parts[0]);
-                hamIncorrect = Integer.parseInt(parts[1]);
-            }
-
-            else if (line.contains("|") && line.contains("spam"))
-            {
-                spamCorrect = Integer.parseInt(parts[0]);
-                spamIncorrect = Integer.parseInt(parts[1]);
-            }
-
-            else if ((line.contains("0.") || line.contains("0,")) && line.contains("ham"))
-            {
-                hamPrecision = 100 * parseDoubleCommaOrPeriod(parts[4]);
-                hamRecall = 100 * parseDoubleCommaOrPeriod(parts[5]);
-            }
-
-            else if ((line.contains("0.") || line.contains("0,")) && line.contains("spam"))
-            {
-                spamPrecision = 100 * parseDoubleCommaOrPeriod(parts[4]);
-                spamRecall = 100 * parseDoubleCommaOrPeriod(parts[5]);
-            }
-        }
+        spamPrecision = 100.0 * evaluation.precision(CLASS_SPAM);
+        spamRecall = 100.0 * evaluation.recall(CLASS_SPAM);
 
         String key = buildHashMapKey();
 
@@ -117,18 +79,6 @@ public class FormatHelper
         {
             System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", folder, methodConfig.name(), hamPrecision, spamPrecision,
                     hamRecall, spamRecall, trainTime, testTime));
-        }
-    }
-
-    private static double parseDoubleCommaOrPeriod(String value)
-    {
-        try
-        {
-            return Double.parseDouble(value);
-        }
-        catch (NumberFormatException e)
-        {
-            return Double.parseDouble(value.replace(',', '.'));
         }
     }
 

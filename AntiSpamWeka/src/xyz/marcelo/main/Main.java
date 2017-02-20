@@ -31,7 +31,7 @@ public class Main
         // exits if the wrong number of arguments was provided
         if (args.length != 4)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS NUMBER_OF_FOLDS");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
             System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.getAvailableMethods()));
             System.exit(1);
         }
@@ -90,19 +90,24 @@ public class Main
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
+                // initialize random number generator
+                Random random = new Random();
+
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
-                    // initialize random number generator
-                    Random random = new Random(PRIME_SEEDS[repetition]);
+                    // set random number generator's seed
+                    random.setSeed(PRIME_SEEDS[repetition]);
 
-                    // randomize data set using n-th prime
+                    // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
 
-                    // stratify to almost-equalize number of instances of each class
+                    // stratify the data set to balance each class' instances in each fold
                     dataSet.stratify(numberOfFolds);
 
+                    // perform a k-fold cross-validation
                     for (int fold = 0; fold < numberOfFolds; fold++)
                     {
+                        // create the folded training and test sets
                         Instances trainSet = dataSet.trainCV(numberOfFolds, fold, random);
                         Instances testSet = dataSet.testCV(numberOfFolds, fold);
 
@@ -118,12 +123,12 @@ public class Main
                         methodEvaluation.setMethodConfiguration(methodConfiguration);
 
                         // if the experiment is valid, log the partial result for this configuration
-                        FormatHelper.handleSingleExperiment(methodEvaluation, true, false);
+                        FormatHelper.handleSingleExperiment(methodEvaluation, true);
                     }
                 }
 
                 // delete temporary .csv and .arff files
-                // Arrays.asList(dataCsvPath, dataArffPath, emptyCsvPath, emptyArffPath).forEach(path -> new File(path).delete());
+                Arrays.asList(dataCsvPath, dataArffPath, emptyCsvPath, emptyArffPath).forEach(path -> new File(path).delete());
 
                 // log the final result for this configuration
                 FormatHelper.handleAllExperiments();
