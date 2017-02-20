@@ -15,7 +15,6 @@ import weka.core.Instances;
 import xyz.marcelo.constant.Folders;
 import xyz.marcelo.helper.DataHelper;
 import xyz.marcelo.helper.FormatHelper;
-import xyz.marcelo.helper.MethodHelper;
 import xyz.marcelo.method.MethodConfiguration;
 import xyz.marcelo.method.TimedEvaluation;
 
@@ -111,7 +110,7 @@ public class Main
                     Evaluation evaluation = new Evaluation(dataSet);
 
                     // build the base classifier
-                    Classifier classifierBase = MethodHelper.build(methodConfiguration);
+                    Classifier classifierBase = MethodConfiguration.buildClassifierFor(methodConfiguration);
 
                     // perform a k-fold cross-validation
                     for (int fold = 0; fold < numberOfFolds; fold++)
