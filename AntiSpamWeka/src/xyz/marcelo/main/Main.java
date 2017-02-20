@@ -26,11 +26,12 @@ public class Main
         List<String> folders = new ArrayList<>();
         List<MethodConfiguration> methodConfigurations = new ArrayList<>();
         Integer numberOfRepetitions = 0;
+        Integer numberOfFolds = 0;
 
         // exits if the wrong number of arguments was provided
-        if (args.length != 3)
+        if (args.length != 4)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS NUMBER_OF_FOLDS");
             System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.getAvailableMethods()));
             System.exit(1);
         }
@@ -43,6 +44,7 @@ public class Main
                 for (String methodString : args[1].split(","))
                     methodConfigurations.add(MethodConfiguration.valueOf(methodString));
                 numberOfRepetitions = Integer.parseInt(args[2]);
+                numberOfFolds = Integer.parseInt(args[3]);
             }
             catch (Exception e)
             {
@@ -54,9 +56,9 @@ public class Main
                 else if ((e instanceof IllegalArgumentException) && !(e instanceof NumberFormatException))
                     System.out.println("One or more specified method(s) does not exist.");
 
-                // or if an invalid number of repetitions was provided
+                // or if an invalid number of repetitions and/or folds was provided
                 else if ((e instanceof IllegalArgumentException) && (e instanceof NumberFormatException))
-                    System.out.println("The specified number of repetitions is invalid.");
+                    System.out.println("The specified number of repetitions and/or folds is invalid.");
 
                 // exit the program
                 System.exit(1);
@@ -88,39 +90,37 @@ public class Main
                 FileReader emptyReader = new FileReader(emptyArffPath);
                 Instances emptySet = new Instances(emptyReader);
 
-                for (int i = 1; i <= numberOfRepetitions; i++)
+                for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
                     // initialize random number generator
-                    Random random = new Random(PRIME_SEEDS[i]);
+                    Random random = new Random(PRIME_SEEDS[repetition]);
 
-                    // build test and train sets
+                    // randomize data set using n-th prime
                     dataSet.randomize(random);
-                    int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
-                    int testSize = dataSet.numInstances() - trainSize;
-                    Instances trainSet = new Instances(dataSet, 0, trainSize);
-                    Instances testSet = new Instances(dataSet, trainSize, testSize);
-                    testSet.addAll(emptySet);
 
-                    // build the classifier
-                    AbstractClassifier classifier = MethodHelper.build(methodConfiguration);
+                    for (int fold = 0; fold < numberOfFolds; fold++)
+                    {
+                        Instances trainSet = dataSet.trainCV(numberOfFolds, fold, random);
+                        Instances testSet = dataSet.testCV(numberOfFolds, fold);
 
-                    // evaluate the classifier
-                    MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
-                    methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
-                    methodEvaluation.setMethodConfiguration(methodConfiguration);
+                        // add empty patterns to test set
+                        testSet.addAll(emptySet);
 
-                    // if the experiment is valid, log the partial result for this configuration
-                    boolean experimentValidity = FormatHelper.handleSingleExperiment(methodEvaluation, true, false);
+                        // build the classifier
+                        AbstractClassifier classifier = MethodHelper.build(methodConfiguration);
 
-                    // if the experiment is invalid (due to positive outlier checking), repeat the iteration
-                    if (!experimentValidity) i--;
+                        // evaluate the classifier
+                        MethodEvaluation methodEvaluation = MethodHelper.run(classifier, trainSet, testSet);
+                        methodEvaluation.setFolder(Folders.shortenFolderName(args[0], folder));
+                        methodEvaluation.setMethodConfiguration(methodConfiguration);
+
+                        // if the experiment is valid, log the partial result for this configuration
+                        FormatHelper.handleSingleExperiment(methodEvaluation, true, false);
+                    }
                 }
 
-                // optional: delete temporary .csv and .arff files
-                new File(dataCsvPath).delete();
-                new File(dataArffPath).delete();
-                new File(emptyCsvPath).delete();
-                new File(emptyArffPath).delete();
+                // delete temporary .csv and .arff files
+                // Arrays.asList(dataCsvPath, dataArffPath, emptyCsvPath, emptyArffPath).forEach(path -> new File(path).delete());
 
                 // log the final result for this configuration
                 FormatHelper.handleAllExperiments();
