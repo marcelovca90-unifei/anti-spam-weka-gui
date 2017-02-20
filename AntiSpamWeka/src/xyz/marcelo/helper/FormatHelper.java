@@ -28,12 +28,12 @@ public class FormatHelper
 
     private static final int CLASS_HAM = 0;
     private static final int CLASS_SPAM = 1;
-    private static final String TEST_TIME = "testTime";
     private static final String TRAIN_TIME = "trainTime";
-    private static final String SPAM_RECALL = "spamRecall";
+    private static final String TEST_TIME = "testTime";
     private static final String HAM_RECALL = "hamRecall";
-    private static final String SPAM_PRECISION = "spamPrecision";
+    private static final String SPAM_RECALL = "spamRecall";
     private static final String HAM_PRECISION = "hamPrecision";
+    private static final String SPAM_PRECISION = "spamPrecision";
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
