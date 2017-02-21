@@ -11,19 +11,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/autoweka.jar"/>
-	<classpathentry kind="lib" path="lib/LibLINEAR.jar"/>
-	<classpathentry kind="lib" path="lib/LibSVM-CJLin.jar"/>
-	<classpathentry kind="lib" path="lib/LibSVM-Weka.jar"/>
-	<classpathentry kind="lib" path="lib/RBFNetwork.jar"/>
-	<classpathentry kind="lib" path="lib/naiveBayesTree.jar"/>
-	<classpathentry kind="lib" path="lib/SPegasos.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="lib/AnDE.jar"/>
-	<classpathentry kind="lib" path="lib/bestFirstTree.jar"/>
-	<classpathentry kind="lib" path="lib/DTNB.jar"/>
-	<classpathentry kind="lib" path="lib/hyperPipes.jar"/>
-	<classpathentry kind="lib" path="lib/multilayerPerceptronCS.jar"/>
-	<classpathentry kind="lib" path="lib/fuzzyUnorderedRuleInduction.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

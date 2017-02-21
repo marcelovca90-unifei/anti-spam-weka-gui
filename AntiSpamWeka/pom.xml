@@ -6,13 +6,40 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>AntiSpamWeka</name>
     <description>AntiSpamWeka</description>
+
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>xyz.marcelo.main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
@@ -28,6 +55,99 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
+        </dependency>
+
+        <!-- EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
+        <dependency>
+            <groupId>AnDE</groupId>
+            <artifactId>AnDE</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/AnDE.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>DTNB</groupId>
+            <artifactId>DTNB</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/DTNB.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>LibLINEAR</groupId>
+            <artifactId>LibLINEAR</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/LibLINEAR.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>LibSVM-CJLin</groupId>
+            <artifactId>LibSVM-CJLin</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/LibSVM-CJLin.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>LibSVM-Weka</groupId>
+            <artifactId>LibSVM-Weka</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/LibSVM-Weka.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>RBFNetwork</groupId>
+            <artifactId>RBFNetwork</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/RBFNetwork.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>SPegasos</groupId>
+            <artifactId>SPegasos</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/SPegasos.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>autoweka</groupId>
+            <artifactId>autoweka</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/autoweka.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>bestFirstTree</groupId>
+            <artifactId>bestFirstTree</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/bestFirstTree.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fuzzyUnorderedRuleInduction</groupId>
+            <artifactId>fuzzyUnorderedRuleInduction</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/fuzzyUnorderedRuleInduction.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>hyperPipes</groupId>
+            <artifactId>hyperPipes</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/hyperPipes.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>multilayerPerceptronCS</groupId>
+            <artifactId>multilayerPerceptronCS</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/multilayerPerceptronCS.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>naiveBayesTree</groupId>
+            <artifactId>naiveBayesTree</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/naiveBayesTree.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
