@@ -13,9 +13,9 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import xyz.marcelo.eval.TimedEvaluation;
-import xyz.marcelo.helper.InputOutputHelper;
 import xyz.marcelo.helper.DataSetHelper;
 import xyz.marcelo.helper.FormatHelper;
+import xyz.marcelo.helper.InputOutputHelper;
 import xyz.marcelo.helper.MethodHelper;
 
 public class Main
@@ -27,12 +27,11 @@ public class Main
         List<String> folders = new ArrayList<>();
         List<MethodHelper> methodConfigurations = new ArrayList<>();
         Integer numberOfRepetitions = 0;
-        Integer numberOfFolds = 0;
 
         // exits if the wrong number of arguments was provided
-        if (args.length != 4)
+        if (args.length != 3)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS NUMBER_OF_FOLDS");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
             System.out.println("Available classification methods: " + Arrays.toString(MethodHelper.values()));
             System.exit(1);
         }
@@ -45,7 +44,6 @@ public class Main
                 for (String methodString : args[1].split(","))
                     methodConfigurations.add(MethodHelper.valueOf(methodString));
                 numberOfRepetitions = Integer.parseInt(args[2]);
-                numberOfFolds = Integer.parseInt(args[3]);
             }
             catch (Exception e)
             {
@@ -94,6 +92,12 @@ public class Main
                 // initialize random number generator
                 Random random = new Random();
 
+                // build the classifier for the given configuration
+                Classifier classifier = MethodHelper.buildClassifierFor(methodConfiguration);
+
+                // create the object that will hold the overall evaluations result
+                TimedEvaluation timedEvaluation = new TimedEvaluation(folder, methodConfiguration);
+
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
                     // set random number generator's seed
@@ -102,32 +106,26 @@ public class Main
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
 
-                    // stratify the data set to balance each class' instances in each fold
-                    dataSet.stratify(numberOfFolds);
+                    // build test and train sets
+                    int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
+                    int testSize = dataSet.numInstances() - trainSize;
+                    Instances trainSet = new Instances(dataSet, 0, trainSize);
+                    Instances testSet = new Instances(dataSet, trainSize, testSize);
+                    testSet.addAll(emptySet);
 
-                    // create the objects that will hold the evaluation results
-                    TimedEvaluation timedEvaluation = new TimedEvaluation(folder, methodConfiguration);
-                    Evaluation evaluation = new Evaluation(dataSet);
+                    // add empty patterns to test set
+                    testSet.addAll(emptySet);
 
-                    // build the base classifier
-                    Classifier classifierBase = MethodHelper.buildClassifierFor(methodConfiguration);
+                    // build the classifier for the given configuration
+                    Classifier innerClassifier = AbstractClassifier.makeCopy(classifier);
 
-                    // perform a k-fold cross-validation
-                    for (int fold = 0; fold < numberOfFolds; fold++)
-                    {
-                        // create the folded training and test sets
-                        Instances trainSet = dataSet.trainCV(numberOfFolds, fold, random);
-                        Instances testSet = dataSet.testCV(numberOfFolds, fold);
+                    // create the object that will hold the single evaluation result
+                    Evaluation innerEvaluation = new Evaluation(dataSet);
 
-                        // add empty patterns to test set
-                        testSet.addAll(emptySet);
-
-                        // evaluate the classifier
-                        Classifier classifierCopy = AbstractClassifier.makeCopy(classifierBase);
-                        timedEvaluation.setClassifier(classifierCopy);
-                        timedEvaluation.setEvaluation(evaluation);
-                        timedEvaluation.run(trainSet, testSet);
-                    }
+                    // evaluate the classifier
+                    timedEvaluation.setClassifier(innerClassifier);
+                    timedEvaluation.setEvaluation(innerEvaluation);
+                    timedEvaluation.run(trainSet, testSet);
 
                     // log the partial result for this configuration
                     FormatHelper.handleSingleExperiment(timedEvaluation, true);
