@@ -55,9 +55,9 @@ public class Main
                 else if ((e instanceof IllegalArgumentException) && !(e instanceof NumberFormatException))
                     System.out.println("One or more specified method(s) does not exist.");
 
-                // or if an invalid number of repetitions and/or folds was provided
+                // or if an invalid number of repetitions was provided
                 else if ((e instanceof IllegalArgumentException) && (e instanceof NumberFormatException))
-                    System.out.println("The specified number of repetitions and/or folds is invalid.");
+                    System.out.println("The specified number of repetitions is invalid.");
 
                 // exit the program
                 System.exit(1);
