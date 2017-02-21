@@ -35,11 +35,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
@@ -59,96 +54,82 @@
 
         <!-- EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
         <dependency>
-            <groupId>AnDE</groupId>
+            <groupId>weka-packages</groupId>
             <artifactId>AnDE</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/AnDE.jar</systemPath>
+            <version>1.2.1</version>
         </dependency>
+
         <dependency>
-            <groupId>DTNB</groupId>
-            <artifactId>DTNB</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/DTNB.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>LibLINEAR</groupId>
-            <artifactId>LibLINEAR</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/LibLINEAR.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>LibSVM-CJLin</groupId>
-            <artifactId>LibSVM-CJLin</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/LibSVM-CJLin.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>LibSVM-Weka</groupId>
-            <artifactId>LibSVM-Weka</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/LibSVM-Weka.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>RBFNetwork</groupId>
-            <artifactId>RBFNetwork</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/RBFNetwork.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>SPegasos</groupId>
-            <artifactId>SPegasos</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/SPegasos.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>autoweka</groupId>
-            <artifactId>autoweka</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/autoweka.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>bestFirstTree</groupId>
+            <groupId>weka-packages</groupId>
             <artifactId>bestFirstTree</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/bestFirstTree.jar</systemPath>
+            <version>1.0.4</version>
         </dependency>
+
         <dependency>
-            <groupId>fuzzyUnorderedRuleInduction</groupId>
+            <groupId>weka-packages</groupId>
+            <artifactId>DTNB</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
             <artifactId>fuzzyUnorderedRuleInduction</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/fuzzyUnorderedRuleInduction.jar</systemPath>
+            <version>1.0.2</version>
         </dependency>
+
         <dependency>
-            <groupId>hyperPipes</groupId>
+            <groupId>weka-packages</groupId>
             <artifactId>hyperPipes</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/hyperPipes.jar</systemPath>
+            <version>1.0.1</version>
         </dependency>
+
         <dependency>
-            <groupId>multilayerPerceptronCS</groupId>
+            <groupId>weka-packages</groupId>
+            <artifactId>LibSVM-Weka</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>LibSVM-CJLin</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
             <artifactId>multilayerPerceptronCS</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/multilayerPerceptronCS.jar</systemPath>
+            <version>1.0.1</version>
         </dependency>
+
         <dependency>
-            <groupId>naiveBayesTree</groupId>
+            <groupId>weka-packages</groupId>
             <artifactId>naiveBayesTree</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/lib/naiveBayesTree.jar</systemPath>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>RBFNetwork</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>SPegasos</artifactId>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
     
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${basedir}/repo</url>
+        </repository>
+    </repositories>
+
 </project>
