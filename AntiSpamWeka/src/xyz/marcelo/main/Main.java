@@ -111,7 +111,6 @@ public class Main
                     int testSize = dataSet.numInstances() - trainSize;
                     Instances trainSet = new Instances(dataSet, 0, trainSize);
                     Instances testSet = new Instances(dataSet, trainSize, testSize);
-                    testSet.addAll(emptySet);
 
                     // add empty patterns to test set
                     testSet.addAll(emptySet);
