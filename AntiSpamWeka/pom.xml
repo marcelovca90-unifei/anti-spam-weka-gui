@@ -150,4 +150,5 @@
             <systemPath>${basedir}/lib/naiveBayesTree.jar</systemPath>
         </dependency>
     </dependencies>
+    
 </project>
