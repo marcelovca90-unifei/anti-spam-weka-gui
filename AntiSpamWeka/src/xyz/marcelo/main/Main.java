@@ -119,7 +119,7 @@ public class Main
                     Classifier innerClassifier = AbstractClassifier.makeCopy(classifier);
 
                     // create the object that will hold the single evaluation result
-                    Evaluation innerEvaluation = new Evaluation(dataSet);
+                    Evaluation innerEvaluation = new Evaluation(testSet);
 
                     // evaluate the classifier
                     timedEvaluation.setClassifier(innerClassifier);
