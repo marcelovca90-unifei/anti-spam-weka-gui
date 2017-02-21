@@ -18,7 +18,7 @@ public class DataSetHelper
     public static List<String> getFolders(String baseFolderPath) throws IOException
     {
         File baseFolder = new File(baseFolderPath);
-        if (!baseFolder.exists() || !baseFolder.isDirectory()) throw new IOException();
+        if (!baseFolder.exists() || (baseFolder.exists() && !baseFolder.isDirectory())) throw new IOException();
 
         List<String> folders = new ArrayList<>();
         for (String dataSet : dataSets)
