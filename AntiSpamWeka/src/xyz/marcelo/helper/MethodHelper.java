@@ -23,7 +23,7 @@ import weka.core.Utils;
 public enum MethodHelper
 {
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
-    SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -seed 1", LibSVM.class),
+    SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C 1.0 -E 0.001 -P 0.1 -H 0 -seed 1", LibSVM.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
