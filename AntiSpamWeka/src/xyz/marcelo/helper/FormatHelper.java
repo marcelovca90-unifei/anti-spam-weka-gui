@@ -1,5 +1,6 @@
 package xyz.marcelo.helper;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,9 +77,25 @@ public class FormatHelper
 
         if (printPartialResult)
         {
-            System.out.println(String.format("%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", folder, methodConfig.name(), hamPrecision, spamPrecision,
-                    hamRecall, spamRecall, trainTime, testTime));
+            System.out.println(String.format("%s\t%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", getCurrentDateTime(), folder, methodConfig.name(),
+                    hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
         }
+    }
+
+    public static void handleAllExperiments()
+    {
+        String key = buildHashMapKey();
+
+        System.out.println(String.format("%s\t%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", getCurrentDateTime(),
+                folder, methodConfig.name(), resultKeeper.get(key).get(HAM_PRECISION).getMean(),
+                resultKeeper.get(key).get(HAM_PRECISION).getStandardDeviation(), resultKeeper.get(key).get(SPAM_PRECISION).getMean(),
+                resultKeeper.get(key).get(SPAM_PRECISION).getStandardDeviation(), resultKeeper.get(key).get(HAM_RECALL).getMean(),
+                resultKeeper.get(key).get(HAM_RECALL).getStandardDeviation(), resultKeeper.get(key).get(SPAM_RECALL).getMean(),
+                resultKeeper.get(key).get(SPAM_RECALL).getStandardDeviation(), resultKeeper.get(key).get(TRAIN_TIME).getMean(),
+                resultKeeper.get(key).get(TRAIN_TIME).getStandardDeviation(), resultKeeper.get(key).get(TEST_TIME).getMean(),
+                resultKeeper.get(key).get(TEST_TIME).getStandardDeviation()));
+
+        resultKeeper.clear();
     }
 
     private static String buildHashMapKey()
@@ -101,7 +118,7 @@ public class FormatHelper
 
     public static void printHeader()
     {
-        System.out.println("PATH\tMTHD\tHP\tSP\tHR\tSR\tTrTi\tTeTi");
+        System.out.println("Timestamp\tPath\tMethod\tHam Precision\tSpam Precision\tHam Recall\tSpam Recall\tTrain Time\tTest Time");
     }
 
     public static void printFooter()
@@ -109,18 +126,8 @@ public class FormatHelper
         System.out.println("--------------------------------" + System.lineSeparator());
     }
 
-    public static void handleAllExperiments()
+    public static String getCurrentDateTime()
     {
-        String key = buildHashMapKey();
-
-        System.out.println(String.format("%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", folder, methodConfig.name(),
-                resultKeeper.get(key).get(HAM_PRECISION).getMean(), resultKeeper.get(key).get(HAM_PRECISION).getStandardDeviation(),
-                resultKeeper.get(key).get(SPAM_PRECISION).getMean(), resultKeeper.get(key).get(SPAM_PRECISION).getStandardDeviation(),
-                resultKeeper.get(key).get(HAM_RECALL).getMean(), resultKeeper.get(key).get(HAM_RECALL).getStandardDeviation(),
-                resultKeeper.get(key).get(SPAM_RECALL).getMean(), resultKeeper.get(key).get(SPAM_RECALL).getStandardDeviation(),
-                resultKeeper.get(key).get(TRAIN_TIME).getMean(), resultKeeper.get(key).get(TRAIN_TIME).getStandardDeviation(),
-                resultKeeper.get(key).get(TEST_TIME).getMean(), resultKeeper.get(key).get(TEST_TIME).getStandardDeviation()));
-
-        resultKeeper.clear();
+        return LocalDateTime.now().toString();
     }
 }
