@@ -1,65 +1,72 @@
 package xyz.marcelo.helper;
 
+import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import weka.classifiers.Evaluation;
 import xyz.marcelo.eval.TimedEvaluation;
 
 @SuppressWarnings("unused")
 public class FormatHelper
 {
+    private static String timestamp;
     private static String folder;
     private static MethodHelper methodConfig;
-
-    private static double trainTime = 0;
-    private static double testTime = 0;
-    private static double totalCorrect = 0;
-    private static double totalIncorrect = 0;
-    private static double totalCorrectPercent = 0;
-    private static double totalIncorrectPercent = 0;
-    private static double hamPrecision = 0;
-    private static double hamRecall = 0;
-    private static double spamPrecision = 0;
-    private static double spamRecall = 0;
+    private static double totalCorrect;
+    private static double totalIncorrect;
+    private static double totalCorrectPercent;
+    private static double totalIncorrectPercent;
+    private static double hamPrecision;
+    private static double spamPrecision;
+    private static double hamRecall;
+    private static double spamRecall;
+    private static double trainTime;
+    private static double testTime;
+    private static double memoryUsage;
 
     private static final int CLASS_HAM = 0;
     private static final int CLASS_SPAM = 1;
-    private static final String TRAIN_TIME = "trainTime";
-    private static final String TEST_TIME = "testTime";
-    private static final String HAM_RECALL = "hamRecall";
-    private static final String SPAM_RECALL = "spamRecall";
+
     private static final String HAM_PRECISION = "hamPrecision";
     private static final String SPAM_PRECISION = "spamPrecision";
+    private static final String HAM_RECALL = "hamRecall";
+    private static final String SPAM_RECALL = "spamRecall";
+    private static final String TRAIN_TIME = "trainTime";
+    private static final String TEST_TIME = "testTime";
+    private static final String MEMORY_USAGE = "memoryUsage";
+
+    private static final String[] METRICS = { HAM_PRECISION, SPAM_PRECISION, HAM_RECALL, SPAM_RECALL, TRAIN_TIME, TEST_TIME, MEMORY_USAGE };
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
-    public static void handleSingleExperiment(TimedEvaluation methodEvaluation, boolean printPartialResult) throws Exception
+    public static void computeResults(TimedEvaluation methodEvaluation)
     {
+        timestamp = getCurrentDateTime();
+
         folder = methodEvaluation.getFolder();
 
         methodConfig = methodEvaluation.getMethodConfiguration();
+
+        totalCorrect = methodEvaluation.getEvaluation().correct();
+        totalIncorrect = methodEvaluation.getEvaluation().incorrect();
+
+        totalCorrectPercent = 100.0 * methodEvaluation.getEvaluation().pctCorrect();
+        totalIncorrectPercent = 100.0 * methodEvaluation.getEvaluation().pctIncorrect();
+
+        hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(CLASS_HAM);
+        spamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(CLASS_SPAM);
+
+        hamRecall = 100.0 * methodEvaluation.getEvaluation().recall(CLASS_HAM);
+        spamRecall = 100.0 * methodEvaluation.getEvaluation().recall(CLASS_SPAM);
 
         trainTime = (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
 
         testTime = (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
 
-        Evaluation evaluation = methodEvaluation.getEvaluation();
-
-        totalCorrect = evaluation.correct();
-        totalCorrectPercent = 100.0 * evaluation.pctCorrect();
-
-        totalIncorrect = evaluation.incorrect();
-        totalIncorrectPercent = 100.0 * evaluation.pctIncorrect();
-
-        hamPrecision = 100.0 * evaluation.precision(CLASS_HAM);
-        hamRecall = 100.0 * evaluation.recall(CLASS_HAM);
-
-        spamPrecision = 100.0 * evaluation.precision(CLASS_SPAM);
-        spamRecall = 100.0 * evaluation.recall(CLASS_SPAM);
+        memoryUsage = getMemoryUsage().doubleValue() / 1024 / 1024; // in MBytes
 
         String key = buildHashMapKey();
 
@@ -74,28 +81,55 @@ public class FormatHelper
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_RECALL, spamRecall);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TRAIN_TIME, trainTime);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TEST_TIME, testTime);
-
-        if (printPartialResult)
-        {
-            System.out.println(String.format("%s\t%s\t%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t", getCurrentDateTime(), folder, methodConfig.name(),
-                    hamPrecision, spamPrecision, hamRecall, spamRecall, trainTime, testTime));
-        }
+        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, MEMORY_USAGE, memoryUsage);
     }
 
-    public static void handleAllExperiments()
+    public static void summarizeResults(boolean includeStandardDeviation)
     {
         String key = buildHashMapKey();
 
-        System.out.println(String.format("%s\t%s\t%s\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f\t%.2f ± %.2f", getCurrentDateTime(),
-                folder, methodConfig.name(), resultKeeper.get(key).get(HAM_PRECISION).getMean(),
-                resultKeeper.get(key).get(HAM_PRECISION).getStandardDeviation(), resultKeeper.get(key).get(SPAM_PRECISION).getMean(),
-                resultKeeper.get(key).get(SPAM_PRECISION).getStandardDeviation(), resultKeeper.get(key).get(HAM_RECALL).getMean(),
-                resultKeeper.get(key).get(HAM_RECALL).getStandardDeviation(), resultKeeper.get(key).get(SPAM_RECALL).getMean(),
-                resultKeeper.get(key).get(SPAM_RECALL).getStandardDeviation(), resultKeeper.get(key).get(TRAIN_TIME).getMean(),
-                resultKeeper.get(key).get(TRAIN_TIME).getStandardDeviation(), resultKeeper.get(key).get(TEST_TIME).getMean(),
-                resultKeeper.get(key).get(TEST_TIME).getStandardDeviation()));
+        StringBuilder sb = new StringBuilder();
 
-        resultKeeper.clear();
+        sb.append(String.format("%s\t", timestamp));
+        sb.append(String.format("%s\t", folder));
+        sb.append(String.format("%s\t", methodConfig.name()));
+
+        double mean, standardDeviation;
+        for (String metric : METRICS)
+        {
+            mean = resultKeeper.get(key).get(metric).getMean();
+            if (!includeStandardDeviation)
+            {
+                sb.append(String.format("%.2f\t", mean));
+            }
+            else
+            {
+                standardDeviation = resultKeeper.get(key).get(metric).getStandardDeviation();
+                sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
+            }
+        }
+
+        System.out.println(sb.toString());
+    }
+
+    public static void printHeader()
+    {
+        System.out.println("Timestamp\tPath\tMethod\tHam Recall\tSpam Recall\tTrain Time\tTest Time\tMemory Usage");
+    }
+
+    public static void printFooter()
+    {
+        System.out.println("--------------------------------" + System.lineSeparator());
+    }
+
+    private static String getCurrentDateTime()
+    {
+        return LocalDateTime.now().toString();
+    }
+
+    private static Long getMemoryUsage()
+    {
+        return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
     }
 
     private static String buildHashMapKey()
@@ -103,7 +137,7 @@ public class FormatHelper
         return folder + "\t" + methodConfig.getPseudoHashCode();
     }
 
-    public static void putValueAndCreatingKeysIfNotPresent(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
+    private static void putValueAndCreatingKeysIfNotPresent(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
     {
         if (!resultKeeper.containsKey(outerKey))
         {
@@ -114,20 +148,5 @@ public class FormatHelper
             resultKeeper.get(outerKey).put(innerKey, new DescriptiveStatistics());
         }
         resultKeeper.get(outerKey).get(innerKey).addValue(value);
-    }
-
-    public static void printHeader()
-    {
-        System.out.println("Timestamp\tPath\tMethod\tHam Precision\tSpam Precision\tHam Recall\tSpam Recall\tTrain Time\tTest Time");
-    }
-
-    public static void printFooter()
-    {
-        System.out.println("--------------------------------" + System.lineSeparator());
-    }
-
-    public static String getCurrentDateTime()
-    {
-        return LocalDateTime.now().toString();
     }
 }

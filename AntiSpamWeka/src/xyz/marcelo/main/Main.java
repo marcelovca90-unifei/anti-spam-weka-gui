@@ -126,15 +126,16 @@ public class Main
                     timedEvaluation.setEvaluation(innerEvaluation);
                     timedEvaluation.run(trainSet, testSet);
 
-                    // log the partial result for this configuration
-                    FormatHelper.handleSingleExperiment(timedEvaluation, true);
+                    // comptue and log the partial results for this configuration
+                    FormatHelper.computeResults(timedEvaluation);
+                    FormatHelper.summarizeResults(false);
                 }
 
                 // delete temporary .csv and .arff files
                 Arrays.asList(dataCsvPath, dataArffPath, emptyCsvPath, emptyArffPath).forEach(path -> new File(path).delete());
 
-                // log the final result for this configuration
-                FormatHelper.handleAllExperiments();
+                // log the final results for this configuration
+                FormatHelper.summarizeResults(true);
             }
 
             FormatHelper.printFooter();
