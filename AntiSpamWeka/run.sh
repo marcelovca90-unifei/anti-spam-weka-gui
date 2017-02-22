@@ -1,6 +1,7 @@
 #!/bin/bash
 
-JAR_PATH="./target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+BASEDIR=$(pwd)
+JAR_PATH="${BASEDIR}/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 MAX_MEMORY_IN_GB=12
 DATA_SET_FOLDER=${1}
 NUMBER_OF_REPETITIONS=${2}
@@ -10,7 +11,7 @@ if [ "${#}" -ne 2 ]; then
     echo "Illegal number of parameters. Usage: ./run.sh \"DATA_SET_FOLDER\" NUMBER_OF_REPETITIONS"
 else
     for METHOD in "${CSV_METHODS[@]}"; do
-        echo "$(date) - Starting ${JAR_PATH} for ${METHOD}; performing ${NUMBER_OF_REPETITIONS} repetitions..."
-        java -jar ${JAR_PATH} -Xmx${MAX_MEMORY_IN_GB}G \"${DATA_SET_FOLDER}\" \"${METHOD}\" ${NUMBER_OF_REPETITIONS} > $(dirname ${JAR_PATH})/${METHOD}.log
+        echo "$(date) - Started [$(basename ${JAR_PATH})] for [${METHOD}] with [${NUMBER_OF_REPETITIONS}] repetitions..."
+        java -Xmx${MAX_MEMORY_IN_GB}G -jar ${JAR_PATH} ${DATA_SET_FOLDER} ${METHOD} ${NUMBER_OF_REPETITIONS} > $(dirname ${JAR_PATH})/${METHOD}.log
     done
 fi
