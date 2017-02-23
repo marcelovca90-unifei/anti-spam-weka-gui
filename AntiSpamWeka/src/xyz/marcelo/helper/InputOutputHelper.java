@@ -10,17 +10,19 @@ import java.nio.channels.FileChannel;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 
 public class InputOutputHelper
 {
-    public static void bin2csv(String hamInput, String spamInput, String output) throws IOException
+    public static void bin2csv(String hamInput, String spamInput, String outputFilename) throws IOException
     {
         File hamFile = new File(hamInput);
         File spamFile = new File(spamInput);
+        File outputFile = new File(outputFilename);
 
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(output)));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
 
         // read ham data
         FileInputStream hamStream = new FileInputStream(hamFile);
@@ -80,8 +82,9 @@ public class InputOutputHelper
         bufferedWriter.close();
     }
 
-    public static double[][] bin2double(File file) throws IOException
+    public static double[][] bin2double(String filename) throws IOException
     {
+        File file = new File(filename);
         FileInputStream stream = new FileInputStream(file);
         FileChannel channel = stream.getChannel();
         ByteBuffer buffer = ByteBuffer.allocate((int) file.length());
@@ -132,24 +135,27 @@ public class InputOutputHelper
         bufferedWriter.close();
     }
 
-    public static void csv2arff(String input, String output)
+    public static void csv2arff(String inputFilename, String outputFilename) throws IOException
     {
-        try
-        {
-            // load CSV
-            CSVLoader loader = new CSVLoader();
-            loader.setSource(new File(input));
-            Instances data = loader.getDataSet();
+        // load CSV
+        CSVLoader loader = new CSVLoader();
+        loader.setSource(new File(inputFilename));
+        Instances data = loader.getDataSet();
 
-            // save ARFF
-            BufferedWriter writer = new BufferedWriter(new FileWriter(output));
-            writer.write(data.toString());
-            writer.flush();
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        // save ARFF
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename));
+        writer.write(data.toString());
+        writer.flush();
+        writer.close();
+    }
+
+    public static void saveModelToFile(String filename, Classifier classifier) throws Exception
+    {
+        weka.core.SerializationHelper.write(filename, classifier);
+    }
+
+    public static Classifier loadModelFromFile(String filename) throws Exception
+    {
+        return (Classifier) weka.core.SerializationHelper.read(filename);
     }
 }
