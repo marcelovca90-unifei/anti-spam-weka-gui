@@ -15,12 +15,12 @@ Geral:
 - [x] Ler trabalhos anteriores
 - [x] Ler artigos sobre o assunto
 - [x] Estudar a biblioteca Weka
-- [ ] Salvar e carregar modelos do Weka
-- [ ] **Melhorar e investigar aleatoriedade dos resultados**
-- [ ] Implementar k-Fold Cross-Validation
+- [x] Salvar e carregar modelos do Weka
+- [ ] Investigar aleatoriedade dos resultados
+- [ ] ~~Implementar k-Fold Cross-Validation~~
 - [ ] Comparar os resultados com trabalhos anteriores
-- [ ] Escrever artigo
-- [ ] Escrever dissertação
+- [ ] Escrever dissetação no LaTeX
+- [ ] "Extrair" artigo da dissertação
 
 Bases de dados:
 - [x] LingSpam (com 8, 16, 32, 64, 128, 256 e 512 features - CHI2, DF e MI)
@@ -54,3 +54,4 @@ Métricas:
 - [x] Porcentagem de revocação na classificação de hams (Spam Recall)
 - [x] Tempo de treinamento (Training Time)
 - [x] Tempo de classificação (Test Time)
+- [x] Uso de memória (Memory Usage)
