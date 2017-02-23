@@ -127,8 +127,8 @@
 
     <repositories>
         <repository>
-            <id>local-repo</id>
-            <url>file://${basedir}/repo</url>
+            <id>local-repository</id>
+            <url>file://${basedir}/local-repository</url>
         </repository>
     </repositories>
 
