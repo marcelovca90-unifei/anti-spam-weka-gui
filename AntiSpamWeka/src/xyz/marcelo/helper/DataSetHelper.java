@@ -9,7 +9,7 @@ public class DataSetHelper
 {
     public static String SEPARATOR = File.separator;
 
-    private static String[] dataSets = { "LING_SPAM", "SPAM_ASSASSIN", "TREC", "UNIFEI_2017" };
+    private static String[] dataSets = { "2017_BASE2_LING_SPAM", "2017_BASE2_SPAM_ASSASSIN", "2017_BASE2_TREC", "2017_BASE2_UNIFEI" };
 
     private static String[] statMethods = { "CHI2", "FD", "MI" };
 
