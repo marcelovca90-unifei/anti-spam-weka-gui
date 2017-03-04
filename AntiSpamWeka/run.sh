@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASEDIR=$(pwd)
-JAR_PATH="${BASEDIR}/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+JAR_PATH="${BASEDIR}/target/AntiSpamWeka-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
 MAX_HEAP_SIZE=12G
 MAX_STACK_SIZE=8m
 DATA_SET_FOLDER=${1}
@@ -13,6 +13,6 @@ if [ "${#}" -ne 2 ]; then
 else
     for METHOD in "${CSV_METHODS[@]}"; do
         echo "$(date) - Started [$(basename ${JAR_PATH})] with [-Xmx${MAX_HEAP_SIZE}] and [-Xss${MAX_STACK_SIZE}] for [${METHOD}] with [${NUMBER_OF_REPETITIONS}] repetitions..."
-        java -Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -jar ${JAR_PATH} ${DATA_SET_FOLDER} ${METHOD} ${NUMBER_OF_REPETITIONS} > $(dirname ${JAR_PATH})/${METHOD}.log
+        java -Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC -jar ${JAR_PATH} ${DATA_SET_FOLDER} ${METHOD} ${NUMBER_OF_REPETITIONS} > $(dirname ${JAR_PATH})/${METHOD}.log
     done
 fi
