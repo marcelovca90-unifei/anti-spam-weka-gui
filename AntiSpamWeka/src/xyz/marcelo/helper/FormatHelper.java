@@ -1,7 +1,8 @@
 package xyz.marcelo.helper;
 
-import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ public class FormatHelper
     private static double spamRecall;
     private static double trainTime;
     private static double testTime;
-    private static double memoryUsage;
 
     private static final int CLASS_HAM = 0;
     private static final int CLASS_SPAM = 1;
@@ -36,9 +36,10 @@ public class FormatHelper
     private static final String SPAM_RECALL = "spamRecall";
     private static final String TRAIN_TIME = "trainTime";
     private static final String TEST_TIME = "testTime";
-    private static final String MEMORY_USAGE = "memoryUsage";
 
-    private static final String[] METRICS = { HAM_PRECISION, SPAM_PRECISION, HAM_RECALL, SPAM_RECALL, TRAIN_TIME, TEST_TIME, MEMORY_USAGE };
+    private static final String[] METRICS = { HAM_PRECISION, SPAM_PRECISION, HAM_RECALL, SPAM_RECALL, TRAIN_TIME, TEST_TIME };
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS z");
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
@@ -66,8 +67,6 @@ public class FormatHelper
 
         testTime = (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
 
-        memoryUsage = getMemoryUsage().doubleValue() / 1024 / 1024; // in MBytes
-
         String key = buildHashMapKey();
 
         if (!resultKeeper.containsKey(key))
@@ -81,7 +80,6 @@ public class FormatHelper
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_RECALL, spamRecall);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TRAIN_TIME, trainTime);
         putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TEST_TIME, testTime);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, MEMORY_USAGE, memoryUsage);
     }
 
     public static void summarizeResults(boolean includeStandardDeviation)
@@ -124,12 +122,8 @@ public class FormatHelper
 
     private static String getCurrentDateTime()
     {
-        return LocalDateTime.now().toString();
-    }
 
-    private static Long getMemoryUsage()
-    {
-        return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+        return LocalDateTime.now().atZone(ZoneId.of("America/Sao_Paulo")).format(FORMATTER);
     }
 
     private static String buildHashMapKey()
