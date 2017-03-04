@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASEDIR=$(pwd)
-JAR_PATH="${BASEDIR}/target/AntiSpamWeka-1.0.0-SNAPSHOT-jar-with-dependencies.jar"
+JAR_PATH="${BASEDIR}/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 MAX_HEAP_SIZE=12G
 MAX_STACK_SIZE=8m
 DATA_SET_FOLDER=${1}
