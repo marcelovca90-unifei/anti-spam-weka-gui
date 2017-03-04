@@ -108,7 +108,7 @@ public class Main
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
 
-                    // build test and train sets
+                    // build train and test sets
                     int trainSize = (int) Math.round(dataSet.numInstances() * 0.6);
                     int testSize = dataSet.numInstances() - trainSize;
                     Instances trainSet = new Instances(dataSet, 0, trainSize);
