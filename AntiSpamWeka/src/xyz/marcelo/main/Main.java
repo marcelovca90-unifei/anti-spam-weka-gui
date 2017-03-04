@@ -109,7 +109,7 @@ public class Main
                     dataSet.randomize(random);
 
                     // build test and train sets
-                    int trainSize = (int) Math.round(dataSet.numInstances() * 0.5);
+                    int trainSize = (int) Math.round(dataSet.numInstances() * 0.6);
                     int testSize = dataSet.numInstances() - trainSize;
                     Instances trainSet = new Instances(dataSet, 0, trainSize);
                     Instances testSet = new Instances(dataSet, trainSize, testSize);
