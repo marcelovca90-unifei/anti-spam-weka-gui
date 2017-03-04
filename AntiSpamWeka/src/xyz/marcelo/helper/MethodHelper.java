@@ -47,10 +47,10 @@ public enum MethodHelper
     JRIP("Repeated Incremental Pruning to Produce Error Reduction", "-F 3 -N 2.0 -O 2 -S 1", JRip.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html
-    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 1000 -V 20 -S 1 -E 50 -H a", MultilayerPerceptron.class),
+    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 1000 -V 0 -S 1 -E 50 -H a", MultilayerPerceptron.class),
 
     // http://weka.sourceforge.net/doc.packages/multilayerPerceptronCS/weka/classifiers/functions/MultilayerPerceptronCS.html
-    MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 1000 -V 20 -S 1 -E 50 -H a", MultilayerPerceptronCS.class),
+    MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 1000 -V 0 -S 1 -E 50 -H a", MultilayerPerceptronCS.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
