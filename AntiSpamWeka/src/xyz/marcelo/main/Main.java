@@ -17,11 +17,10 @@ import xyz.marcelo.helper.DataSetHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.InputOutputHelper;
 import xyz.marcelo.helper.MethodHelper;
+import xyz.marcelo.helper.PrimeHelper;
 
 public class Main
 {
-    private static final int[] PRIME_NUMBERS = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
-
     public static void main(String[] args) throws Exception
     {
         List<String> folders = new ArrayList<>();
@@ -64,6 +63,9 @@ public class Main
             }
         }
 
+        // initialize prime numbers array
+        PrimeHelper.initializePrimesArray(numberOfRepetitions);
+
         for (MethodHelper methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
@@ -101,7 +103,7 @@ public class Main
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
                     // set random number generator's seed
-                    random.setSeed(PRIME_NUMBERS[repetition]);
+                    random.setSeed(PrimeHelper.getNthPrime(repetition));
 
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
