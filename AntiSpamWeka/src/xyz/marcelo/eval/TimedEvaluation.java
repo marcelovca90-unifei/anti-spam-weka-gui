@@ -69,7 +69,7 @@ public class TimedEvaluation
 
     public TimedEvaluation(String folder, MethodHelper methodConfiguration)
     {
-        this.folder = DataSetHelper.shortenFolderName(folder);
+        this.folder = DataSetHelper.getDataSetNameFromFolder(folder);
         this.methodConfiguration = methodConfiguration;
     }
 

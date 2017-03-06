@@ -3,7 +3,6 @@ package xyz.marcelo.helper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DataSetHelper
@@ -30,19 +29,13 @@ public class DataSetHelper
         return folders;
     }
 
-    public static String shortenFolderName(String folder)
+    public static String getDataSetNameFromFolder(String folder)
     {
-        return shortenFolderName(folder, 4);
-    }
-
-    public static String shortenFolderName(String folder, int maxLength)
-    {
-        String[] parts = folder.split("\\" + SEPARATOR);
-        for (String part : parts)
+        for (String dataSet : dataSets)
         {
-            if (Arrays.asList(dataSets).stream().noneMatch(ds -> ds.equals(part)) && part.length() > maxLength)
+            if (folder.contains(dataSet))
             {
-                folder = folder.replaceAll(part, part.substring(0, maxLength) + "~");
+                return folder.substring(folder.indexOf(dataSet));
             }
         }
         return folder;

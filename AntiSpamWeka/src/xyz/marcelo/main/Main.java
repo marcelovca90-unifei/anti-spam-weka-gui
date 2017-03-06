@@ -128,7 +128,7 @@ public class Main
                     timedEvaluation.setEvaluation(innerEvaluation);
                     timedEvaluation.run(trainSet, testSet);
 
-                    // comptue and log the partial results for this configuration
+                    // compute and log the partial results for this configuration
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
                 }
