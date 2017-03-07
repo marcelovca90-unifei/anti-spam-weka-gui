@@ -12,11 +12,11 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import xyz.marcelo.eval.TimedEvaluation;
+import xyz.marcelo.common.MethodConfiguration;
+import xyz.marcelo.common.TimedEvaluation;
 import xyz.marcelo.helper.DataSetHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.InputOutputHelper;
-import xyz.marcelo.helper.MethodHelper;
 import xyz.marcelo.helper.PrimeHelper;
 
 public class Main
@@ -24,14 +24,14 @@ public class Main
     public static void main(String[] args) throws Exception
     {
         List<String> folders = new ArrayList<>();
-        List<MethodHelper> methodConfigurations = new ArrayList<>();
+        List<MethodConfiguration> methodConfigurations = new ArrayList<>();
         Integer numberOfRepetitions = 0;
 
         // exits if the wrong number of arguments was provided
         if (args.length != 3)
         {
             System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
-            System.out.println("Available classification methods: " + Arrays.toString(MethodHelper.values()));
+            System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.values()));
             System.exit(1);
         }
         else
@@ -41,7 +41,7 @@ public class Main
             {
                 folders = DataSetHelper.getFolders(args[0]);
                 for (String methodString : args[1].split(","))
-                    methodConfigurations.add(MethodHelper.valueOf(methodString));
+                    methodConfigurations.add(MethodConfiguration.valueOf(methodString));
                 numberOfRepetitions = Integer.parseInt(args[2]);
             }
             catch (Exception e)
@@ -66,7 +66,7 @@ public class Main
         // initialize prime numbers array
         PrimeHelper.initializePrimesArray(numberOfRepetitions);
 
-        for (MethodHelper methodConfiguration : methodConfigurations)
+        for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
 
@@ -95,7 +95,7 @@ public class Main
                 Random random = new Random();
 
                 // build the classifier for the given configuration
-                Classifier classifier = MethodHelper.buildClassifierFor(methodConfiguration);
+                Classifier classifier = MethodConfiguration.buildClassifierFor(methodConfiguration);
 
                 // create the object that will hold the overall evaluations result
                 TimedEvaluation timedEvaluation = new TimedEvaluation(folder, methodConfiguration);

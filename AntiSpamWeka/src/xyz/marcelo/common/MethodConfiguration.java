@@ -1,4 +1,4 @@
-package xyz.marcelo.helper;
+package xyz.marcelo.common;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -21,7 +21,7 @@ import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Utils;
 
-public enum MethodHelper
+public enum MethodConfiguration
 {
     // http://weka.sourceforge.net/packageMetaData/AnDE/index.html
     A1DE("Averaged 1-Dependence Estimators", "", A1DE.class),
@@ -78,7 +78,7 @@ public enum MethodHelper
     private final String config;
     private final Class<? extends Classifier> clazz;
 
-    private MethodHelper(final String name, final String config, final Class<? extends Classifier> clazz)
+    private MethodConfiguration(final String name, final String config, final Class<? extends Classifier> clazz)
     {
         this.name = name;
         this.config = config;
@@ -100,7 +100,7 @@ public enum MethodHelper
         return clazz;
     }
 
-    public static Classifier buildClassifierFor(MethodHelper methodConfiguration)
+    public static Classifier buildClassifierFor(MethodConfiguration methodConfiguration)
     {
         Classifier classifier = null;
 

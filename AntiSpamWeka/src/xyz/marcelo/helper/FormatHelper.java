@@ -9,14 +9,15 @@ import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import xyz.marcelo.eval.TimedEvaluation;
+import xyz.marcelo.common.MethodConfiguration;
+import xyz.marcelo.common.TimedEvaluation;
 
 @SuppressWarnings("unused")
 public class FormatHelper
 {
     private static String timestamp;
     private static String folder;
-    private static MethodHelper methodConfig;
+    private static MethodConfiguration methodConfiguration;
     private static double totalCorrect;
     private static double totalIncorrect;
     private static double totalCorrectPercent;
@@ -50,7 +51,7 @@ public class FormatHelper
 
         folder = timedEvaluation.getFolder();
 
-        methodConfig = timedEvaluation.getMethodConfiguration();
+        methodConfiguration = timedEvaluation.getMethodConfiguration();
 
         totalCorrect = timedEvaluation.getEvaluation().correct();
         totalIncorrect = timedEvaluation.getEvaluation().incorrect();
@@ -91,7 +92,7 @@ public class FormatHelper
 
         sb.append(String.format("%s\t", timestamp));
         sb.append(String.format("%s\t", folder));
-        sb.append(String.format("%s\t", methodConfig.name()));
+        sb.append(String.format("%s\t", methodConfiguration.name()));
 
         for (String metric : METRICS)
         {
@@ -128,7 +129,7 @@ public class FormatHelper
 
     private static String buildHashMapKey()
     {
-        return methodConfig.toString() + "@" + folder;
+        return methodConfiguration.toString() + "@" + folder;
     }
 
     private static void putValueCreatingKeyIfNotExists(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
