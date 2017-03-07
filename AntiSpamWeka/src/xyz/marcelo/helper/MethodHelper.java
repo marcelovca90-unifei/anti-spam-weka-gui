@@ -10,6 +10,7 @@ import weka.classifiers.functions.MultilayerPerceptronCS;
 import weka.classifiers.functions.RBFClassifier;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SPegasos;
+import weka.classifiers.meta.RandomCommittee;
 import weka.classifiers.misc.HyperPipes;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.FURIA;
@@ -54,6 +55,9 @@ public enum MethodHelper
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
+
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/meta/RandomCommittee.html
+    RC("Random Committee,", "-S 1 -num-slots 1 -I 10 -W weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1", RandomCommittee.class),
 
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html
     RBF("Radial basis function network", "-N 2 -R 0.01 -L 1.0E-6 -C 2 -P 1 -E 1 -S 1", RBFClassifier.class),
