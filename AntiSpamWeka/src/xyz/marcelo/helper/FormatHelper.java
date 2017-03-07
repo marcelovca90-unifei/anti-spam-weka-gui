@@ -84,7 +84,7 @@ public class FormatHelper
         putValueCreatingKeyIfNotExists(resultKeeper, key, TEST_TIME, testTime);
     }
 
-    public static void summarizeResults(boolean includeStandardDeviation)
+    public static void summarizeResults(boolean displayMeanAndStandardDeviation)
     {
         String key = buildHashMapKey();
 
@@ -96,7 +96,7 @@ public class FormatHelper
 
         for (String metric : METRICS)
         {
-            if (!includeStandardDeviation)
+            if (!displayMeanAndStandardDeviation)
             {
                 double[] values = resultKeeper.get(key).get(metric).getValues();
                 sb.append(String.format("%.2f\t", values[values.length - 1]));
