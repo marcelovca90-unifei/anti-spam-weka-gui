@@ -100,11 +100,6 @@ public enum MethodHelper
         return clazz;
     }
 
-    public String getPseudoHashCode()
-    {
-        return (name + config).toUpperCase().replace(" ", "").trim();
-    }
-
     public static Classifier buildClassifierFor(MethodHelper methodConfiguration)
     {
         Classifier classifier = null;

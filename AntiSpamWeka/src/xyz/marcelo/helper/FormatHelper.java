@@ -44,29 +44,29 @@ public class FormatHelper
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
-    public static void computeResults(TimedEvaluation methodEvaluation)
+    public static void computeResults(TimedEvaluation timedEvaluation)
     {
         timestamp = getCurrentDateTime();
 
-        folder = methodEvaluation.getFolder();
+        folder = timedEvaluation.getFolder();
 
-        methodConfig = methodEvaluation.getMethodConfiguration();
+        methodConfig = timedEvaluation.getMethodConfiguration();
 
-        totalCorrect = methodEvaluation.getEvaluation().correct();
-        totalIncorrect = methodEvaluation.getEvaluation().incorrect();
+        totalCorrect = timedEvaluation.getEvaluation().correct();
+        totalIncorrect = timedEvaluation.getEvaluation().incorrect();
 
-        totalCorrectPercent = 100.0 * methodEvaluation.getEvaluation().pctCorrect();
-        totalIncorrectPercent = 100.0 * methodEvaluation.getEvaluation().pctIncorrect();
+        totalCorrectPercent = 100.0 * timedEvaluation.getEvaluation().pctCorrect();
+        totalIncorrectPercent = 100.0 * timedEvaluation.getEvaluation().pctIncorrect();
 
-        hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(CLASS_HAM);
-        spamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(CLASS_SPAM);
+        hamPrecision = 100.0 * timedEvaluation.getEvaluation().precision(CLASS_HAM);
+        spamPrecision = 100.0 * timedEvaluation.getEvaluation().precision(CLASS_SPAM);
 
-        hamRecall = 100.0 * methodEvaluation.getEvaluation().recall(CLASS_HAM);
-        spamRecall = 100.0 * methodEvaluation.getEvaluation().recall(CLASS_SPAM);
+        hamRecall = 100.0 * timedEvaluation.getEvaluation().recall(CLASS_HAM);
+        spamRecall = 100.0 * timedEvaluation.getEvaluation().recall(CLASS_SPAM);
 
-        trainTime = (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
+        trainTime = (timedEvaluation.getTrainEnd() - timedEvaluation.getTrainStart());
 
-        testTime = (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
+        testTime = (timedEvaluation.getTestEnd() - timedEvaluation.getTestStart());
 
         String key = buildHashMapKey();
 
@@ -75,12 +75,12 @@ public class FormatHelper
             resultKeeper.put(key, new LinkedHashMap<String, DescriptiveStatistics>());
         }
 
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, HAM_PRECISION, hamPrecision);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_PRECISION, spamPrecision);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, HAM_RECALL, hamRecall);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, SPAM_RECALL, spamRecall);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TRAIN_TIME, trainTime);
-        putValueAndCreatingKeysIfNotPresent(resultKeeper, key, TEST_TIME, testTime);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_PRECISION, hamPrecision);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_PRECISION, spamPrecision);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_RECALL, hamRecall);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_RECALL, spamRecall);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, TRAIN_TIME, trainTime);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, TEST_TIME, testTime);
     }
 
     public static void summarizeResults(boolean includeStandardDeviation)
@@ -93,17 +93,17 @@ public class FormatHelper
         sb.append(String.format("%s\t", folder));
         sb.append(String.format("%s\t", methodConfig.name()));
 
-        double mean, standardDeviation;
         for (String metric : METRICS)
         {
-            mean = resultKeeper.get(key).get(metric).getMean();
             if (!includeStandardDeviation)
             {
-                sb.append(String.format("%.2f\t", mean));
+                double[] values = resultKeeper.get(key).get(metric).getValues();
+                sb.append(String.format("%.2f\t", values[values.length - 1]));
             }
             else
             {
-                standardDeviation = resultKeeper.get(key).get(metric).getStandardDeviation();
+                double mean = resultKeeper.get(key).get(metric).getMean();
+                double standardDeviation = resultKeeper.get(key).get(metric).getStandardDeviation();
                 sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
             }
         }
@@ -128,10 +128,10 @@ public class FormatHelper
 
     private static String buildHashMapKey()
     {
-        return folder + "\t" + methodConfig.getPseudoHashCode();
+        return methodConfig.toString() + "@" + folder;
     }
 
-    private static void putValueAndCreatingKeysIfNotPresent(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
+    private static void putValueCreatingKeyIfNotExists(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
     {
         if (!resultKeeper.containsKey(outerKey))
         {
