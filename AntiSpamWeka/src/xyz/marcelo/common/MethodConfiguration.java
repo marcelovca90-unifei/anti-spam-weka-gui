@@ -17,6 +17,8 @@ import weka.classifiers.rules.FURIA;
 import weka.classifiers.rules.JRip;
 import weka.classifiers.trees.BFTree;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.J48Consolidated;
+import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Utils;
@@ -42,7 +44,13 @@ public enum MethodConfiguration
     HP("HyperPipe classifier", "", HyperPipes.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html
-    J48("C4.5 algorithm", "-C 0.25 -M 2 -Q 1", J48.class),
+    J48("C4.5 decision tree", "-C 0.25 -M 2 -Q 1", J48.class),
+
+    // http://weka.sourceforge.net/packageMetaData/J48Consolidated/index.html
+    J48C("C4.5 consolidated decision tree", "-C 0.25 -M 2 -Q 1 -RM-C -RM-N 99.0 -RM-B -2 -RM-D 50.0", J48Consolidated.class),
+
+    // http://weka.sourceforge.net/doc.packages/J48graft/weka/classifiers/trees/J48graft.html
+    J48G("C4.5 grafted decision tree", "-C 0.25 -M 2 -Q 1", J48graft.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/JRip.html
     JRIP("Repeated Incremental Pruning to Produce Error Reduction", "-F 3 -N 2.0 -O 2 -S 1", JRip.class),

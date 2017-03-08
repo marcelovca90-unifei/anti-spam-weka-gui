@@ -36,7 +36,9 @@ Métodos de classificação:
 - [x] [DTNB](http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/DTNB.html) - Decision Table/Naive Bayes hybrid classifier
 - [x] ~~[FURIA](http://weka.sourceforge.net/packageMetaData/fuzzyUnorderedRuleInduction/index.html) - Fuzzy Unordered Rule Induction Algorithm~~ Trava no UNIFEI_2017_FD_8
 - [x] ~~[HP](http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html) - HyperPipe classifier~~ Perde-se em mínimos locais
-- [x] [J48](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html) - C4.5 algorithm
+- [x] [J48](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html) - C4.5 decision tree
+- [x] [J48C](http://weka.sourceforge.net/packageMetaData/J48Consolidated/index.html) - C4.5 consolidated decision tree
+- [x] [J48G](http://weka.sourceforge.net/doc.packages/J48graft/weka/classifiers/trees/J48graft.html) - C4.5 grafted decision tree
 - [x] ~~[JRIP](http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/JRip.html) - Repeated Incremental Pruning to Produce Error Reduction~~ Trava no UNIFEI_2017_FD_32
 - [x] ~~[MLPCS](http://weka.sourceforge.net/doc.packages/multilayerPerceptronCS/weka/classifiers/functions/MultilayerPerceptronCS.html) - Multilayer perceptron with context-sensitive Multiple Task Learning~~ Mesmo resultado que MLP tradicional
 - [x] [MLP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer perceptron
