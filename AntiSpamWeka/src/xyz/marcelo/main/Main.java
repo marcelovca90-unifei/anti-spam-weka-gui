@@ -63,9 +63,6 @@ public class Main
             }
         }
 
-        // initialize prime numbers array
-        PrimeHelper.initializePrimesArray(numberOfRepetitions);
-
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
@@ -103,7 +100,7 @@ public class Main
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
                     // set random number generator's seed
-                    random.setSeed(PrimeHelper.getNthPrime(repetition));
+                    random.setSeed(PrimeHelper.getNextPrime());
 
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
