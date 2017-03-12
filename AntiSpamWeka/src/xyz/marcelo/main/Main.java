@@ -1,7 +1,6 @@
 package xyz.marcelo.main;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,9 +11,11 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.TimedEvaluation;
 import xyz.marcelo.helper.DataSetHelper;
+import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.InputOutputHelper;
 import xyz.marcelo.helper.PrimeHelper;
@@ -25,12 +26,13 @@ public class Main
     {
         List<String> folders = new ArrayList<>();
         List<MethodConfiguration> methodConfigurations = new ArrayList<>();
-        Integer numberOfRepetitions = 0;
+        Integer numberOfRepetitions = null;
+        Boolean includeEmptyInstances = null;
 
         // exits if the wrong number of arguments was provided
-        if (args.length != 3)
+        if (args.length != 4)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS TRUE|FALSE");
             System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.values()));
             System.exit(1);
         }
@@ -43,6 +45,7 @@ public class Main
                 for (String methodString : args[1].split(","))
                     methodConfigurations.add(MethodConfiguration.valueOf(methodString));
                 numberOfRepetitions = Integer.parseInt(args[2]);
+                includeEmptyInstances = Boolean.parseBoolean(args[3]);
             }
             catch (Exception e)
             {
@@ -63,30 +66,38 @@ public class Main
             }
         }
 
+        // objects that will hold all kinds of data sets
+        Instances dataSet = null, trainSet = null, testSet = null, emptySet = null;
+
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
             FormatHelper.printHeader();
 
             for (String folder : folders)
             {
+                // Strings that will hold all data sets' file paths
+                String hamFilePath = null, spamFilePath = null, dataCsvPath = null, emptyCsvPath = null;
+
                 // import data set
-                String hamFilePath = folder + File.separator + "ham";
-                String spamFilePath = folder + File.separator + "spam";
-                String dataCsvPath = folder + File.separator + "data.csv";
-                String dataArffPath = folder + File.separator + "data.arff";
+                hamFilePath = folder + File.separator + "ham";
+                spamFilePath = folder + File.separator + "spam";
+                dataCsvPath = folder + File.separator + "data.csv";
                 InputOutputHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
-                InputOutputHelper.csv2arff(dataCsvPath, dataArffPath);
-                FileReader dataReader = new FileReader(dataArffPath);
-                Instances dataSet = new Instances(dataReader);
+                dataSet = new DataSource(dataCsvPath).getDataSet();
                 dataSet.setClassIndex(dataSet.numAttributes() - 1);
 
+                // check if attribute and instance filters should be applied to the data set
+                boolean shouldApplyAttributeFilter = FilterHelper.shouldApplyAttributeFilter(folder);
+                boolean shouldApplyInstanceFilter = FilterHelper.shouldApplyInstanceFilter(folder);
+                dataSet = FilterHelper.applyFilters(dataSet, shouldApplyAttributeFilter, shouldApplyInstanceFilter);
+
                 // build empty patterns set
-                String emptyCsvPath = folder + File.separator + "empty.csv";
-                String emptyArffPath = folder + File.separator + "empty.arff";
-                InputOutputHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
-                InputOutputHelper.csv2arff(emptyCsvPath, emptyArffPath);
-                FileReader emptyReader = new FileReader(emptyArffPath);
-                Instances emptySet = new Instances(emptyReader);
+                if (includeEmptyInstances)
+                {
+                    emptyCsvPath = folder + File.separator + "empty.csv";
+                    InputOutputHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
+                    emptySet = new DataSource(emptyCsvPath).getDataSet();
+                }
 
                 // initialize random number generator
                 Random random = new Random();
@@ -96,6 +107,9 @@ public class Main
 
                 // create the object that will hold the overall evaluations result
                 TimedEvaluation timedEvaluation = new TimedEvaluation(folder, methodConfiguration);
+
+                // reset prime helper index
+                PrimeHelper.reset();
 
                 for (int repetition = 0; repetition < numberOfRepetitions; repetition++)
                 {
@@ -108,11 +122,11 @@ public class Main
                     // build train and test sets
                     int trainSize = (int) Math.round(dataSet.numInstances() * 0.6);
                     int testSize = dataSet.numInstances() - trainSize;
-                    Instances trainSet = new Instances(dataSet, 0, trainSize);
-                    Instances testSet = new Instances(dataSet, trainSize, testSize);
+                    trainSet = new Instances(dataSet, 0, trainSize);
+                    testSet = new Instances(dataSet, trainSize, testSize);
 
                     // add empty patterns to test set
-                    testSet.addAll(emptySet);
+                    if (includeEmptyInstances) testSet.addAll(emptySet);
 
                     // build the classifier for the given configuration
                     Classifier innerClassifier = AbstractClassifier.makeCopy(classifier);
@@ -131,7 +145,7 @@ public class Main
                 }
 
                 // delete temporary .csv and .arff files
-                Arrays.asList(dataCsvPath, dataArffPath, emptyCsvPath, emptyArffPath).forEach(path -> new File(path).delete());
+                Arrays.asList(dataCsvPath, emptyCsvPath).forEach(path -> new File(path).delete());
 
                 // log the final results for this configuration
                 FormatHelper.summarizeResults(true);
