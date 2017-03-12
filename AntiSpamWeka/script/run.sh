@@ -9,7 +9,7 @@ NUMBER_OF_REPETITIONS=${2}
 TEST_EMPTY_INSTANCES=${3}
 CSV_METHODS=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NBTREE RBF RC RF SGD SPEGASOS SVM)
 
-if [ "${#}" -ne 2 ]; then
+if [ "${#}" -ne 3 ]; then
     echo "Illegal number of parameters. Usage: ./run.sh \"DATA_SET_FOLDER\" NUMBER_OF_REPETITIONS TEST_EMPTY_INSTANCES"
 else
     for METHOD in "${CSV_METHODS[@]}"; do
