@@ -114,7 +114,7 @@ public class FormatHelper
 
     public static void printHeader()
     {
-        System.out.println("Timestamp\tPath\tMethod\tHam Recall\tSpam Recall\tTrain Time\tTest Time");
+        System.out.println("Timestamp\tPath\tMethod\tHam Precision\tSpam Precision\tHam Recall\tSpam Recall\tTrain Time\tTest Time");
     }
 
     public static void printFooter()

@@ -107,7 +107,7 @@ public class InputOutputHelper
 
     public static void buildEmptyCsv(String folder, int featureAmount) throws IOException
     {
-        Pair<Integer, Integer> emptyPatterns = EmptyPatternHelper.getEmptyPatternCountsByFolder(folder);
+        Pair<Integer, Integer> emptyPatterns = EmptyInstanceHelper.getEmptyInstancesCountByFolder(folder);
         int emptyHamCount = emptyPatterns.getLeft();
         int emptySpamCount = emptyPatterns.getRight();
 

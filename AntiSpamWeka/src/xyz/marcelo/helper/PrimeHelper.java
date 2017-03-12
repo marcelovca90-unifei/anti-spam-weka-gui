@@ -76,4 +76,9 @@ public class PrimeHelper
     {
         return PRIMES[(int) (Math.random() * (PRIMES.length))];
     }
+
+    public static void reset()
+    {
+        index = 0;
+    }
 }

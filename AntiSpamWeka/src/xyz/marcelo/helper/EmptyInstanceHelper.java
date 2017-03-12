@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-public class EmptyPatternHelper
+public class EmptyInstanceHelper
 {
     private static Map<String, Pair<Integer, Integer>> hashMap = populateHashMap();
 
@@ -104,7 +104,7 @@ public class EmptyPatternHelper
         return map;
     }
 
-    public static Pair<Integer, Integer> getEmptyPatternCountsByFolder(String folder)
+    public static Pair<Integer, Integer> getEmptyInstancesCountByFolder(String folder)
     {
         String key = folder;
 
