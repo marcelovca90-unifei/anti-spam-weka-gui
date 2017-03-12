@@ -32,7 +32,7 @@ public class Main
         // exits if the wrong number of arguments was provided
         if (args.length != 4)
         {
-            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS TRUE|FALSE");
+            System.out.println("Usage: java -jar AntiSpamWeka.jar \"DATA_SET_FOLDER\" \"COMMA_SEPARATED_METHODS\" NUMBER_OF_REPETITIONS TEST_EMPTY_INSTANCES");
             System.out.println("Available classification methods: " + Arrays.toString(MethodConfiguration.values()));
             System.exit(1);
         }
