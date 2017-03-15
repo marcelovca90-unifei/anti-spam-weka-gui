@@ -11,7 +11,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.TimedEvaluation;
 import xyz.marcelo.helper.DataSetHelper;
@@ -75,16 +74,10 @@ public class Main
 
             for (String folder : folders)
             {
-                // Strings that will hold all data sets' file paths
-                String hamFilePath = null, spamFilePath = null, dataCsvPath = null, emptyCsvPath = null;
-
                 // import data set
-                hamFilePath = folder + File.separator + "ham";
-                spamFilePath = folder + File.separator + "spam";
-                dataCsvPath = folder + File.separator + "data.csv";
-                InputOutputHelper.bin2csv(hamFilePath, spamFilePath, dataCsvPath);
-                dataSet = new DataSource(dataCsvPath).getDataSet();
-                dataSet.setClassIndex(dataSet.numAttributes() - 1);
+                String hamFilePath = folder + File.separator + "ham";
+                String spamFilePath = folder + File.separator + "spam";
+                dataSet = InputOutputHelper.bin2instances(hamFilePath, spamFilePath);
 
                 // check if attribute and instance filters should be applied to the data set
                 boolean shouldApplyAttributeFilter = FilterHelper.shouldApplyAttributeFilter(folder);
@@ -92,12 +85,7 @@ public class Main
                 dataSet = FilterHelper.applyFilters(dataSet, shouldApplyAttributeFilter, shouldApplyInstanceFilter);
 
                 // build empty patterns set
-                if (includeEmptyInstances)
-                {
-                    emptyCsvPath = folder + File.separator + "empty.csv";
-                    InputOutputHelper.buildEmptyCsv(folder, dataSet.numAttributes() - 1);
-                    emptySet = new DataSource(emptyCsvPath).getDataSet();
-                }
+                if (includeEmptyInstances) emptySet = InputOutputHelper.buildEmptyInstances(folder, dataSet.numAttributes() - 1);
 
                 // initialize random number generator
                 Random random = new Random();
@@ -143,9 +131,6 @@ public class Main
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
                 }
-
-                // delete temporary .csv and .arff files
-                Arrays.asList(dataCsvPath, emptyCsvPath).forEach(path -> new File(path).delete());
 
                 // log the final results for this configuration
                 FormatHelper.summarizeResults(true);
