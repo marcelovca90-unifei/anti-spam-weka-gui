@@ -130,8 +130,6 @@ public class Main
                     // compute and log the partial results for this configuration
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
-
-                    System.exit(0);
                 }
 
                 // log the final results for this configuration
