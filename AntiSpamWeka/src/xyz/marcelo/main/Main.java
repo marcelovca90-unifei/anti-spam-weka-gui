@@ -66,7 +66,7 @@ public class Main
         }
 
         // objects that will hold all kinds of data sets
-        Instances dataSet = null, trainSet = null, testSet = null, emptySet = null;
+        Instances dataSet = null, trainingSet = null, testingSet = null, emptySet = null;
 
         for (MethodConfiguration methodConfiguration : methodConfigurations)
         {
@@ -77,7 +77,7 @@ public class Main
                 // import data set
                 String hamFilePath = folder + File.separator + "ham";
                 String spamFilePath = folder + File.separator + "spam";
-                dataSet = InputOutputHelper.bin2instances(hamFilePath, spamFilePath);
+                dataSet = InputOutputHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // check if attribute and instance filters should be applied to the data set
                 boolean shouldApplyAttributeFilter = FilterHelper.shouldApplyAttributeFilter(folder);
@@ -85,7 +85,7 @@ public class Main
                 dataSet = FilterHelper.applyFilters(dataSet, shouldApplyAttributeFilter, shouldApplyInstanceFilter);
 
                 // build empty patterns set
-                if (includeEmptyInstances) emptySet = InputOutputHelper.buildEmptyInstances(folder, dataSet.numAttributes() - 1);
+                if (includeEmptyInstances) emptySet = InputOutputHelper.createEmptyInstances(folder, dataSet.numAttributes() - 1);
 
                 // initialize random number generator
                 Random random = new Random();
@@ -108,28 +108,30 @@ public class Main
                     dataSet.randomize(random);
 
                     // build train and test sets
-                    int trainSize = (int) Math.round(dataSet.numInstances() * 0.6);
-                    int testSize = dataSet.numInstances() - trainSize;
-                    trainSet = new Instances(dataSet, 0, trainSize);
-                    testSet = new Instances(dataSet, trainSize, testSize);
+                    int trainingSetSize = (int) Math.round(dataSet.numInstances() * 0.6);
+                    int testingSetSize = dataSet.numInstances() - trainingSetSize;
+                    trainingSet = new Instances(dataSet, 0, trainingSetSize);
+                    testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (includeEmptyInstances) testSet.addAll(emptySet);
+                    if (includeEmptyInstances) testingSet.addAll(emptySet);
 
                     // build the classifier for the given configuration
                     Classifier innerClassifier = AbstractClassifier.makeCopy(classifier);
 
                     // create the object that will hold the single evaluation result
-                    Evaluation innerEvaluation = new Evaluation(testSet);
+                    Evaluation innerEvaluation = new Evaluation(testingSet);
 
                     // evaluate the classifier
                     timedEvaluation.setClassifier(innerClassifier);
                     timedEvaluation.setEvaluation(innerEvaluation);
-                    timedEvaluation.run(trainSet, testSet);
+                    timedEvaluation.run(trainingSet, testingSet);
 
                     // compute and log the partial results for this configuration
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
+
+                    System.exit(0);
                 }
 
                 // log the final results for this configuration

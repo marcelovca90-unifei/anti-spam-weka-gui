@@ -18,7 +18,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.CSVLoader;
 
 public class InputOutputHelper
 {
@@ -26,67 +25,11 @@ public class InputOutputHelper
     private static final String TAG_SPAM = "spam";
     private static final String TAG_CLASS = "class";
 
-    public static File bin2csv(String hamInput, String spamInput, String outputFilename) throws IOException
+    public static Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
-        // create objects to handle the output file
-        File outputFile = new File(outputFilename);
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-
-        // read ham data
-        File hamFile = new File(hamInput);
-        ByteBuffer hamBuffer = extractBytesFromFile(hamFile);
-
-        int hamInstanceAmount = hamBuffer.getInt();
-        int hamFeatureAmount = hamBuffer.getInt();
-        double hamData;
-
-        // write csv header
-        for (int j = 0; j < hamFeatureAmount; j++)
-            bufferedWriter.write("x" + (j + 1) + ",");
-        bufferedWriter.write(TAG_CLASS + System.lineSeparator());
-
-        // write ham data
-        for (int i = 0; i < hamInstanceAmount; i++)
-        {
-            for (int j = 0; j < hamFeatureAmount; j++)
-            {
-                hamData = hamBuffer.getDouble();
-                bufferedWriter.write(String.valueOf(hamData) + ",");
-            }
-            bufferedWriter.write(TAG_HAM + System.lineSeparator());
-        }
-        bufferedWriter.flush();
-
-        // read spam data
-        File spamFile = new File(spamInput);
-        ByteBuffer spamBuffer = extractBytesFromFile(spamFile);
-
-        int spamInstanceAmount = spamBuffer.getInt();
-        int spamFeatureAmount = spamBuffer.getInt();
-        double spamData;
-
-        // write ham data
-        for (int i = 0; i < spamInstanceAmount; i++)
-        {
-            for (int j = 0; j < spamFeatureAmount; j++)
-            {
-                spamData = spamBuffer.getDouble();
-                bufferedWriter.write(String.valueOf(spamData) + ",");
-            }
-            bufferedWriter.write(TAG_SPAM + System.lineSeparator());
-        }
-        bufferedWriter.flush();
-
-        bufferedWriter.close();
-
-        return outputFile;
-    }
-
-    public static Instances bin2instances(String hamInput, String spamInput) throws IOException
-    {
-        // // read ham amounts
-        File hamFile = new File(hamInput);
-        ByteBuffer hamBuffer = extractBytesFromFile(hamFile);
+        // read ham amounts
+        File hamFile = new File(hamDataFilename);
+        ByteBuffer hamBuffer = readBytesFromFile(hamFile);
         int hamInstanceAmount = hamBuffer.getInt();
         int hamFeatureAmount = hamBuffer.getInt();
         Instance hamInstance;
@@ -109,9 +52,9 @@ public class InputOutputHelper
             hamDataSet.add(hamInstance);
         }
 
-        // // read spam amounts
-        File spamFile = new File(spamInput);
-        ByteBuffer spamBuffer = extractBytesFromFile(spamFile);
+        // read spam amounts
+        File spamFile = new File(spamDataFilename);
+        ByteBuffer spamBuffer = readBytesFromFile(spamFile);
         int spamInstanceAmount = spamBuffer.getInt();
         int spamFeatureAmount = spamBuffer.getInt();
         Instance spamInstance;
@@ -146,40 +89,32 @@ public class InputOutputHelper
         return dataSet;
     }
 
-    public static File buildEmptyCsv(String folder, int featureAmount) throws IOException
+    public static void saveInstancesToFile(Instances instances, String filename) throws IOException
     {
-        Pair<Integer, Integer> emptyPatterns = EmptyInstanceHelper.getEmptyInstancesCountByFolder(folder);
-        int emptyHamCount = emptyPatterns.getLeft();
-        int emptySpamCount = emptyPatterns.getRight();
+        // create output file's buffered writer
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(filename)));
 
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < featureAmount; i++)
-            buffer.append("0.0,");
+        // write attribute names
+        for (int i = 0; i < instances.numAttributes(); i++)
+        {
+            if (i > 0) bufferedWriter.write(",");
+            bufferedWriter.write(i != instances.classIndex() ? instances.attribute(i).name() : TAG_CLASS);
+        }
+        bufferedWriter.write(System.lineSeparator());
 
-        String emptyHam = buffer.toString() + TAG_HAM;
-        String emptySpam = buffer.toString() + TAG_SPAM;
+        // write instances
+        for (int i = 0; i < instances.size(); i++)
+        {
+            bufferedWriter.write(instances.get(i).toStringNoWeight());
+            bufferedWriter.write(System.lineSeparator());
+        }
 
-        String outputFilename = folder + File.separator + "empty.csv";
-        File outputFile = new File(outputFilename);
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-
-        for (int i = 0; i < featureAmount; i++)
-            bufferedWriter.write("x" + (i + 1) + ",");
-        bufferedWriter.write(TAG_CLASS + System.lineSeparator());
-
-        for (int i = 0; i < emptyHamCount; i++)
-            bufferedWriter.write(emptyHam + System.lineSeparator());
-
-        for (int i = 0; i < emptySpamCount; i++)
-            bufferedWriter.write(emptySpam + System.lineSeparator());
-
+        // flush and close the buffered writer
         bufferedWriter.flush();
         bufferedWriter.close();
-
-        return outputFile;
     }
 
-    public static Instances buildEmptyInstances(String folder, int featureAmount) throws IOException
+    public static Instances createEmptyInstances(String folder, int featureAmount) throws IOException
     {
         Pair<Integer, Integer> emptyPatterns = EmptyInstanceHelper.getEmptyInstancesCountByFolder(folder);
 
@@ -239,24 +174,7 @@ public class InputOutputHelper
         return dataSet;
     }
 
-    public static File csv2arff(String inputFilename, String outputFilename) throws IOException
-    {
-        // load CSV
-        CSVLoader loader = new CSVLoader();
-        loader.setSource(new File(inputFilename));
-        Instances data = loader.getDataSet();
-
-        // save ARFF
-        File outputFile = new File(outputFilename);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-        writer.write(data.toString());
-        writer.flush();
-        writer.close();
-
-        return outputFile;
-    }
-
-    private static ByteBuffer extractBytesFromFile(File file) throws FileNotFoundException, IOException
+    private static ByteBuffer readBytesFromFile(File file) throws FileNotFoundException, IOException
     {
         FileInputStream hamStream = new FileInputStream(file);
         FileChannel hamChannel = hamStream.getChannel();
