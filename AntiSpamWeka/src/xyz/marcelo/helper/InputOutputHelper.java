@@ -28,8 +28,7 @@ public class InputOutputHelper
     public static Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
         // read ham amounts
-        File hamFile = new File(hamDataFilename);
-        ByteBuffer hamBuffer = readBytesFromFile(hamFile);
+        ByteBuffer hamBuffer = readBytesFromFile(hamDataFilename);
         int hamInstanceAmount = hamBuffer.getInt();
         int hamFeatureAmount = hamBuffer.getInt();
         Instance hamInstance;
@@ -53,8 +52,7 @@ public class InputOutputHelper
         }
 
         // read spam amounts
-        File spamFile = new File(spamDataFilename);
-        ByteBuffer spamBuffer = readBytesFromFile(spamFile);
+        ByteBuffer spamBuffer = readBytesFromFile(spamDataFilename);
         int spamInstanceAmount = spamBuffer.getInt();
         int spamFeatureAmount = spamBuffer.getInt();
         Instance spamInstance;
@@ -174,8 +172,9 @@ public class InputOutputHelper
         return dataSet;
     }
 
-    private static ByteBuffer readBytesFromFile(File file) throws FileNotFoundException, IOException
+    private static ByteBuffer readBytesFromFile(String filename) throws FileNotFoundException, IOException
     {
+        File file = new File(filename);
         FileInputStream hamStream = new FileInputStream(file);
         FileChannel hamChannel = hamStream.getChannel();
         ByteBuffer hamBuffer = ByteBuffer.allocate((int) file.length());
