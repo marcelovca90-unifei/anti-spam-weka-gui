@@ -20,6 +20,7 @@ public class FilterHelper
         return true;
     }
 
+    // remove less relevant attributes of the given data set
     private static Instances applyAttributeFilter(Instances dataSet) throws Exception
     {
         CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
@@ -46,6 +47,7 @@ public class FilterHelper
         return true;
     }
 
+    // remove less relevant instances of the given data set
     private static Instances applyInstanceFilter(Instances dataSet) throws Exception
     {
         ClassBalancer classBalancer = new ClassBalancer();

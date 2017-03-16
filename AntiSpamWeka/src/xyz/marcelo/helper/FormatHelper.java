@@ -45,6 +45,7 @@ public class FormatHelper
 
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
+    // compute and persist all metrics' results for a given TimedEvaluation
     public static void computeResults(TimedEvaluation timedEvaluation)
     {
         timestamp = getCurrentDateTime();
@@ -84,6 +85,7 @@ public class FormatHelper
         putValueCreatingKeyIfNotExists(resultKeeper, key, TEST_TIME, testTime);
     }
 
+    // displays the experiment's last results OR mean ± standard deviation for every metric
     public static void summarizeResults(boolean displayMeanAndStandardDeviation)
     {
         String key = buildHashMapKey();

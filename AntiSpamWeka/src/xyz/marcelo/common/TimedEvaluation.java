@@ -72,6 +72,7 @@ public class TimedEvaluation
         this.methodConfiguration = methodConfiguration;
     }
 
+    // trains and tests the previously-set classifier with the given data sets
     public void run(Instances trainSet, Instances testSet)
     {
         try

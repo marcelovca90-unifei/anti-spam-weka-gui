@@ -108,6 +108,7 @@ public enum MethodConfiguration
         return clazz;
     }
 
+    // dynamically instantiates a classifier for the given method configuration
     public static Classifier buildClassifierFor(MethodConfiguration methodConfiguration)
     {
         Classifier classifier = null;

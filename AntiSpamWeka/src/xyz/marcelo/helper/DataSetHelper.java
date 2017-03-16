@@ -15,6 +15,7 @@ public class DataSetHelper
 
     private static Integer[] featureAmounts = { 8, 16, 32, 64, 128, 256, 512 };
 
+    // combinates the dataSets, statMethods and featureAmounts to generate the complete folder paths
     public static List<String> getFolders(String baseFolderPath) throws IOException
     {
         File baseFolder = new File(baseFolderPath);
@@ -29,6 +30,7 @@ public class DataSetHelper
         return folders;
     }
 
+    // returns the last portion, i.e. the data set name, of the given folder
     public static String getDataSetNameFromFolder(String folder)
     {
         for (String dataSet : dataSets)

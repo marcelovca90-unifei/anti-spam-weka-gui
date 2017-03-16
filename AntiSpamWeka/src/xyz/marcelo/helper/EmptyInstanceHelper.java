@@ -12,6 +12,7 @@ public class EmptyInstanceHelper
 {
     private static Map<String, Pair<Integer, Integer>> hashMap = populateHashMap();
 
+    // initializes the hashmap that contains the empty amounts of hams and spams (respectively) in each folder
     private static Map<String, Pair<Integer, Integer>> populateHashMap()
     {
         Map<String, Pair<Integer, Integer>> map = new HashMap<>();
@@ -104,6 +105,7 @@ public class EmptyInstanceHelper
         return map;
     }
 
+    // returns a pair containing the empty amounts of hams and spams (respectively) for a given folder
     public static Pair<Integer, Integer> getEmptyInstancesCountByFolder(String folder)
     {
         String key = folder;
