@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -23,6 +25,10 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
+        // change global setting for Logger instances to WARNING level
+        Arrays.asList(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
+
+        // global and args-provided parameters
         List<String> folders = new ArrayList<>();
         List<MethodConfiguration> methodConfigurations = new ArrayList<>();
         Integer numberOfRepetitions = null;
