@@ -26,7 +26,7 @@ public class Main
     public static void main(String[] args) throws Exception
     {
         // change global setting for Logger instances to WARNING level
-        Arrays.asList(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
+        Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
 
         // global and args-provided parameters
         List<String> folders = new ArrayList<>();
