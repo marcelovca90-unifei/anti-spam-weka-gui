@@ -75,8 +75,8 @@ public class Main
             for (String folder : folders)
             {
                 // import data set
-                String hamFilePath = folder + File.separator + "ham";
-                String spamFilePath = folder + File.separator + "spam";
+                String hamFilePath = folder + File.separator + InputOutputHelper.TAG_HAM;
+                String spamFilePath = folder + File.separator + InputOutputHelper.TAG_SPAM;
                 dataSet = InputOutputHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // check if attribute and instance filters should be applied to the data set

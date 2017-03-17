@@ -21,9 +21,9 @@ import weka.core.Instances;
 
 public class InputOutputHelper
 {
-    private static final String TAG_HAM = "ham";
-    private static final String TAG_SPAM = "spam";
-    private static final String TAG_CLASS = "class";
+    public static final String TAG_HAM = "ham";
+    public static final String TAG_SPAM = "spam";
+    public static final String TAG_CLASS = "class";
 
     public static Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
