@@ -1,29 +1,58 @@
 package xyz.marcelo.helper;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import xyz.marcelo.common.DataSetMetadata;
 
 public class InputOutputHelper
 {
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
     public static final String TAG_CLASS = "class";
+
+    public static Set<DataSetMetadata> loadDataSetsMetadataFromFile(String filename) throws IOException
+    {
+        Set<DataSetMetadata> metadata = new LinkedHashSet<>();
+
+        BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));
+
+        String line;
+
+        while ((line = reader.readLine()) != null)
+        {
+            if (!line.startsWith("#") && !line.startsWith("//"))
+            {
+                String[] parts = line.split(",");
+                String folder = parts[0];
+                Integer emptyHamAmount = Integer.parseInt(parts[1]);
+                Integer emptySpamAmount = Integer.parseInt(parts[2]);
+
+                metadata.add(new DataSetMetadata(folder, emptyHamAmount, emptySpamAmount));
+            }
+        }
+
+        reader.close();
+
+        return metadata;
+    }
 
     public static Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
@@ -112,12 +141,9 @@ public class InputOutputHelper
         bufferedWriter.close();
     }
 
-    public static Instances createEmptyInstances(String folder, int featureAmount) throws IOException
+    public static Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
     {
-        Pair<Integer, Integer> emptyPatterns = EmptyInstanceHelper.getEmptyInstancesCountByFolder(folder);
-
-        // retrieve empty ham count and declare instance to be reused
-        int emptyHamCount = emptyPatterns.getLeft();
+        // declare ham instance to be reused
         Instance hamInstance;
 
         // create ham attributes
@@ -138,8 +164,7 @@ public class InputOutputHelper
             hamDataSet.add(hamInstance);
         }
 
-        // retrieve empty spam count and declare instance to be reused
-        int emptySpamCount = emptyPatterns.getRight();
+        // declare spam instance to be reused
         Instance spamInstance;
 
         // create spam attributes

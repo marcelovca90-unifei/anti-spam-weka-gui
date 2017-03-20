@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -11,6 +12,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
+import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.TimedEvaluation;
 import xyz.marcelo.helper.CliHelper;
@@ -30,7 +32,7 @@ public class Main
         CliHelper.initialize(args);
 
         // global and args-provided parameters
-        List<String> folders = CliHelper.getFolders();
+        Set<DataSetMetadata> dataSetsMetadata = CliHelper.getDataSetsMetadata();
         List<MethodConfiguration> methods = CliHelper.getMethods();
         Integer numberOfRuns = CliHelper.getNumberOfRuns();
         Boolean shouldSkipTrain = CliHelper.shouldSkipTrain();
@@ -44,20 +46,22 @@ public class Main
         {
             FormatHelper.printHeader();
 
-            for (String folder : folders)
+            for (DataSetMetadata metadata : dataSetsMetadata)
             {
                 // import data set
-                String hamFilePath = folder + File.separator + InputOutputHelper.TAG_HAM;
-                String spamFilePath = folder + File.separator + InputOutputHelper.TAG_SPAM;
+                String hamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_HAM;
+                String spamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_SPAM;
                 dataSet = InputOutputHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
-                // check if attribute and instance filters should be applied to the data set
-                boolean shouldApplyAttributeFilter = FilterHelper.shouldApplyAttributeFilter(folder);
-                boolean shouldApplyInstanceFilter = FilterHelper.shouldApplyInstanceFilter(folder);
-                dataSet = FilterHelper.applyFilters(dataSet, shouldApplyAttributeFilter, shouldApplyInstanceFilter);
+                // apply attribute and instance filters to the data set
+                dataSet = FilterHelper.applyAttributeFilter(dataSet);
+                dataSet = FilterHelper.applyInstanceFilter(dataSet);
 
                 // build empty patterns set
-                if (shouldIncludeEmptyInstances) emptySet = InputOutputHelper.createEmptyInstances(folder, dataSet.numAttributes() - 1);
+                if (shouldIncludeEmptyInstances)
+                {
+                    emptySet = InputOutputHelper.createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
+                }
 
                 // initialize random number generator
                 Random random = new Random();
@@ -66,7 +70,7 @@ public class Main
                 Classifier classifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                TimedEvaluation timedEvaluation = new TimedEvaluation(folder, method);
+                TimedEvaluation timedEvaluation = new TimedEvaluation(metadata.getFolder(), method);
 
                 // reset prime helper index
                 PrimeHelper.reset();

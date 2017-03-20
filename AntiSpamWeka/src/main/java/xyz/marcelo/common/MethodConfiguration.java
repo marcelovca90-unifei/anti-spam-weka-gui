@@ -121,7 +121,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            System.out.println("Could not instantiate classifier of type " + methodConfiguration.getClazz().getName() + ".");
+            System.out.println("Unexpected exception: " + e);
             e.printStackTrace();
         }
 

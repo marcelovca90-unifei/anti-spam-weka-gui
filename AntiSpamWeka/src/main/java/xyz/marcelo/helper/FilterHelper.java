@@ -10,18 +10,8 @@ import weka.filters.supervised.instance.ClassBalancer;
 
 public class FilterHelper
 {
-    public static Boolean shouldApplyAttributeFilter(String folder)
-    {
-        /*
-         * if (folder.contains(File.separator + "CHI2" + File.separator)) return false;
-         * if (folder.contains(File.separator + "FD" + File.separator)) return true;
-         * if (folder.contains(File.separator + "MI" + File.separator)) return true;
-         */
-        return true;
-    }
-
     // remove less relevant attributes of the given data set
-    private static Instances applyAttributeFilter(Instances dataSet) throws Exception
+    public static Instances applyAttributeFilter(Instances dataSet) throws Exception
     {
         CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
         cfsSubsetEval.setOptions(Utils.splitOptions("-M -Z -P 1 -E 1"));
@@ -38,18 +28,8 @@ public class FilterHelper
         return Filter.useFilter(dataSet, attributeSelection);
     }
 
-    public static Boolean shouldApplyInstanceFilter(String folder)
-    {
-        /*
-         * if (folder.contains(File.separator + "CHI2" + File.separator)) return false;
-         * if (folder.contains(File.separator + "FD" + File.separator)) return true;
-         * if (folder.contains(File.separator + "MI" + File.separator)) return true;
-         */
-        return true;
-    }
-
     // remove less relevant instances of the given data set
-    private static Instances applyInstanceFilter(Instances dataSet) throws Exception
+    public static Instances applyInstanceFilter(Instances dataSet) throws Exception
     {
         ClassBalancer classBalancer = new ClassBalancer();
         classBalancer.setInputFormat(dataSet);
@@ -57,12 +37,5 @@ public class FilterHelper
         classBalancer.setDebug(true);
 
         return Filter.useFilter(dataSet, classBalancer);
-    }
-
-    public static Instances applyFilters(Instances dataSet, boolean attributeFilter, boolean instanceFilter) throws Exception
-    {
-        if (attributeFilter) dataSet = applyAttributeFilter(dataSet);
-        if (instanceFilter) dataSet = applyInstanceFilter(dataSet);
-        return dataSet;
     }
 }

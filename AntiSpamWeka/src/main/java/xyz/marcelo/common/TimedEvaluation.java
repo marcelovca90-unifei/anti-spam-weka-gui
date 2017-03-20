@@ -3,7 +3,6 @@ package xyz.marcelo.common;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import xyz.marcelo.helper.DataSetHelper;
 
 public class TimedEvaluation
 {
@@ -68,7 +67,7 @@ public class TimedEvaluation
 
     public TimedEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
-        this.folder = DataSetHelper.getDataSetNameFromFolder(folder);
+        this.folder = folder;
         this.methodConfiguration = methodConfiguration;
     }
 
@@ -89,6 +88,7 @@ public class TimedEvaluation
         }
         catch (Exception e)
         {
+            System.out.println("Unexpected exception: " + e);
             e.printStackTrace();
         }
     }

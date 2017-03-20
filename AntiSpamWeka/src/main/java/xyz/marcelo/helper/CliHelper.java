@@ -3,7 +3,9 @@ package xyz.marcelo.helper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -11,11 +13,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
 public class CliHelper
 {
-    private static final String OPTION_FOLDER = "folder";
+    private static final String OPTION_METADATA = "metadata";
     private static final String OPTION_METHOD = "method";
     private static final String OPTIONS_SKIP_TRAIN = "skipTrain";
     private static final String OPTIONS_SKIP_TEST = "skipTest";
@@ -30,7 +33,7 @@ public class CliHelper
         Options options = new Options();
 
         // add the command line options
-        options.addOption(OPTION_FOLDER, true, "root folder of the data sets (default: none)");
+        options.addOption(OPTION_METADATA, true, "path of the file containing data sets metadata (default: none)");
         options.addOption(OPTION_METHOD, true,
                 "comma-separated list of methods to be used. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
         options.addOption(OPTIONS_SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
@@ -43,7 +46,7 @@ public class CliHelper
         {
             cmd = new DefaultParser().parse(options, args);
 
-            if (!cmd.hasOption(OPTION_FOLDER) || !cmd.hasOption(OPTION_METHOD))
+            if (!cmd.hasOption(OPTION_METADATA) || !cmd.hasOption(OPTION_METHOD))
             {
                 throw new ParseException("Missing mandatory arguments");
             }
@@ -55,14 +58,14 @@ public class CliHelper
         }
     }
 
-    public static List<String> getFolders() throws IOException
+    public static Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
-        List<String> folders = new ArrayList<>();
-        if (cmd.hasOption(OPTION_FOLDER))
+        Set<DataSetMetadata> metadata = new LinkedHashSet<>();
+        if (cmd.hasOption(OPTION_METADATA))
         {
-            folders.addAll(DataSetHelper.getFolders(cmd.getOptionValue(OPTION_FOLDER)));
+            metadata.addAll(InputOutputHelper.loadDataSetsMetadataFromFile(cmd.getOptionValue(OPTION_METADATA)));
         }
-        return folders;
+        return metadata;
     }
 
     public static List<MethodConfiguration> getMethods()
