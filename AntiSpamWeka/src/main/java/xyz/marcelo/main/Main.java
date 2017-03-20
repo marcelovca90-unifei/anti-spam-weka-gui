@@ -32,7 +32,7 @@ public class Main
         CliHelper.initialize(args);
 
         // global and args-provided parameters
-        Set<DataSetMetadata> dataSetsMetadata = CliHelper.getDataSetsMetadata();
+        Set<DataSetMetadata> metadata = CliHelper.getDataSetsMetadata();
         List<MethodConfiguration> methods = CliHelper.getMethods();
         Integer numberOfRuns = CliHelper.getNumberOfRuns();
         Boolean shouldSkipTrain = CliHelper.shouldSkipTrain();
@@ -46,11 +46,11 @@ public class Main
         {
             FormatHelper.printHeader();
 
-            for (DataSetMetadata metadata : dataSetsMetadata)
+            for (DataSetMetadata dataSetMetadata : metadata)
             {
                 // import data set
-                String hamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_HAM;
-                String spamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_SPAM;
+                String hamFilePath = dataSetMetadata.getFolder() + File.separator + InputOutputHelper.TAG_HAM;
+                String spamFilePath = dataSetMetadata.getFolder() + File.separator + InputOutputHelper.TAG_SPAM;
                 dataSet = InputOutputHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set
@@ -60,7 +60,8 @@ public class Main
                 // build empty patterns set
                 if (shouldIncludeEmptyInstances)
                 {
-                    emptySet = InputOutputHelper.createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
+                    emptySet = InputOutputHelper.createEmptyInstances(dataSet.numAttributes() - 1, dataSetMetadata.getEmptyHamCount(),
+                            dataSetMetadata.getEmptySpamCount());
                 }
 
                 // initialize random number generator
@@ -70,7 +71,7 @@ public class Main
                 Classifier classifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                TimedEvaluation timedEvaluation = new TimedEvaluation(metadata.getFolder(), method);
+                TimedEvaluation timedEvaluation = new TimedEvaluation(dataSetMetadata.getFolder(), method);
 
                 // reset prime helper index
                 PrimeHelper.reset();
@@ -96,7 +97,7 @@ public class Main
                     // build the classifier for the given configuration
                     Classifier innerClassifier;
                     boolean couldLoadClassifierFromFile;
-                    String classifierFilename = metadata.getFolder() + File.separator
+                    String classifierFilename = dataSetMetadata.getFolder() + File.separator
                             + InputOutputHelper.buildClassifierFilename(method, trainPercentage, PrimeHelper.getCurrentPrime());
 
                     // tries to de-serialize the classifier from a file with the default filename

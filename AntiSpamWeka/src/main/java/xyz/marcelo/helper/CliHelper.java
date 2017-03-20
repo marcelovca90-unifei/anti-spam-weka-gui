@@ -20,10 +20,10 @@ public class CliHelper
 {
     private static final String OPTION_METADATA = "metadata";
     private static final String OPTION_METHOD = "method";
-    private static final String OPTIONS_SKIP_TRAIN = "skipTrain";
-    private static final String OPTIONS_SKIP_TEST = "skipTest";
-    private static final String OPTIONS_RUNS = "runs";
-    private static final String OPTIONS_EMPTY = "empty";
+    private static final String OPTION_RUNS = "runs";
+    private static final String OPTION_SKIP_TRAIN = "skipTrain";
+    private static final String OPTION_SKIP_TEST = "skipTest";
+    private static final String OPTION_TEST_EMPTY = "testEmpty";
 
     private static CommandLine cmd;
 
@@ -36,10 +36,10 @@ public class CliHelper
         options.addOption(OPTION_METADATA, true, "path of the file containing data sets metadata (default: none)");
         options.addOption(OPTION_METHOD, true,
                 "comma-separated list of methods to be used. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
-        options.addOption(OPTIONS_SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
-        options.addOption(OPTIONS_SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
-        options.addOption(OPTIONS_RUNS, true, "number of repetitions to be performed (default: 1)");
-        options.addOption(OPTIONS_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
+        options.addOption(OPTION_RUNS, true, "number of repetitions to be performed (default: 1)");
+        options.addOption(OPTION_SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
+        options.addOption(OPTION_SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
+        options.addOption(OPTION_TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
 
         // instantiates the cli based on the provided arguments
         try
@@ -54,7 +54,7 @@ public class CliHelper
         catch (ParseException e)
         {
             // automatically generate the help statement
-            new HelpFormatter().printHelp("AntiSpamWeka", options);
+            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar METADATA METHOD [RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY]", options);
         }
     }
 
@@ -78,23 +78,23 @@ public class CliHelper
         return methods;
     }
 
+    public static int getNumberOfRuns()
+    {
+        return cmd.hasOption(OPTION_RUNS) ? Integer.parseInt(cmd.getOptionValue(OPTION_RUNS)) : 1;
+    }
+
     public static boolean shouldSkipTrain()
     {
-        return cmd.hasOption(OPTIONS_SKIP_TRAIN);
+        return cmd.hasOption(OPTION_SKIP_TRAIN);
     }
 
     public static boolean shouldSkipTest()
     {
-        return cmd.hasOption(OPTIONS_SKIP_TEST);
-    }
-
-    public static int getNumberOfRuns()
-    {
-        return cmd.hasOption(OPTIONS_RUNS) ? Integer.parseInt(cmd.getOptionValue(OPTIONS_RUNS)) : 1;
+        return cmd.hasOption(OPTION_SKIP_TEST);
     }
 
     public static boolean shouldIncludeEmptyInstances()
     {
-        return cmd.hasOption(OPTIONS_EMPTY);
+        return cmd.hasOption(OPTION_TEST_EMPTY);
     }
 }

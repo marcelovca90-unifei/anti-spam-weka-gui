@@ -4,16 +4,17 @@ BASEDIR=$(pwd)
 JAR_PATH="${BASEDIR}/../target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 MAX_HEAP_SIZE=12G
 MAX_STACK_SIZE=8m
-DATA_SET_FOLDER=${1}
-NUMBER_OF_REPETITIONS=${2}
-TEST_EMPTY_INSTANCES=${3}
-CSV_METHODS=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NBTREE RBF RC RF SGD SPEGASOS SVM)
+METADATA="${BASEDIR}/../data-sets/metadata.txt"
+METHOD=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NBTREE RBF RC RF SGD SPEGASOS SVM)
+RUNS=5
+SKIP_TRAIN="-skipTrain"
+SKIP_TEST="-skipTest"
+TEST_EMPTY="-testEmpty"
 
-if [ "${#}" -ne 3 ]; then
-    echo "Illegal number of parameters. Usage: ./run.sh \"DATA_SET_FOLDER\" NUMBER_OF_REPETITIONS TEST_EMPTY_INSTANCES"
-else
-    for METHOD in "${CSV_METHODS[@]}"; do
-        echo "$(date) - Started [$(basename ${JAR_PATH})] with [-Xmx${MAX_HEAP_SIZE}] and [-Xss${MAX_STACK_SIZE}] for [${METHOD}] with [${NUMBER_OF_REPETITIONS}] repetitions and [${TEST_EMPTY_INSTANCES} for empty instances]..."
-        java -Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC -jar ${JAR_PATH} ${DATA_SET_FOLDER} ${METHOD} ${NUMBER_OF_REPETITIONS} ${TEST_EMPTY_INSTANCES} > $(dirname ${JAR_PATH})/${METHOD}.log
-    done
-fi
+for METHOD in "${METHOD[@]}"; do
+    VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC"
+    RUN_COMMAND="java ${VM_OPTIONS} -jar ${JAR_PATH} -metadata ${METADATA} -method ${METHOD} -runs ${RUNS} ${TEST_EMPTY}"
+    LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
+    echo "$(date) - Executing [${RUN_COMMAND}] > [${LOG_FILENAME}]"
+    command ${RUN_COMMAND} > ${LOG_FILENAME}
+done
