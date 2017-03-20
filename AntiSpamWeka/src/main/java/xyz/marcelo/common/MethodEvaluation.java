@@ -4,7 +4,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
-public class TimedEvaluation
+public class MethodEvaluation
 {
     private Classifier classifier;
     private Evaluation evaluation;
@@ -65,7 +65,7 @@ public class TimedEvaluation
         return testEnd;
     }
 
-    public TimedEvaluation(String folder, MethodConfiguration methodConfiguration)
+    public MethodEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
         this.folder = folder;
         this.methodConfiguration = methodConfiguration;

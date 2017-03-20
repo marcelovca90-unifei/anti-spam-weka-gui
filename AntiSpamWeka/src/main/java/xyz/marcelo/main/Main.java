@@ -14,7 +14,7 @@ import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
-import xyz.marcelo.common.TimedEvaluation;
+import xyz.marcelo.common.MethodEvaluation;
 import xyz.marcelo.helper.CliHelper;
 import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
@@ -71,7 +71,7 @@ public class Main
                 Classifier classifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                TimedEvaluation timedEvaluation = new TimedEvaluation(dataSetMetadata.getFolder(), method);
+                MethodEvaluation timedEvaluation = new MethodEvaluation(dataSetMetadata.getFolder(), method);
 
                 // reset prime helper index
                 PrimeHelper.reset();

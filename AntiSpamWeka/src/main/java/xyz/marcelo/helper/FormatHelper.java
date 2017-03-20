@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import xyz.marcelo.common.MethodConfiguration;
-import xyz.marcelo.common.TimedEvaluation;
+import xyz.marcelo.common.MethodEvaluation;
 
 @SuppressWarnings("unused")
 public class FormatHelper
@@ -46,7 +46,7 @@ public class FormatHelper
     private static Map<String, Map<String, DescriptiveStatistics>> resultKeeper = new LinkedHashMap<>();
 
     // compute and persist all metrics' results for a given TimedEvaluation
-    public static void computeResults(TimedEvaluation timedEvaluation)
+    public static void computeResults(MethodEvaluation timedEvaluation)
     {
         timestamp = getCurrentDateTime();
 
