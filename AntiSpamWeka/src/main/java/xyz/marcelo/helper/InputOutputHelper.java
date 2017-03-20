@@ -21,6 +21,7 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
+import xyz.marcelo.common.MethodConfiguration;
 
 public class InputOutputHelper
 {
@@ -218,6 +219,19 @@ public class InputOutputHelper
             attributes.add(new Attribute("x" + i));
         attributes.add(new Attribute(TAG_CLASS, Arrays.asList(TAG_HAM, TAG_SPAM)));
         return attributes;
+    }
+
+    public static String buildClassifierFilename(MethodConfiguration method, double trainRatio, int seed)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(method.getClazz().getSimpleName());
+        sb.append("_TRAIN=" + (int) (100 * trainRatio));
+        sb.append("_TEST=" + (int) (100 * (1.0 - trainRatio)));
+        sb.append("_SEED=" + seed);
+        sb.append(".model");
+
+        return sb.toString();
     }
 
     public static void saveModelToFile(String filename, Classifier classifier) throws Exception

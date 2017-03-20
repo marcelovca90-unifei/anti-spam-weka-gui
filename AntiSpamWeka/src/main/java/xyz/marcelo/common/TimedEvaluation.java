@@ -71,8 +71,23 @@ public class TimedEvaluation
         this.methodConfiguration = methodConfiguration;
     }
 
-    // trains and tests the previously-set classifier with the given data sets
-    public void run(Instances trainSet, Instances testSet)
+    public void test(Instances testSet)
+    {
+        try
+        {
+            // test the classifier
+            testStart = System.currentTimeMillis();
+            evaluation.evaluateModel(classifier, testSet);
+            testEnd = System.currentTimeMillis();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Unexpected exception: " + e);
+            e.printStackTrace();
+        }
+    }
+
+    public void train(Instances trainSet)
     {
         try
         {
@@ -80,11 +95,6 @@ public class TimedEvaluation
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
-
-            // test the classifier
-            testStart = System.currentTimeMillis();
-            evaluation.evaluateModel(classifier, testSet);
-            testEnd = System.currentTimeMillis();
         }
         catch (Exception e)
         {

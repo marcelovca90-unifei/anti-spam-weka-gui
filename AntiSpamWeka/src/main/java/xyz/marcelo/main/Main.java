@@ -84,7 +84,8 @@ public class Main
                     dataSet.randomize(random);
 
                     // build train and test sets
-                    int trainingSetSize = (int) Math.round(dataSet.numInstances() * 0.6);
+                    double trainPercentage = 0.6;
+                    int trainingSetSize = (int) Math.round(dataSet.numInstances() * trainPercentage);
                     int testingSetSize = dataSet.numInstances() - trainingSetSize;
                     trainingSet = new Instances(dataSet, 0, trainingSetSize);
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
@@ -93,19 +94,43 @@ public class Main
                     if (shouldIncludeEmptyInstances) testingSet.addAll(emptySet);
 
                     // build the classifier for the given configuration
-                    Classifier innerClassifier = AbstractClassifier.makeCopy(classifier);
+                    Classifier innerClassifier;
+                    boolean couldLoadClassifierFromFile;
+                    String classifierFilename = metadata.getFolder() + File.separator
+                            + InputOutputHelper.buildClassifierFilename(method, trainPercentage, PrimeHelper.getCurrentPrime());
+
+                    // tries to de-serialize the classifier from a file with the default filename
+                    try
+                    {
+                        innerClassifier = InputOutputHelper.loadModelFromFile(classifierFilename);
+                        couldLoadClassifierFromFile = true;
+                    }
+                    // if the deserialization failed, clone the base classifier
+                    catch (Exception e)
+                    {
+                        innerClassifier = AbstractClassifier.makeCopy(classifier);
+                        couldLoadClassifierFromFile = false;
+                    }
 
                     // create the object that will hold the single evaluation result
                     Evaluation innerEvaluation = new Evaluation(testingSet);
 
-                    // evaluate the classifier
+                    // setup the classifier evaluation
                     timedEvaluation.setClassifier(innerClassifier);
                     timedEvaluation.setEvaluation(innerEvaluation);
-                    timedEvaluation.run(trainingSet, testingSet);
+
+                    // if the classifier could not be loaded from the filesystem, then train it
+                    if (!couldLoadClassifierFromFile || !shouldSkipTrain) timedEvaluation.train(trainingSet);
+
+                    // evaluate the classifier
+                    if (!shouldSkipTest) timedEvaluation.test(testingSet);
 
                     // compute and log the partial results for this configuration
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
+
+                    // persist the classifier, if it could not be loaded earlier
+                    if (!couldLoadClassifierFromFile) InputOutputHelper.saveModelToFile(classifierFilename, innerClassifier);
                 }
 
                 // log the final results for this configuration
