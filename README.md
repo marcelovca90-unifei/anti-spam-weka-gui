@@ -9,7 +9,7 @@
 
 **Orientador:** Otávio Augusto Salgado Carpinteiro
 
-###TO-DO LIST:
+Implementação baseada na biblioteca de aprendizado de máquina [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/).
 
 Geral:
 - [x] Ler trabalhos anteriores
