@@ -28,4 +28,10 @@ public class DataSetMetadata
         this.emptyHamCount = emptyHamCount;
         this.emptySpamCount = emptySpamCount;
     }
+
+    @Override
+    public String toString()
+    {
+        return "DataSetMetadata [folder=" + folder + ", emptyHamCount=" + emptyHamCount + ", emptySpamCount=" + emptySpamCount + "]";
+    }
 }

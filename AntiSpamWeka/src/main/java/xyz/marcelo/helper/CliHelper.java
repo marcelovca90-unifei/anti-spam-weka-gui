@@ -24,6 +24,7 @@ public class CliHelper
     private static final String OPTION_SKIP_TRAIN = "skipTrain";
     private static final String OPTION_SKIP_TEST = "skipTest";
     private static final String OPTION_TEST_EMPTY = "testEmpty";
+    private static final String OPTION_SAVE_MODEL = "saveModel";
 
     private static CommandLine cmd;
 
@@ -40,6 +41,7 @@ public class CliHelper
         options.addOption(OPTION_SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
         options.addOption(OPTION_SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
         options.addOption(OPTION_TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
+        options.addOption(OPTION_SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
 
         // instantiates the cli based on the provided arguments
         try
@@ -54,7 +56,7 @@ public class CliHelper
         catch (ParseException e)
         {
             // automatically generate the help statement
-            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar METADATA METHOD [RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY]", options);
+            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar METADATA METHOD [RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL]", options);
         }
     }
 
@@ -96,5 +98,23 @@ public class CliHelper
     public static boolean shouldIncludeEmptyInstances()
     {
         return cmd.hasOption(OPTION_TEST_EMPTY);
+    }
+
+    public static boolean shouldSaveModel()
+    {
+        return cmd.hasOption(OPTION_SAVE_MODEL);
+    }
+
+    public static void printConfiguration() throws IOException
+    {
+        System.out.println("---- CONFIGURATION ----");
+        System.out.println(OPTION_METADATA + " : " + getDataSetsMetadata());
+        System.out.println(OPTION_METHOD + " : " + getMethods());
+        System.out.println(OPTION_RUNS + " : " + getNumberOfRuns());
+        System.out.println(OPTION_SKIP_TRAIN + " : " + shouldSkipTrain());
+        System.out.println(OPTION_SKIP_TEST + " : " + shouldSkipTest());
+        System.out.println(OPTION_TEST_EMPTY + " : " + shouldIncludeEmptyInstances());
+        System.out.println(OPTION_SAVE_MODEL + " : " + shouldSaveModel());
+        System.out.println("-----------------------");
     }
 }

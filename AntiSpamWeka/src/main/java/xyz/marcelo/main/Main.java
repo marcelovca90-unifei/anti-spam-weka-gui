@@ -31,13 +31,17 @@ public class Main
         // initialize the CLI helper with the provided arguments
         CliHelper.initialize(args);
 
-        // global and args-provided parameters
+        // print the parsed, args-provided parameters
+        CliHelper.printConfiguration();
+
+        // individually save the parsed, args-provided parameters
         Set<DataSetMetadata> metadata = CliHelper.getDataSetsMetadata();
         List<MethodConfiguration> methods = CliHelper.getMethods();
         Integer numberOfRuns = CliHelper.getNumberOfRuns();
         Boolean shouldSkipTrain = CliHelper.shouldSkipTrain();
         Boolean shouldSkipTest = CliHelper.shouldSkipTest();
         Boolean shouldIncludeEmptyInstances = CliHelper.shouldIncludeEmptyInstances();
+        Boolean shouldSaveModel = CliHelper.shouldSaveModel();
 
         // objects that will hold all kinds of data sets
         Instances dataSet = null, trainingSet = null, testingSet = null, emptySet = null;
@@ -121,7 +125,7 @@ public class Main
                     timedEvaluation.setEvaluation(innerEvaluation);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!couldLoadClassifierFromFile || !shouldSkipTrain) timedEvaluation.train(trainingSet);
+                    if (!shouldSkipTrain || !couldLoadClassifierFromFile) timedEvaluation.train(trainingSet);
 
                     // evaluate the classifier
                     if (!shouldSkipTest) timedEvaluation.test(testingSet);
@@ -130,8 +134,8 @@ public class Main
                     FormatHelper.computeResults(timedEvaluation);
                     FormatHelper.summarizeResults(false);
 
-                    // persist the classifier, if it could not be loaded earlier
-                    if (!couldLoadClassifierFromFile) InputOutputHelper.saveModelToFile(classifierFilename, innerClassifier);
+                    // persist the classifier, if specified in args
+                    if (shouldSaveModel) InputOutputHelper.saveModelToFile(classifierFilename, innerClassifier);
                 }
 
                 // log the final results for this configuration

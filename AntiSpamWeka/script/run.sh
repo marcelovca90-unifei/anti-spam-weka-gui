@@ -10,6 +10,7 @@ RUNS=5
 SKIP_TRAIN="-skipTrain"
 SKIP_TEST="-skipTest"
 TEST_EMPTY="-testEmpty"
+SAVE_MODEL="-saveModel"
 
 for METHOD in "${METHOD[@]}"; do
     VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC"
