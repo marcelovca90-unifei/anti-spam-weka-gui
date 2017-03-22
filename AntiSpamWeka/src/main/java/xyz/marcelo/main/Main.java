@@ -132,14 +132,14 @@ public class Main
 
                     // compute and log the partial results for this configuration
                     FormatHelper.computeResults(timedEvaluation);
-                    FormatHelper.summarizeResults(false);
+                    FormatHelper.summarizeResults(false, true);
 
                     // persist the classifier, if specified in args
                     if (shouldSaveModel) InputOutputHelper.saveModelToFile(classifierFilename, innerClassifier);
                 }
 
                 // log the final results for this configuration
-                FormatHelper.summarizeResults(true);
+                FormatHelper.summarizeResults(true, true);
             }
 
             FormatHelper.printFooter();

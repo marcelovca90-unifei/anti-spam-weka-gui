@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import xyz.marcelo.common.MethodConfiguration;
@@ -72,10 +73,7 @@ public class FormatHelper
 
         String key = buildHashMapKey();
 
-        if (!resultKeeper.containsKey(key))
-        {
-            resultKeeper.put(key, new LinkedHashMap<String, DescriptiveStatistics>());
-        }
+        resultKeeper.putIfAbsent(key, new LinkedHashMap<String, DescriptiveStatistics>());
 
         putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_PRECISION, hamPrecision);
         putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_PRECISION, spamPrecision);
@@ -86,7 +84,7 @@ public class FormatHelper
     }
 
     // displays the experiment's last results OR mean ± standard deviation for every metric
-    public static void summarizeResults(boolean displayMeanAndStandardDeviation)
+    public static void summarizeResults(boolean displayMeanAndStandardDeviation, boolean formatMilliseconds)
     {
         String key = buildHashMapKey();
 
@@ -101,13 +99,19 @@ public class FormatHelper
             if (!displayMeanAndStandardDeviation)
             {
                 double[] values = resultKeeper.get(key).get(metric).getValues();
-                sb.append(String.format("%.2f\t", values[values.length - 1]));
+                if (formatMilliseconds && (metric.equals(TRAIN_TIME) || metric.equals(TEST_TIME)))
+                    sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
+                else
+                    sb.append(String.format("%.2f\t", values[values.length - 1]));
             }
             else
             {
                 double mean = resultKeeper.get(key).get(metric).getMean();
                 double standardDeviation = resultKeeper.get(key).get(metric).getStandardDeviation();
-                sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
+                if (formatMilliseconds && (metric.equals(TRAIN_TIME) || metric.equals(TEST_TIME)))
+                    sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
+                else
+                    sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
             }
         }
 
@@ -124,26 +128,25 @@ public class FormatHelper
         System.out.println("--------------------------------" + System.lineSeparator());
     }
 
-    private static String getCurrentDateTime()
-    {
-        return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("America/Sao_Paulo")).format(FORMATTER);
-    }
-
     private static String buildHashMapKey()
     {
         return methodConfiguration.toString() + "@" + folder;
     }
 
+    private static String formatMilliseconds(double millis)
+    {
+        return DurationFormatUtils.formatDurationHMS((Double.valueOf(millis)).longValue());
+    }
+
+    private static String getCurrentDateTime()
+    {
+        return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("America/Sao_Paulo")).format(FORMATTER);
+    }
+
     private static void putValueCreatingKeyIfNotExists(Map<String, Map<String, DescriptiveStatistics>> map, String outerKey, String innerKey, Double value)
     {
-        if (!resultKeeper.containsKey(outerKey))
-        {
-            resultKeeper.put(outerKey, new LinkedHashMap<String, DescriptiveStatistics>());
-        }
-        if (!resultKeeper.get(outerKey).containsKey(innerKey))
-        {
-            resultKeeper.get(outerKey).put(innerKey, new DescriptiveStatistics());
-        }
+        resultKeeper.putIfAbsent(outerKey, new LinkedHashMap<String, DescriptiveStatistics>());
+        resultKeeper.get(outerKey).putIfAbsent(innerKey, new DescriptiveStatistics());
         resultKeeper.get(outerKey).get(innerKey).addValue(value);
     }
 }
