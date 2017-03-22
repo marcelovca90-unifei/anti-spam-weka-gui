@@ -15,7 +15,7 @@ import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.MethodEvaluation;
-import xyz.marcelo.helper.CliHelper;
+import xyz.marcelo.helper.CLIHelper;
 import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
@@ -29,19 +29,19 @@ public class Main
         Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
 
         // initialize the CLI helper with the provided arguments
-        CliHelper.initialize(args);
+        CLIHelper.initialize(args);
 
         // print the parsed, args-provided parameters
-        CliHelper.printConfiguration();
+        CLIHelper.printConfiguration();
 
         // individually save the parsed, args-provided parameters
-        Set<DataSetMetadata> metadatum = CliHelper.getDataSetsMetadata();
-        List<MethodConfiguration> methods = CliHelper.getMethods();
-        Integer numberOfRuns = CliHelper.getNumberOfRuns();
-        Boolean shouldSkipTrain = CliHelper.shouldSkipTrain();
-        Boolean shouldSkipTest = CliHelper.shouldSkipTest();
-        Boolean shouldIncludeEmptyInstances = CliHelper.shouldIncludeEmptyInstances();
-        Boolean shouldSaveModel = CliHelper.shouldSaveModel();
+        Set<DataSetMetadata> metadatum = CLIHelper.getDataSetsMetadata();
+        List<MethodConfiguration> methods = CLIHelper.getMethods();
+        Integer numberOfRuns = CLIHelper.getNumberOfRuns();
+        Boolean shouldSkipTrain = CLIHelper.shouldSkipTrain();
+        Boolean shouldSkipTest = CLIHelper.shouldSkipTest();
+        Boolean shouldIncludeEmptyInstances = CLIHelper.shouldIncludeEmptyInstances();
+        Boolean shouldSaveModel = CLIHelper.shouldSaveModel();
 
         // objects that will hold all kinds of data sets
         Instances dataSet = null, trainingSet = null, testingSet = null, emptySet = null;

@@ -16,7 +16,7 @@ import org.apache.commons.cli.ParseException;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
-public class CliHelper
+public class CLIHelper
 {
     private static final String OPTION_METADATA = "metadata";
     private static final String OPTION_METHOD = "method";
