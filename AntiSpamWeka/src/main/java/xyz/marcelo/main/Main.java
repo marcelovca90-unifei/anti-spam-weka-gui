@@ -18,7 +18,7 @@ import xyz.marcelo.common.MethodEvaluation;
 import xyz.marcelo.helper.CliHelper;
 import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
-import xyz.marcelo.helper.InputOutputHelper;
+import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.PrimeHelper;
 
 public class Main
@@ -35,7 +35,7 @@ public class Main
         CliHelper.printConfiguration();
 
         // individually save the parsed, args-provided parameters
-        Set<DataSetMetadata> metadata = CliHelper.getDataSetsMetadata();
+        Set<DataSetMetadata> metadatum = CliHelper.getDataSetsMetadata();
         List<MethodConfiguration> methods = CliHelper.getMethods();
         Integer numberOfRuns = CliHelper.getNumberOfRuns();
         Boolean shouldSkipTrain = CliHelper.shouldSkipTrain();
@@ -50,12 +50,12 @@ public class Main
         {
             FormatHelper.printHeader();
 
-            for (DataSetMetadata dataSetMetadata : metadata)
+            for (DataSetMetadata metadata : metadatum)
             {
                 // import data set
-                String hamFilePath = dataSetMetadata.getFolder() + File.separator + InputOutputHelper.TAG_HAM;
-                String spamFilePath = dataSetMetadata.getFolder() + File.separator + InputOutputHelper.TAG_SPAM;
-                dataSet = InputOutputHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
+                String hamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_HAM;
+                String spamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_SPAM;
+                dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set
                 dataSet = FilterHelper.applyAttributeFilter(dataSet);
@@ -64,8 +64,7 @@ public class Main
                 // build empty patterns set
                 if (shouldIncludeEmptyInstances)
                 {
-                    emptySet = InputOutputHelper.createEmptyInstances(dataSet.numAttributes() - 1, dataSetMetadata.getEmptyHamCount(),
-                            dataSetMetadata.getEmptySpamCount());
+                    emptySet = IOHelper.createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
                 }
 
                 // initialize random number generator
@@ -75,7 +74,7 @@ public class Main
                 Classifier classifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                MethodEvaluation timedEvaluation = new MethodEvaluation(dataSetMetadata.getFolder(), method);
+                MethodEvaluation timedEvaluation = new MethodEvaluation(metadata.getFolder(), method);
 
                 // reset prime helper index
                 PrimeHelper.reset();
@@ -98,24 +97,9 @@ public class Main
                     // add empty patterns to test set
                     if (shouldIncludeEmptyInstances) testingSet.addAll(emptySet);
 
-                    // build the classifier for the given configuration
-                    Classifier innerClassifier;
-                    boolean couldLoadClassifierFromFile;
-                    String classifierFilename = dataSetMetadata.getFolder() + File.separator
-                            + InputOutputHelper.buildClassifierFilename(method, trainPercentage, PrimeHelper.getCurrentPrime());
-
-                    // tries to de-serialize the classifier from a file with the default filename
-                    try
-                    {
-                        innerClassifier = InputOutputHelper.loadModelFromFile(classifierFilename);
-                        couldLoadClassifierFromFile = true;
-                    }
-                    // if the deserialization failed, clone the base classifier
-                    catch (Exception e)
-                    {
-                        innerClassifier = AbstractClassifier.makeCopy(classifier);
-                        couldLoadClassifierFromFile = false;
-                    }
+                    // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
+                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, trainPercentage, PrimeHelper.getCurrentPrime());
+                    Classifier innerClassifier = shouldSkipTrain ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(classifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation innerEvaluation = new Evaluation(testingSet);
@@ -125,7 +109,7 @@ public class Main
                     timedEvaluation.setEvaluation(innerEvaluation);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!shouldSkipTrain || !couldLoadClassifierFromFile) timedEvaluation.train(trainingSet);
+                    if (!shouldSkipTrain) timedEvaluation.train(trainingSet);
 
                     // evaluate the classifier
                     if (!shouldSkipTest) timedEvaluation.test(testingSet);
@@ -135,7 +119,7 @@ public class Main
                     FormatHelper.summarizeResults(false, true);
 
                     // persist the classifier, if specified in args
-                    if (shouldSaveModel) InputOutputHelper.saveModelToFile(classifierFilename, innerClassifier);
+                    if (shouldSaveModel) IOHelper.saveModelToFile(classifierFilename, innerClassifier);
                 }
 
                 // log the final results for this configuration

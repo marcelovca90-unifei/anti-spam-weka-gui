@@ -23,7 +23,7 @@ import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
-public class InputOutputHelper
+public class IOHelper
 {
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
@@ -198,6 +198,11 @@ public class InputOutputHelper
         return dataSet;
     }
 
+    public static boolean fileExists(String filename)
+    {
+        return new File(filename).exists();
+    }
+
     private static ByteBuffer readBytesFromFile(String filename) throws FileNotFoundException, IOException
     {
         File file = new File(filename);
@@ -221,10 +226,11 @@ public class InputOutputHelper
         return attributes;
     }
 
-    public static String buildClassifierFilename(MethodConfiguration method, double trainRatio, int seed)
+    public static String buildClassifierFilename(String folder, MethodConfiguration method, double trainRatio, int seed)
     {
         StringBuilder sb = new StringBuilder();
 
+        sb.append(folder + File.separator);
         sb.append(method.getClazz().getSimpleName());
         sb.append("_TRAIN=" + (int) (100 * trainRatio));
         sb.append("_TEST=" + (int) (100 * (1.0 - trainRatio)));
@@ -237,10 +243,24 @@ public class InputOutputHelper
     public static void saveModelToFile(String filename, Classifier classifier) throws Exception
     {
         weka.core.SerializationHelper.write(filename, classifier);
+
+        File outputFileZip = new File(filename + ".zip");
+
+        if (outputFileZip.exists())
+        {
+            outputFileZip.delete();
+            outputFileZip.createNewFile();
+        }
+
+        ZipUtils.compress(filename);
     }
 
     public static Classifier loadModelFromFile(String filename) throws Exception
     {
+        String filenameZip = filename + ".zip";
+
+        if (IOHelper.fileExists(filenameZip) && ZipUtils.isZipped(filenameZip)) ZipUtils.extract(filenameZip);
+
         return (Classifier) weka.core.SerializationHelper.read(filename);
     }
 }

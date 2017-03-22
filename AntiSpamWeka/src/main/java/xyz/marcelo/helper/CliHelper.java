@@ -56,7 +56,9 @@ public class CliHelper
         catch (ParseException e)
         {
             // automatically generate the help statement
-            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar METADATA METHOD [RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL]", options);
+            String mandatoryArgs = "METADATA METHOD";
+            String optionalArgs = "[RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL]";
+            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar " + mandatoryArgs + " " + optionalArgs, options);
         }
     }
 
@@ -65,7 +67,7 @@ public class CliHelper
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
         if (cmd.hasOption(OPTION_METADATA))
         {
-            metadata.addAll(InputOutputHelper.loadDataSetsMetadataFromFile(cmd.getOptionValue(OPTION_METADATA)));
+            metadata.addAll(IOHelper.loadDataSetsMetadataFromFile(cmd.getOptionValue(OPTION_METADATA)));
         }
         return metadata;
     }
