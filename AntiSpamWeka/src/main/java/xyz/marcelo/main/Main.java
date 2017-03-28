@@ -2,9 +2,7 @@ package xyz.marcelo.main;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -34,35 +32,26 @@ public class Main
         // print the parsed, args-provided parameters
         CLIHelper.printConfiguration();
 
-        // individually save the parsed, args-provided parameters
-        Set<DataSetMetadata> metadatum = CLIHelper.getDataSetsMetadata();
-        List<MethodConfiguration> methods = CLIHelper.getMethods();
-        Integer numberOfRuns = CLIHelper.getNumberOfRuns();
-        Boolean shouldSkipTrain = CLIHelper.shouldSkipTrain();
-        Boolean shouldSkipTest = CLIHelper.shouldSkipTest();
-        Boolean shouldIncludeEmptyInstances = CLIHelper.shouldIncludeEmptyInstances();
-        Boolean shouldSaveModel = CLIHelper.shouldSaveModel();
-
         // objects that will hold all kinds of data sets
         Instances dataSet = null, trainingSet = null, testingSet = null, emptySet = null;
 
-        for (MethodConfiguration method : methods)
+        for (MethodConfiguration method : CLIHelper.getMethods())
         {
             FormatHelper.printHeader();
 
-            for (DataSetMetadata metadata : metadatum)
+            for (DataSetMetadata metadata : CLIHelper.getDataSetsMetadata())
             {
                 // import data set
                 String hamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_HAM;
                 String spamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_SPAM;
                 dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
-                // apply attribute and instance filters to the data set
-                dataSet = FilterHelper.applyAttributeFilter(dataSet);
-                dataSet = FilterHelper.applyInstanceFilter(dataSet);
+                // apply attribute and instance filters to the data set, if specified
+                if (CLIHelper.shrinkFeatures()) dataSet = FilterHelper.applyAttributeFilter(dataSet);
+                if (CLIHelper.balanceClasses()) dataSet = FilterHelper.applyInstanceFilter(dataSet);
 
-                // build empty patterns set
-                if (shouldIncludeEmptyInstances)
+                // build empty patterns set, if specified
+                if (CLIHelper.includeEmptyInstances())
                 {
                     emptySet = IOHelper.createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
                 }
@@ -71,15 +60,15 @@ public class Main
                 Random random = new Random();
 
                 // build the classifier for the given configuration
-                Classifier classifier = MethodConfiguration.buildClassifierFor(method);
+                Classifier baseClassifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                MethodEvaluation timedEvaluation = new MethodEvaluation(metadata.getFolder(), method);
+                MethodEvaluation baseEvaluation = new MethodEvaluation(metadata.getFolder(), method);
 
                 // reset prime helper index
                 PrimeHelper.reset();
 
-                for (int run = 0; run < numberOfRuns; run++)
+                for (int run = 0; run < CLIHelper.getNumberOfRuns(); run++)
                 {
                     // set random number generator's seed
                     random.setSeed(PrimeHelper.getNextPrime());
@@ -95,31 +84,31 @@ public class Main
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (shouldIncludeEmptyInstances) testingSet.addAll(emptySet);
+                    if (CLIHelper.includeEmptyInstances()) testingSet.addAll(emptySet);
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
                     String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, trainPercentage, PrimeHelper.getCurrentPrime());
-                    Classifier innerClassifier = shouldSkipTrain ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(classifier);
+                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
-                    Evaluation innerEvaluation = new Evaluation(testingSet);
+                    Evaluation evaluation = new Evaluation(testingSet);
 
                     // setup the classifier evaluation
-                    timedEvaluation.setClassifier(innerClassifier);
-                    timedEvaluation.setEvaluation(innerEvaluation);
+                    baseEvaluation.setClassifier(classifier);
+                    baseEvaluation.setEvaluation(evaluation);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!shouldSkipTrain) timedEvaluation.train(trainingSet);
+                    if (!CLIHelper.skipTrain()) baseEvaluation.train(trainingSet);
 
                     // evaluate the classifier
-                    if (!shouldSkipTest) timedEvaluation.test(testingSet);
+                    if (!CLIHelper.skipTest()) baseEvaluation.test(testingSet);
 
                     // compute and log the partial results for this configuration
-                    FormatHelper.computeResults(timedEvaluation);
+                    FormatHelper.computeResults(baseEvaluation);
                     FormatHelper.summarizeResults(false, true);
 
                     // persist the classifier, if specified in args
-                    if (shouldSaveModel) IOHelper.saveModelToFile(classifierFilename, innerClassifier);
+                    if (CLIHelper.saveModel()) IOHelper.saveModelToFile(classifierFilename, classifier);
                 }
 
                 // log the final results for this configuration
