@@ -77,8 +77,8 @@ public class Main
                     dataSet.randomize(random);
 
                     // build train and test sets
-                    double trainPercentage = 0.6;
-                    int trainingSetSize = (int) Math.round(dataSet.numInstances() * trainPercentage);
+                    double splitPercent = 0.5;
+                    int trainingSetSize = (int) Math.round(dataSet.numInstances() * splitPercent);
                     int testingSetSize = dataSet.numInstances() - trainingSetSize;
                     trainingSet = new Instances(dataSet, 0, trainingSetSize);
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
@@ -87,7 +87,7 @@ public class Main
                     if (CLIHelper.includeEmptyInstances()) testingSet.addAll(emptySet);
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
-                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, trainPercentage, PrimeHelper.getCurrentPrime());
+                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, PrimeHelper.getCurrentPrime());
                     Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
