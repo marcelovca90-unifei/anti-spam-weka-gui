@@ -9,12 +9,14 @@ METHOD=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NBTREE RBF R
 RUNS=5
 SKIP_TRAIN="-skipTrain"
 SKIP_TEST="-skipTest"
+SHRINK_FEATURES="-shrinkFeatures"
+BALANCE_CLASSES="-balanceClasses"
 TEST_EMPTY="-testEmpty"
 SAVE_MODEL="-saveModel"
 
 for METHOD in "${METHOD[@]}"; do
     VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC"
-    RUN_COMMAND="java ${VM_OPTIONS} -jar ${JAR_PATH} -metadata ${METADATA} -method ${METHOD} -runs ${RUNS} ${TEST_EMPTY}"
+    RUN_COMMAND="java ${VM_OPTIONS} -jar ${JAR_PATH} -metadata ${METADATA} -method ${METHOD} -runs ${RUNS} ${SHRINK_FEATURES} ${BALANCE_CLASSES} ${TEST_EMPTY} ${SAVE_MODEL}"
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] > [${LOG_FILENAME}]"
     command ${RUN_COMMAND} > ${LOG_FILENAME}
