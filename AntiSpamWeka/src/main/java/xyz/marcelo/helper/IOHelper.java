@@ -39,8 +39,14 @@ public class IOHelper
 
         while ((line = reader.readLine()) != null)
         {
+            // only process the line it does not start with a comment mark (# or //)
             if (!line.startsWith("#") && !line.startsWith("//"))
             {
+                // replaces the user home symbol (~) with the actual folder path
+                if (line.startsWith("~"))
+                {
+                    line = line.replaceAll("~", System.getProperty("user.home"));
+                }
                 String[] parts = line.split(",");
                 String folder = parts[0];
                 Integer emptyHamAmount = Integer.parseInt(parts[1]);

@@ -62,6 +62,9 @@ public class CLIHelper
             String mandatoryArgs = "METADATA METHOD";
             String optionalArgs = "[RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL] [SHRINK_FEATURES] [BALANCE_CLASSES]";
             new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar " + mandatoryArgs + " " + optionalArgs, opts);
+
+            // exit with status code 1, indicating abnormal termination
+            System.exit(1);
         }
     }
 
