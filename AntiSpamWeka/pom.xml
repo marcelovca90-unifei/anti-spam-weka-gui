@@ -161,7 +161,7 @@
     <repositories>
         <repository>
             <id>local-repository</id>
-            <url>file://${basedir}/local-repository</url>
+            <url>file://${basedir}/repo</url>
         </repository>
     </repositories>
 

@@ -1,10 +1,9 @@
 #!/bin/bash
 
-BASEDIR=$(pwd)
-JAR_PATH="${BASEDIR}/../target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+JAR_PATH="/anti-spam-weka/AntiSpamWeka/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 MAX_HEAP_SIZE=12G
 MAX_STACK_SIZE=8m
-METADATA="${BASEDIR}/../data-sets/metadata.txt"
+METADATA="~/git/anti-spam-weka-data/2017_MULT10/metadata.txt"
 METHOD=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NBTREE RBF RC RF SGD SPEGASOS SVM)
 RUNS=5
 SKIP_TRAIN="-skipTrain"
