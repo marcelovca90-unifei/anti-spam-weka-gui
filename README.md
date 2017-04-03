@@ -16,17 +16,15 @@ Geral:
 - [x] Ler artigos sobre o assunto
 - [x] Estudar a biblioteca Weka
 - [x] Salvar e carregar modelos do Weka
-- [ ] Investigar aleatoriedade dos resultados
+- [x] Investigar aleatoriedade dos resultados
 - [x] ~~Implementar k-Fold Cross-Validation~~
 - [ ] Comparar os resultados com trabalhos anteriores
 - [ ] Escrever dissetação no LaTeX
 - [ ] "Extrair" artigo da dissertação
 
-Bases de dados:
-- [x] LingSpam (com 8, 16, 32, 64, 128, 256 e 512 features - CHI2, DF e MI)
-- [x] SpamAssassin (com 8, 16, 32, 64, 128, 256 e 512 features - CHI2, DF e MI)
-- [x] TREC (com 8, 16, 32, 64, 128, 256 e 512 features - CHI2, DF e MI)
-- [x] Unifei 2017 (com 8, 16, 32, 64, 128, 256 e 512 features - CHI2, DF e MI)
+[Bases de dados](https://github.com/marcelovca90/anti-spam-weka-data):
+- [x] [2017_BASE2](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_BASE2) (com 8, 16, 32, 64, 128, 256 e 512 características - CHI2, DF e MI)
+- [x] [2017_MULT10](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_MULT10) (com 10, 20, 30, 40, 50, 60, 70, 80, 90 e 100 características - CHI2, DF e MI)
 - [x] ~~Quantidade de features proporcional aos padrões zerados~~
 
 Métodos de classificação:
@@ -51,10 +49,10 @@ Métodos de classificação:
 - [x] [SVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support vector machine
 
 Métricas:
-- [x] Porcentagem de acertos na classificação de hams (Ham Precision)
-- [x] Porcentagem de revocação na classificação de hams (Ham Recall)
-- [x] Porcentagem de acertos na classificação de spams (Spam Precision)
-- [x] Porcentagem de revocação na classificação de hams (Spam Recall)
-- [x] Tempo de treinamento (Training Time)
-- [x] Tempo de classificação (Test Time)
+- [x] Porcentagem de acertos na classificação de hams (*Ham Precision*)
+- [x] Porcentagem de revocação na classificação de hams (*Ham Recall*)
+- [x] Porcentagem de acertos na classificação de spams (*Spam Precision*)
+- [x] Porcentagem de revocação na classificação de hams (*Spam Recall*)
+- [x] Tempo de treinamento (*Training Time*)
+- [x] Tempo de classificação (*Test Time*)
 - [x] ~~Uso de memória (Memory Usage)~~
