@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -39,8 +41,8 @@ public class IOHelper
 
         while ((line = reader.readLine()) != null)
         {
-            // only process the line it does not start with a comment mark (# or //)
-            if (!line.startsWith("#") && !line.startsWith("//"))
+            // only process the line if it is not empty and does not start with a comment mark (# or //)
+            if (!StringUtils.isEmpty(line) && !line.startsWith("#") && !line.startsWith("//"))
             {
                 // replaces the user home symbol (~) with the actual folder path
                 if (line.startsWith("~"))
