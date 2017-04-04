@@ -1,6 +1,6 @@
 #### Pré-requisitos:
 
-[Apache Maven](https://maven.apache.org/download.cgi) e [JDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html) / [OpenJDK 8](http://openjdk.java.net/install/)
+[Git](https://git-scm.com/downloads), [JDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html) / [OpenJDK 8](http://openjdk.java.net/install/) e [Apache Maven](https://maven.apache.org/download.cgi)
 
 #### 1. Clonando e construindo o projeto principal ([anti-spam-weka](https://github.com/marcelovca90/anti-spam-weka)):
 
