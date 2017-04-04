@@ -16,7 +16,7 @@
 
 `cd ~/anti-spam-weka-data/2017_MULT10/ && cat 2017_MULT10.zip.part-* > 2017_MULT10.zip && unzip 2017_MULT10.zip`
 
-#### 4. [LINUX] Instalando a biblioteca de álgebra linear de alta performance [netlib-java](https://github.com/fommil/netlib-java):
+#### 4. [LINUX] Instalando a biblioteca de álgebra linear de alta performance ([netlib-java](https://github.com/fommil/netlib-java)):
 
 `sudo apt-get install libatlas3-base libopenblasbase`
 
