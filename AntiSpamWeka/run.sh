@@ -19,7 +19,7 @@ SAVE_MODEL="-saveModel"
 # E-mail settings
 SENDER="sender@server.com"
 RECIPIENT="recipient@server.com"
-SERVER="nail.server.com:port"
+SERVER="mail.server.com:port"
 OPTIONS="tls=yes"
 USERNAME="sender@server.com"
 PASSWORD="sender123password"
