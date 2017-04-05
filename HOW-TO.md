@@ -28,6 +28,6 @@
 
 `sudo update-alternatives --config liblapack.so.3`
 
-#### 3. Configurando e executando os treinamentos e/ou testes
+#### 3. Configurando e executando os treinamentos, testes e envio de e-mails
 
-`cd ~/anti-spam-weka/AntiSpamWeka/script/ && vi run.sh && ./run.sh`
+`cd ~/anti-spam-weka/AntiSpamWeka/ && vi run.sh && ./run.sh`
