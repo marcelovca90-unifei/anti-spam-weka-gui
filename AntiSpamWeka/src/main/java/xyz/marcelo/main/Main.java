@@ -100,19 +100,23 @@ public class Main
                     // if the classifier could not be loaded from the filesystem, then train it
                     if (!CLIHelper.skipTrain()) baseEvaluation.train(trainingSet);
 
-                    // evaluate the classifier
-                    if (!CLIHelper.skipTest()) baseEvaluation.test(testingSet);
+                    // if the testing should not be skipped
+                    if (!CLIHelper.skipTest())
+                    {
+                        // evaluate the classifier
+                        baseEvaluation.test(testingSet);
 
-                    // compute and log the partial results for this configuration
-                    FormatHelper.computeResults(baseEvaluation);
-                    FormatHelper.summarizeResults(false, true);
+                        // compute and log the partial results for this configuration
+                        FormatHelper.computeResults(baseEvaluation);
+                        FormatHelper.summarizeResults(false, true);
+                    }
 
                     // persist the classifier, if specified in args
                     if (CLIHelper.saveModel()) IOHelper.saveModelToFile(classifierFilename, classifier);
                 }
 
                 // log the final results for this configuration
-                FormatHelper.summarizeResults(true, true);
+                if (!CLIHelper.skipTest()) FormatHelper.summarizeResults(true, true);
             }
 
             FormatHelper.printFooter();

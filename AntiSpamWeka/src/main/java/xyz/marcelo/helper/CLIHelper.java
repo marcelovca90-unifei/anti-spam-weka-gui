@@ -43,7 +43,7 @@ public class CLIHelper
         opts.addOption(OPTION_SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
         opts.addOption(OPTION_TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
         opts.addOption(OPTION_SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
-        opts.addOption(OPTION_SHRINK_FEATURES, false, "reduce the feaeture space using an evolutionary search");
+        opts.addOption(OPTION_SHRINK_FEATURES, false, "reduce the feature space using an evolutionary search");
         opts.addOption(OPTION_BALANCE_CLASSES, false, "equalize the number of instances for each class");
 
         // instantiates the cli based on the provided arguments
