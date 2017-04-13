@@ -11,7 +11,7 @@
 
 Implementação baseada na biblioteca de aprendizado de máquina [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/).
 
-[Bases de dados](https://github.com/marcelovca90/anti-spam-weka-data):
+Bases de dados:
 - [2017_BASE2](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_BASE2) (com 8, 16, 32, 64, 128, 256 e 512 características - CHI2, DF e MI)
 - [2017_MULT10](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_MULT10) (com 10, 20, 30, 40, 50, 60, 70, 80, 90 e 100 características - CHI2, DF e MI)
 - ~~Quantidade de features proporcional aos padrões zerados~~
