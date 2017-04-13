@@ -9,7 +9,8 @@
 
 **Orientador:** Otávio Augusto Salgado Carpinteiro
 
-Implementação baseada na biblioteca de aprendizado de máquina [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/).
+Biblioteca de aprendizado de máquina:
+- [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)
 
 Bases de dados:
 - [2017_BASE2](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_BASE2) (com 8, 16, 32, 64, 128, 256 e 512 características - CHI2, DF e MI)
