@@ -9,6 +9,8 @@
 
 **Orientador:** Otávio Augusto Salgado Carpinteiro
 
+- - - -
+
 Biblioteca de aprendizado de máquina:
 - [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)
 
