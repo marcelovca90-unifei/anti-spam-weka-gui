@@ -30,7 +30,7 @@ for METHOD in "${METHOD[@]}"; do
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] > [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} > ${LOG_FILENAME}
-    MAIL_COMMAND="cat ${LOG_FILENAME} | sendemail -f ${SENDER} -t ${RECIPIENT} -u \"[ASW] $(date) - $(basename ${LOG_FILENAME})\" -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}"
+    MAIL_COMMAND="sendemail -f ${SENDER} -t ${RECIPIENT} -u \"[ASW] $(date) - $(basename ${LOG_FILENAME})\" -a ${LOG_FILENAME} -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}"
     eval ${MAIL_COMMAND} > /dev/null
 done
 
