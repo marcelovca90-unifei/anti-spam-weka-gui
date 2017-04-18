@@ -27,6 +27,10 @@ public class FormatHelper
     private static double spamPrecision;
     private static double hamRecall;
     private static double spamRecall;
+    private static double hamAreaUnderPRC;
+    private static double spamAreaUnderPRC;
+    private static double hamAreaUnderROC;
+    private static double spamAreaUnderROC;
     private static double trainTime;
     private static double testTime;
 
@@ -37,10 +41,15 @@ public class FormatHelper
     private static final String SPAM_PRECISION = "spamPrecision";
     private static final String HAM_RECALL = "hamRecall";
     private static final String SPAM_RECALL = "spamRecall";
+    private static final String HAM_AREA_UNDER_PRC = "hamAreaUnderPRC";
+    private static final String SPAM_AREA_UNDER_PRC = "spamAreaUnderPRC";
+    private static final String HAM_AREA_UNDER_ROC = "hamAreaUnderROC";
+    private static final String SPAM_AREA_UNDER_ROC = "spamAreaUnderROC";
     private static final String TRAIN_TIME = "trainTime";
     private static final String TEST_TIME = "testTime";
 
-    private static final String[] METRICS = { HAM_PRECISION, SPAM_PRECISION, HAM_RECALL, SPAM_RECALL, TRAIN_TIME, TEST_TIME };
+    private static final String[] METRICS = { HAM_PRECISION, SPAM_PRECISION, HAM_RECALL, SPAM_RECALL, HAM_AREA_UNDER_PRC, SPAM_AREA_UNDER_PRC,
+            HAM_AREA_UNDER_ROC, SPAM_AREA_UNDER_ROC, TRAIN_TIME, TEST_TIME };
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss.SSS z");
 
@@ -67,6 +76,12 @@ public class FormatHelper
         hamRecall = 100.0 * timedEvaluation.getEvaluation().recall(CLASS_HAM);
         spamRecall = 100.0 * timedEvaluation.getEvaluation().recall(CLASS_SPAM);
 
+        hamAreaUnderPRC = 100.0 * timedEvaluation.getEvaluation().areaUnderPRC(CLASS_HAM);
+        spamAreaUnderPRC = 100.0 * timedEvaluation.getEvaluation().areaUnderPRC(CLASS_SPAM);
+
+        hamAreaUnderROC = 100.0 * timedEvaluation.getEvaluation().areaUnderROC(CLASS_HAM);
+        spamAreaUnderROC = 100.0 * timedEvaluation.getEvaluation().areaUnderROC(CLASS_SPAM);
+
         trainTime = (timedEvaluation.getTrainEnd() - timedEvaluation.getTrainStart());
 
         testTime = (timedEvaluation.getTestEnd() - timedEvaluation.getTestStart());
@@ -79,6 +94,10 @@ public class FormatHelper
         putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_PRECISION, spamPrecision);
         putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_RECALL, hamRecall);
         putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_RECALL, spamRecall);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_AREA_UNDER_PRC, hamAreaUnderPRC);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_AREA_UNDER_PRC, spamAreaUnderPRC);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, HAM_AREA_UNDER_ROC, hamAreaUnderROC);
+        putValueCreatingKeyIfNotExists(resultKeeper, key, SPAM_AREA_UNDER_ROC, spamAreaUnderROC);
         putValueCreatingKeyIfNotExists(resultKeeper, key, TRAIN_TIME, trainTime);
         putValueCreatingKeyIfNotExists(resultKeeper, key, TEST_TIME, testTime);
     }
@@ -120,7 +139,23 @@ public class FormatHelper
 
     public static void printHeader()
     {
-        System.out.println("Timestamp\tPath\tMethod\tHam Precision\tSpam Precision\tHam Recall\tSpam Recall\tTrain Time\tTest Time");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Timestamp\t");
+        sb.append("Path\t");
+        sb.append("Method\t");
+        sb.append("Ham Precision\t");
+        sb.append("Spam Precision\t");
+        sb.append("Ham Recall\t");
+        sb.append("Spam Recall\t");
+        sb.append("Ham Area Under PRC\t");
+        sb.append("Spam Area Under PRC\t");
+        sb.append("Ham Area Under ROC\t");
+        sb.append("Spam Area Under ROC\t");
+        sb.append("Train Time\t");
+        sb.append("Test Time");
+
+        System.out.println(sb.toString());
     }
 
     public static void printFooter()
