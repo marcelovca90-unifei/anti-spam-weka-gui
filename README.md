@@ -45,6 +45,10 @@ Métricas:
 - Porcentagem de revocação na classificação de hams (*Ham Recall*)
 - Porcentagem de acertos na classificação de spams (*Spam Precision*)
 - Porcentagem de revocação na classificação de hams (*Spam Recall*)
+- Área sobre a Curva PRC de Ham (*Ham Area Under PRC Curve*)
+- Área sobre a Curva PRC de Spam (*Spam Area Under PRC Curve*)
+- Área sobre a Curva COR de Ham (*Ham Area Under ROC Curve*)
+- Área sobre a Curva COR de Spam (*Spam Area Under ROC Curve*)
 - Tempo de treinamento (*Training Time*)
 - Tempo de classificação (*Test Time*)
 - ~~Uso de memória (Memory Usage)~~
