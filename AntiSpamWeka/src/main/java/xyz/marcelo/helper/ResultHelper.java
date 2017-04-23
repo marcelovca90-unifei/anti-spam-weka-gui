@@ -30,6 +30,7 @@ public class ResultHelper
 {
     private static Map<String, List<Double>> results = new LinkedHashMap<>();
 
+    // clears the data in result keeper
     public static void reset()
     {
         results.clear();
@@ -73,25 +74,21 @@ public class ResultHelper
         addSingleRunResult(METRIC_TEST_TIME, testTime);
     }
 
+    // detects, removes and returns the number of outliers in the result keeper
+    // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
     public static int detectAndRemoveOutliers()
     {
         // detect outlier(s) for each metric
-
         Set<Integer> outlierIndices = new LinkedHashSet<>();
-
         for (String metric : ALL_METRICS)
         {
             DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
-
             double mean = stats.getMean();
             double standardDeviation = stats.getStandardDeviation();
             double median = stats.getPercentile(50);
-
             for (int i = 0; i < stats.getValues().length; i++)
             {
                 double value = stats.getElement(i);
-
-                // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
                 double zScore = (value - mean) / standardDeviation;
                 double modifiedZScore = 0.6745 * (value - median) / getMedianAbsoluteDeviation(stats);
                 if (Math.abs(zScore) > 3 || Math.abs(modifiedZScore) > 3.5)
@@ -102,9 +99,7 @@ public class ResultHelper
         }
 
         // remove outlier(s) from result keeper
-
         Map<String, List<Double>> filteredResults = new LinkedHashMap<>();
-
         for (String key : results.keySet())
         {
             filteredResults.put(key, new LinkedList<>());
@@ -116,14 +111,13 @@ public class ResultHelper
                 }
             }
         }
-
         results = filteredResults;
 
         // returns the number of detected outliers
-
         return outlierIndices.size();
     }
 
+    // converts the double resuls for each metric to analog descriptive statistics
     protected static Map<String, DescriptiveStatistics> getMetricsToDescriptiveStatisticsMap()
     {
         Map<String, DescriptiveStatistics> statistics = new LinkedHashMap<>();

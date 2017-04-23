@@ -72,6 +72,7 @@ public class Main
                 // reset prime helper index
                 PrimeHelper.reset();
 
+                // reset run results keeper
                 ResultHelper.reset();
 
                 for (int run = 0; run < CLIHelper.getNumberOfRuns(); run++)
@@ -94,8 +95,7 @@ public class Main
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
                     String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, PrimeHelper.getCurrentPrime());
-                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename)
-                            : AbstractClassifier.makeCopy(baseClassifier);
+                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation evaluation = new Evaluation(testingSet);
