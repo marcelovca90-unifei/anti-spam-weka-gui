@@ -125,7 +125,7 @@ public class Main
                     // if at the end of last run, detect and remove outliers; this may lead to additional runs
                     if (run == (CLIHelper.getNumberOfRuns() - 1))
                     {
-                        run -= ResultHelper.detectAndRemoveOutliers();
+                        run -= ResultHelper.detectAndRemoveOutliers(false);
                     }
                 }
 

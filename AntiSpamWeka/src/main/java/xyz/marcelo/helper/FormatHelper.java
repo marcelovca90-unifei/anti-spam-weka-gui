@@ -84,6 +84,11 @@ public class FormatHelper
         System.out.println(sb.toString());
     }
 
+    protected static String getCurrentDateTime()
+    {
+        return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(ZONE_AMERICA_SAO_PAULO)).format(FORMATTER);
+    }
+
     private static String simplifyFolderPath(String folderPath)
     {
         return simplifyFolderPath(folderPath, 2, 3);
@@ -109,10 +114,5 @@ public class FormatHelper
     private static String formatMilliseconds(double millis)
     {
         return DurationFormatUtils.formatDurationHMS((Double.valueOf(millis)).longValue());
-    }
-
-    private static String getCurrentDateTime()
-    {
-        return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(ZONE_AMERICA_SAO_PAULO)).format(FORMATTER);
     }
 }

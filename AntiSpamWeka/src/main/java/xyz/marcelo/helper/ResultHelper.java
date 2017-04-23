@@ -15,11 +15,11 @@ import static xyz.marcelo.common.Constants.METRIC_TEST_TIME;
 import static xyz.marcelo.common.Constants.METRIC_TRAIN_TIME;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -76,10 +76,10 @@ public class ResultHelper
 
     // detects, removes and returns the number of outliers in the result keeper
     // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
-    public static int detectAndRemoveOutliers()
+    public static int detectAndRemoveOutliers(boolean debugOutliers)
     {
         // detect outlier(s) for each metric
-        Set<Integer> outlierIndices = new LinkedHashSet<>();
+        Set<Integer> outlierIndices = new TreeSet<>();
         for (String metric : ALL_METRICS)
         {
             DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
@@ -98,22 +98,32 @@ public class ResultHelper
             }
         }
 
-        // remove outlier(s) from result keeper
-        Map<String, List<Double>> filteredResults = new LinkedHashMap<>();
-        for (String key : results.keySet())
+        // remove outlier(s) from result keeper, if any
+        if (!outlierIndices.isEmpty())
         {
-            filteredResults.put(key, new LinkedList<>());
-            for (int i = 0; i < results.get(key).size(); i++)
+            Map<String, List<Double>> filteredResults = new LinkedHashMap<>();
+            for (String key : results.keySet())
             {
-                if (!outlierIndices.contains(i))
+                filteredResults.put(key, new LinkedList<>());
+                for (int i = 0; i < results.get(key).size(); i++)
                 {
-                    filteredResults.get(key).add(results.get(key).get(i));
+                    if (!outlierIndices.contains(i))
+                    {
+                        filteredResults.get(key).add(results.get(key).get(i));
+                    }
                 }
             }
-        }
-        results = filteredResults;
 
-        // returns the number of detected outliers
+            results = filteredResults;
+
+            if (debugOutliers)
+            {
+                String outlierMessage = "%s\t%d outliers found in last batch; rolling back iterations %s ...";
+                System.out.println(String.format(outlierMessage, FormatHelper.getCurrentDateTime(), outlierIndices.size(), outlierIndices));
+            }
+        }
+
+        // returns the number of detected outliers (if any)
         return outlierIndices.size();
     }
 
