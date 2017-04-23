@@ -1,8 +1,8 @@
 package xyz.marcelo.helper;
 
-import static xyz.marcelo.common.Constants.METRICS;
-import static xyz.marcelo.common.Constants.TEST_TIME;
-import static xyz.marcelo.common.Constants.TRAIN_TIME;
+import static xyz.marcelo.common.Constants.ALL_METRICS;
+import static xyz.marcelo.common.Constants.METRIC_TEST_TIME;
+import static xyz.marcelo.common.Constants.METRIC_TRAIN_TIME;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -38,12 +38,12 @@ public class FormatHelper
         sb.append(String.format("%s\t", folder));
         sb.append(String.format("%s\t", methodConfiguration.name()));
 
-        for (String metric : METRICS)
+        for (String metric : ALL_METRICS)
         {
             if (!printStats)
             {
                 double[] values = results.get(metric).getValues();
-                if (formatMillis && (metric.equals(TRAIN_TIME) || metric.equals(TEST_TIME)))
+                if (formatMillis && (metric.equals(METRIC_TRAIN_TIME) || metric.equals(METRIC_TEST_TIME)))
                     sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
                 else
                     sb.append(String.format("%.2f\t", values[values.length - 1]));
@@ -52,7 +52,7 @@ public class FormatHelper
             {
                 double mean = results.get(metric).getMean();
                 double standardDeviation = results.get(metric).getStandardDeviation();
-                if (formatMillis && (metric.equals(TRAIN_TIME) || metric.equals(TEST_TIME)))
+                if (formatMillis && (metric.equals(METRIC_TRAIN_TIME) || metric.equals(METRIC_TEST_TIME)))
                     sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
                 else
                     sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));

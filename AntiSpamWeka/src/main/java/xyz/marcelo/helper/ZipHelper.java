@@ -18,7 +18,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
-public class ZipUtils
+public class ZipHelper
 {
     public static boolean isZipped(String filename) throws FileNotFoundException, IOException
     {

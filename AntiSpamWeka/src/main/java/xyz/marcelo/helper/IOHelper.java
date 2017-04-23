@@ -260,14 +260,14 @@ public class IOHelper
             outputFileZip.createNewFile();
         }
 
-        ZipUtils.compress(filename);
+        ZipHelper.compress(filename);
     }
 
     public static Classifier loadModelFromFile(String filename) throws Exception
     {
         String filenameZip = filename + ".zip";
 
-        if (IOHelper.fileExists(filenameZip) && ZipUtils.isZipped(filenameZip)) ZipUtils.extract(filenameZip);
+        if (IOHelper.fileExists(filenameZip) && ZipHelper.isZipped(filenameZip)) ZipHelper.extract(filenameZip);
 
         return (Classifier) weka.core.SerializationHelper.read(filename);
     }

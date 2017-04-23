@@ -1,18 +1,18 @@
 package xyz.marcelo.helper;
 
+import static xyz.marcelo.common.Constants.ALL_METRICS;
 import static xyz.marcelo.common.Constants.CLASS_HAM;
 import static xyz.marcelo.common.Constants.CLASS_SPAM;
-import static xyz.marcelo.common.Constants.HAM_AREA_UNDER_PRC;
-import static xyz.marcelo.common.Constants.HAM_AREA_UNDER_ROC;
-import static xyz.marcelo.common.Constants.HAM_PRECISION;
-import static xyz.marcelo.common.Constants.HAM_RECALL;
-import static xyz.marcelo.common.Constants.METRICS;
-import static xyz.marcelo.common.Constants.SPAM_AREA_UNDER_PRC;
-import static xyz.marcelo.common.Constants.SPAM_AREA_UNDER_ROC;
-import static xyz.marcelo.common.Constants.SPAM_PRECISION;
-import static xyz.marcelo.common.Constants.SPAM_RECALL;
-import static xyz.marcelo.common.Constants.TEST_TIME;
-import static xyz.marcelo.common.Constants.TRAIN_TIME;
+import static xyz.marcelo.common.Constants.METRIC_HAM_AREA_UNDER_PRC;
+import static xyz.marcelo.common.Constants.METRIC_HAM_AREA_UNDER_ROC;
+import static xyz.marcelo.common.Constants.METRIC_HAM_PRECISION;
+import static xyz.marcelo.common.Constants.METRIC_HAM_RECALL;
+import static xyz.marcelo.common.Constants.METRIC_SPAM_AREA_UNDER_PRC;
+import static xyz.marcelo.common.Constants.METRIC_SPAM_AREA_UNDER_ROC;
+import static xyz.marcelo.common.Constants.METRIC_SPAM_PRECISION;
+import static xyz.marcelo.common.Constants.METRIC_SPAM_RECALL;
+import static xyz.marcelo.common.Constants.METRIC_TEST_TIME;
+import static xyz.marcelo.common.Constants.METRIC_TRAIN_TIME;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -61,16 +61,16 @@ public class ResultHelper
 
         Double testTime = (double) (timedEvaluation.getTestEnd() - timedEvaluation.getTestStart());
 
-        addSingleRunResult(HAM_PRECISION, hamPrecision);
-        addSingleRunResult(SPAM_PRECISION, spamPrecision);
-        addSingleRunResult(HAM_RECALL, hamRecall);
-        addSingleRunResult(SPAM_RECALL, spamRecall);
-        addSingleRunResult(HAM_AREA_UNDER_PRC, hamAreaUnderPRC);
-        addSingleRunResult(SPAM_AREA_UNDER_PRC, spamAreaUnderPRC);
-        addSingleRunResult(HAM_AREA_UNDER_ROC, hamAreaUnderROC);
-        addSingleRunResult(SPAM_AREA_UNDER_ROC, spamAreaUnderROC);
-        addSingleRunResult(TRAIN_TIME, trainTime);
-        addSingleRunResult(TEST_TIME, testTime);
+        addSingleRunResult(METRIC_HAM_PRECISION, hamPrecision);
+        addSingleRunResult(METRIC_SPAM_PRECISION, spamPrecision);
+        addSingleRunResult(METRIC_HAM_RECALL, hamRecall);
+        addSingleRunResult(METRIC_SPAM_RECALL, spamRecall);
+        addSingleRunResult(METRIC_HAM_AREA_UNDER_PRC, hamAreaUnderPRC);
+        addSingleRunResult(METRIC_SPAM_AREA_UNDER_PRC, spamAreaUnderPRC);
+        addSingleRunResult(METRIC_HAM_AREA_UNDER_ROC, hamAreaUnderROC);
+        addSingleRunResult(METRIC_SPAM_AREA_UNDER_ROC, spamAreaUnderROC);
+        addSingleRunResult(METRIC_TRAIN_TIME, trainTime);
+        addSingleRunResult(METRIC_TEST_TIME, testTime);
     }
 
     public static int detectAndRemoveOutliers()
@@ -79,7 +79,7 @@ public class ResultHelper
 
         Set<Integer> outlierIndices = new LinkedHashSet<>();
 
-        for (String metric : METRICS)
+        for (String metric : ALL_METRICS)
         {
             DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
 
