@@ -1,5 +1,9 @@
 package xyz.marcelo.helper;
 
+import static xyz.marcelo.common.Constants.TAG_CLASS;
+import static xyz.marcelo.common.Constants.TAG_HAM;
+import static xyz.marcelo.common.Constants.TAG_SPAM;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,10 +31,6 @@ import xyz.marcelo.common.MethodConfiguration;
 
 public class IOHelper
 {
-    public static final String TAG_HAM = "ham";
-    public static final String TAG_SPAM = "spam";
-    public static final String TAG_CLASS = "class";
-
     public static Set<DataSetMetadata> loadDataSetsMetadataFromFile(String filename) throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();

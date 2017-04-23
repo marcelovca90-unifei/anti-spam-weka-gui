@@ -1,5 +1,8 @@
 package xyz.marcelo.main;
 
+import static xyz.marcelo.common.Constants.TAG_HAM;
+import static xyz.marcelo.common.Constants.TAG_SPAM;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
@@ -18,6 +21,7 @@ import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.PrimeHelper;
+import xyz.marcelo.helper.ResultHelper;
 
 public class Main
 {
@@ -42,8 +46,8 @@ public class Main
             for (DataSetMetadata metadata : CLIHelper.getDataSetsMetadata())
             {
                 // import data set
-                String hamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_HAM;
-                String spamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_SPAM;
+                String hamFilePath = metadata.getFolder() + File.separator + TAG_HAM;
+                String spamFilePath = metadata.getFolder() + File.separator + TAG_SPAM;
                 dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set, if specified
@@ -68,6 +72,8 @@ public class Main
                 // reset prime helper index
                 PrimeHelper.reset();
 
+                ResultHelper.reset();
+
                 for (int run = 0; run < CLIHelper.getNumberOfRuns(); run++)
                 {
                     // set random number generator's seed
@@ -88,7 +94,8 @@ public class Main
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
                     String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, PrimeHelper.getCurrentPrime());
-                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
+                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename)
+                            : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation evaluation = new Evaluation(testingSet);
@@ -107,16 +114,25 @@ public class Main
                         baseEvaluation.test(testingSet);
 
                         // compute and log the partial results for this configuration
-                        FormatHelper.computeResults(baseEvaluation);
-                        FormatHelper.summarizeResults(false, true);
+                        ResultHelper.computeSingleRunResults(baseEvaluation);
+                        FormatHelper.summarizeResults(baseEvaluation, false, true);
                     }
 
                     // persist the classifier, if specified in args
                     if (CLIHelper.saveModel()) IOHelper.saveModelToFile(classifierFilename, classifier);
+
+                    // if at the end of last run, detect and remove outliers; this may lead to additional runs
+                    if (run == (CLIHelper.getNumberOfRuns() - 1))
+                    {
+                        run -= ResultHelper.detectAndRemoveOutliers();
+                    }
                 }
 
                 // log the final results for this configuration
-                if (!CLIHelper.skipTest()) FormatHelper.summarizeResults(true, true);
+                if (!CLIHelper.skipTest())
+                {
+                    FormatHelper.summarizeResults(baseEvaluation, true, true);
+                }
             }
 
             FormatHelper.printFooter();

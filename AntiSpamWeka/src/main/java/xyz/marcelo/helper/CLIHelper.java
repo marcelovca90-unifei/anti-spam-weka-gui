@@ -1,5 +1,15 @@
 package xyz.marcelo.helper;
 
+import static xyz.marcelo.common.Constants.OPTION_BALANCE_CLASSES;
+import static xyz.marcelo.common.Constants.OPTION_METADATA;
+import static xyz.marcelo.common.Constants.OPTION_METHOD;
+import static xyz.marcelo.common.Constants.OPTION_RUNS;
+import static xyz.marcelo.common.Constants.OPTION_SAVE_MODEL;
+import static xyz.marcelo.common.Constants.OPTION_SHRINK_FEATURES;
+import static xyz.marcelo.common.Constants.OPTION_SKIP_TEST;
+import static xyz.marcelo.common.Constants.OPTION_SKIP_TRAIN;
+import static xyz.marcelo.common.Constants.OPTION_TEST_EMPTY;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,16 +28,6 @@ import xyz.marcelo.common.MethodConfiguration;
 
 public class CLIHelper
 {
-    private static final String OPTION_METADATA = "metadata";
-    private static final String OPTION_METHOD = "method";
-    private static final String OPTION_RUNS = "runs";
-    private static final String OPTION_SKIP_TRAIN = "skipTrain";
-    private static final String OPTION_SKIP_TEST = "skipTest";
-    private static final String OPTION_SHRINK_FEATURES = "shrinkFeatures";
-    private static final String OPTION_BALANCE_CLASSES = "balanceClasses";
-    private static final String OPTION_TEST_EMPTY = "testEmpty";
-    private static final String OPTION_SAVE_MODEL = "saveModel";
-
     private static CommandLine cmd;
 
     public static void initialize(String[] args) throws ParseException
