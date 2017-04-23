@@ -35,13 +35,14 @@ for METHOD in "${METHOD[@]}"; do
 
     # zip the log file
     LOG_FILENAME_ZIP="${LOG_FILENAME}.zip"
-    zip ${LOG_FILENAME_ZIP} ${LOG_FILENAME}
+    ZIP_COMMAND="zip --junk-paths ${LOG_FILENAME_ZIP} ${LOG_FILENAME}"
+    eval ${ZIP_COMMAND}
 
     # mail the zipped log file
     MAIL_SUBJECT="\"[ASW] $(date) - $(basename ${LOG_FILENAME})\""
     MAIL_BODY="\"$(du -h ${LOG_FILENAME} | cut -f1) $(file ${LOG_FILENAME})\""
     MAIL_COMMAND="sendemail -f ${SENDER} -t ${RECIPIENT} -u ${MAIL_SUBJECT} -m ${MAIL_BODY} -a ${LOG_FILENAME_ZIP} -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}"
-    eval ${MAIL_COMMAND} > /dev/null
+    eval ${MAIL_COMMAND}
 
 done
 
