@@ -25,14 +25,23 @@ USERNAME="sender@server.com"
 PASSWORD="sender123password"
 
 for METHOD in "${METHOD[@]}"; do
+
+    # run the experiments
     VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC"
     RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -metadata ${METADATA} -method ${METHOD} -runs ${RUNS} ${BALANCE_CLASSES} ${TEST_EMPTY} ${SAVE_MODEL}"
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] > [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} > ${LOG_FILENAME}
+
+    # zip the log file
+    LOG_FILENAME_ZIP="${LOG_FILENAME}.zip"
+    zip ${LOG_FILENAME_ZIP} ${LOG_FILENAME}
+
+    # mail the zipped log file
     MAIL_SUBJECT="\"[ASW] $(date) - $(basename ${LOG_FILENAME})\""
     MAIL_BODY="\"$(du -h ${LOG_FILENAME} | cut -f1) $(file ${LOG_FILENAME})\""
-    MAIL_COMMAND="sendemail -f ${SENDER} -t ${RECIPIENT} -u ${MAIL_SUBJECT} -m ${MAIL_BODY} -a ${LOG_FILENAME} -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}"
+    MAIL_COMMAND="sendemail -f ${SENDER} -t ${RECIPIENT} -u ${MAIL_SUBJECT} -m ${MAIL_BODY} -a ${LOG_FILENAME_ZIP} -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}"
     eval ${MAIL_COMMAND} > /dev/null
+
 done
 
