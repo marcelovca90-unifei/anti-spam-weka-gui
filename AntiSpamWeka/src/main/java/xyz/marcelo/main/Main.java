@@ -104,6 +104,7 @@ public class Main
                     // setup the classifier evaluation
                     baseEvaluation.setClassifier(classifier);
                     baseEvaluation.setEvaluation(evaluation);
+                    baseEvaluation.setNumberOfActualFeatures(dataSet.numAttributes() - 1);
 
                     // if the classifier could not be loaded from the filesystem, then train it
                     if (!CLIHelper.skipTrain()) baseEvaluation.train(trainingSet);
@@ -117,16 +118,16 @@ public class Main
                         // compute and log the partial results for this configuration
                         ResultHelper.computeSingleRunResults(baseEvaluation);
                         FormatHelper.summarizeResults(baseEvaluation, false, true);
+
+                        // if at the end of last run, detect and remove outliers; this may lead to additional runs
+                        if (run == (CLIHelper.getNumberOfRuns() - 1))
+                        {
+                            run -= ResultHelper.detectAndRemoveOutliers(false);
+                        }
                     }
 
                     // persist the classifier, if specified in args
                     if (CLIHelper.saveModel()) IOHelper.saveModelToFile(classifierFilename, classifier);
-
-                    // if at the end of last run, detect and remove outliers; this may lead to additional runs
-                    if (run == (CLIHelper.getNumberOfRuns() - 1))
-                    {
-                        run -= ResultHelper.detectAndRemoveOutliers(false);
-                    }
                 }
 
                 // log the final results for this configuration

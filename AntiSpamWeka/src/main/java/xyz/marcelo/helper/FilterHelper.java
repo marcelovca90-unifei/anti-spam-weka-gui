@@ -10,7 +10,7 @@ import weka.filters.supervised.instance.ClassBalancer;
 
 public class FilterHelper
 {
-    // remove less relevant attributes of the given data set
+    // remove less relevant attributes from the given data set
     public static Instances applyAttributeFilter(Instances dataSet) throws Exception
     {
         CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
@@ -28,7 +28,7 @@ public class FilterHelper
         return Filter.useFilter(dataSet, attributeSelection);
     }
 
-    // remove less relevant instances of the given data set
+    // remove less relevant instances from the given data set
     public static Instances applyInstanceFilter(Instances dataSet) throws Exception
     {
         ClassBalancer classBalancer = new ClassBalancer();

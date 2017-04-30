@@ -1,5 +1,7 @@
 package xyz.marcelo.common;
 
+import java.io.File;
+
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
@@ -9,6 +11,10 @@ public class MethodEvaluation
     private Classifier classifier;
     private Evaluation evaluation;
     private String folder;
+    private String dataSetName;
+    private String statMethod;
+    private int numberOfTotalFeatures;
+    private int numberOfActualFeatures;
     private MethodConfiguration methodConfiguration;
     private long trainStart;
     private long trainEnd;
@@ -40,6 +46,31 @@ public class MethodEvaluation
         return folder;
     }
 
+    public String getDataSetName()
+    {
+        return dataSetName;
+    }
+
+    public String getStatMethod()
+    {
+        return statMethod;
+    }
+
+    public int getNumberOfTotalFeatures()
+    {
+        return numberOfTotalFeatures;
+    }
+
+    public int getNumberOfActualFeatures()
+    {
+        return numberOfActualFeatures;
+    }
+
+    public void setNumberOfActualFeatures(int numberOfActualFeatures)
+    {
+        this.numberOfActualFeatures = numberOfActualFeatures;
+    }
+
     public MethodConfiguration getMethodConfiguration()
     {
         return methodConfiguration;
@@ -68,6 +99,12 @@ public class MethodEvaluation
     public MethodEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
         this.folder = folder;
+
+        String[] parts = folder.split("\\" + File.separator);
+        this.dataSetName = parts[parts.length - 3];
+        this.statMethod = parts[parts.length - 2];
+        this.numberOfTotalFeatures = Integer.parseInt(parts[parts.length - 1]);
+
         this.methodConfiguration = methodConfiguration;
     }
 

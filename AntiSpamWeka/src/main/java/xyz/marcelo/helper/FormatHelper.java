@@ -4,7 +4,6 @@ import static xyz.marcelo.common.Constants.ALL_METRICS;
 import static xyz.marcelo.common.Constants.METRIC_TEST_TIME;
 import static xyz.marcelo.common.Constants.METRIC_TRAIN_TIME;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,20 +22,20 @@ public class FormatHelper
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss.SSS z");
 
     // displays the experiment's [last results] or [mean ± standard deviation] for every metric
-    public static void summarizeResults(MethodEvaluation timedEvaluation, boolean printStats, boolean formatMillis)
+    public static void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
         Map<String, DescriptiveStatistics> results = ResultHelper.getMetricsToDescriptiveStatisticsMap();
 
         String timestamp = getCurrentDateTime();
 
-        String folder = simplifyFolderPath(timedEvaluation.getFolder());
-
-        MethodConfiguration methodConfiguration = timedEvaluation.getMethodConfiguration();
+        MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
 
         StringBuilder sb = new StringBuilder();
 
         sb.append(String.format("%s\t", timestamp));
-        sb.append(String.format("%s\t", folder));
+        sb.append(String.format("%s\t", methodEvaluation.getDataSetName()));
+        sb.append(String.format("%s\t", methodEvaluation.getStatMethod()));
+        sb.append(String.format("%d->%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
         sb.append(String.format("%s\t", methodConfiguration.name()));
 
         for (String metric : ALL_METRICS)
@@ -68,8 +67,9 @@ public class FormatHelper
         StringBuilder sb = new StringBuilder();
 
         sb.append("Timestamp\t");
-        sb.append("Path\t");
-        sb.append("Method\t");
+        sb.append("Data Set\t");
+        sb.append("Statistics Method\t");
+        sb.append("Number of Features\t");
         sb.append("Ham Precision\t");
         sb.append("Spam Precision\t");
         sb.append("Ham Recall\t");
@@ -87,28 +87,6 @@ public class FormatHelper
     protected static String getCurrentDateTime()
     {
         return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(ZONE_AMERICA_SAO_PAULO)).format(FORMATTER);
-    }
-
-    private static String simplifyFolderPath(String folderPath)
-    {
-        return simplifyFolderPath(folderPath, 2, 3);
-    }
-
-    private static String simplifyFolderPath(String folderPath, int firstParts, int lastParts)
-    {
-        String[] parts = folderPath.replace(System.getProperty("user.home"), "~").split("\\" + File.separator);
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < firstParts; i++)
-            sb.append(parts[i] + File.separator);
-
-        if ((firstParts + lastParts) < parts.length) sb.append("...");
-
-        for (int i = parts.length - lastParts; i < parts.length; i++)
-            sb.append(File.separator + parts[i]);
-
-        return sb.toString();
     }
 
     private static String formatMilliseconds(double millis)
