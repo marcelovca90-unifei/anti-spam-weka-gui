@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
+import org.apache.commons.math3.primes.Primes;
+
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -20,7 +22,6 @@ import xyz.marcelo.helper.CLIHelper;
 import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
-import xyz.marcelo.helper.PrimeHelper;
 import xyz.marcelo.helper.ResultHelper;
 
 public class Main
@@ -69,8 +70,8 @@ public class Main
                 // create the object that will hold the overall evaluations result
                 MethodEvaluation baseEvaluation = new MethodEvaluation(metadata.getFolder(), method);
 
-                // reset prime helper index
-                PrimeHelper.reset();
+                // reset random number generator seed
+                Integer randomSeed = 1;
 
                 // reset run results keeper
                 ResultHelper.reset();
@@ -78,7 +79,7 @@ public class Main
                 for (int run = 0; run < CLIHelper.getNumberOfRuns(); run++)
                 {
                     // set random number generator's seed
-                    random.setSeed(PrimeHelper.getNextPrime());
+                    random.setSeed(randomSeed = Primes.nextPrime(++randomSeed));
 
                     // randomize the data set to assure balance and avoid biasing
                     dataSet.randomize(random);
@@ -94,9 +95,8 @@ public class Main
                     if (CLIHelper.includeEmptyInstances()) testingSet.addAll(emptySet);
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
-                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, PrimeHelper.getCurrentPrime());
-                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename)
-                            : AbstractClassifier.makeCopy(baseClassifier);
+                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, randomSeed);
+                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation evaluation = new Evaluation(testingSet);

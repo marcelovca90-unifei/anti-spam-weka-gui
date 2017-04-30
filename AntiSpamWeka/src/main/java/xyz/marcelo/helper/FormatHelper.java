@@ -32,7 +32,7 @@ public class FormatHelper
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("%s\t", timestamp));
+        if (!printStats) sb.append(String.format("%s\t", timestamp));
         sb.append(String.format("%s\t", methodEvaluation.getDataSetName()));
         sb.append(String.format("%s\t", methodEvaluation.getStatMethod()));
         sb.append(String.format("%d->%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
