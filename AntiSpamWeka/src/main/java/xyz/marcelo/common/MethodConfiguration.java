@@ -12,7 +12,6 @@ import weka.classifiers.functions.RBFNetwork;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SPegasos;
-import weka.classifiers.meta.RandomCommittee;
 import weka.classifiers.misc.HyperPipes;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.FURIA;
@@ -23,6 +22,7 @@ import weka.classifiers.trees.J48Consolidated;
 import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.RandomForest;
+import weka.classifiers.trees.RandomTree;
 import weka.core.Utils;
 
 public enum MethodConfiguration
@@ -69,14 +69,14 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
 
-    // http://weka.sourceforge.net/doc.dev/weka/classifiers/meta/RandomCommittee.html
-    RC("Random Committee,", "-S 1 -num-slots 1 -I 10 -W weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1", RandomCommittee.class),
-
-    // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html
+    // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html
     RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
     RF("Random forests", "-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class),
+
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html
+    RT("Random tree", "-K 0 -M 1.0 -V 0.001 -S 1", RandomTree.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
