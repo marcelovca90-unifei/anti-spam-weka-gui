@@ -2,13 +2,15 @@ package xyz.marcelo.common;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A2DE;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.MultilayerPerceptronCS;
-import weka.classifiers.functions.RBFClassifier;
+import weka.classifiers.functions.RBFNetwork;
 import weka.classifiers.functions.SGD;
+import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SPegasos;
 import weka.classifiers.meta.RandomCommittee;
 import weka.classifiers.misc.HyperPipes;
@@ -61,6 +63,9 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.packages/multilayerPerceptronCS/weka/classifiers/functions/MultilayerPerceptronCS.html
     MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 500 -V 0 -S 1 -E 20 -H a", MultilayerPerceptronCS.class),
 
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html
+    NB("Naive Bayes", "", NaiveBayes.class),
+
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
 
@@ -68,13 +73,16 @@ public enum MethodConfiguration
     RC("Random Committee,", "-S 1 -num-slots 1 -I 10 -W weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1", RandomCommittee.class),
 
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFClassifier.html
-    RBF("Radial basis function network", "-N 2 -R 0.01 -L 1.0E-6 -C 2 -P 1 -E 1 -S 1", RBFClassifier.class),
+    RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
     RF("Random forests", "-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
+
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
+    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
