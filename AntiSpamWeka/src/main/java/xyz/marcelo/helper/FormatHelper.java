@@ -47,7 +47,10 @@ public final class FormatHelper
             }
         }
 
-        Logger.info(sb.toString());
+        if (!printStats)
+            Logger.debug(sb.toString());
+        else
+            Logger.info(sb.toString());
     }
 
     public static void printHeader()
