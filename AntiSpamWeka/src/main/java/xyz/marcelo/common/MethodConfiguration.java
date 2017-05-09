@@ -1,5 +1,7 @@
 package xyz.marcelo.common;
 
+import java.util.logging.Logger;
+
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
@@ -82,7 +84,8 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm",
+            "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
@@ -129,8 +132,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            System.out.println("Unexpected exception: " + e);
-            e.printStackTrace();
+            Logger.getLogger(MethodConfiguration.class.getName()).severe("Unexpected exception: " + e);
         }
 
         return classifier;

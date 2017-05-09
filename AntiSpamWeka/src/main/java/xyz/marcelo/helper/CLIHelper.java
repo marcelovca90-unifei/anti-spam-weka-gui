@@ -1,15 +1,5 @@
 package xyz.marcelo.helper;
 
-import static xyz.marcelo.common.Constants.OPTION_BALANCE_CLASSES;
-import static xyz.marcelo.common.Constants.OPTION_METADATA;
-import static xyz.marcelo.common.Constants.OPTION_METHOD;
-import static xyz.marcelo.common.Constants.OPTION_RUNS;
-import static xyz.marcelo.common.Constants.OPTION_SAVE_MODEL;
-import static xyz.marcelo.common.Constants.OPTION_SHRINK_FEATURES;
-import static xyz.marcelo.common.Constants.OPTION_SKIP_TEST;
-import static xyz.marcelo.common.Constants.OPTION_SKIP_TRAIN;
-import static xyz.marcelo.common.Constants.OPTION_TEST_EMPTY;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,36 +12,43 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+import org.pmw.tinylog.Logger;
 
+import xyz.marcelo.common.Constants.CLIOption;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
-public class CLIHelper
+public final class CLIHelper
 {
-    private static CommandLine cmd;
+    private static CommandLine commandLine;
+
+    private static Options options;
 
     public static void initialize(String[] args) throws ParseException
     {
         // create Options object
-        Options opts = new Options();
+        options = new Options();
 
         // add the command line options
-        opts.addOption(OPTION_METADATA, true, "path of the file containing data sets metadata (default: none)");
-        opts.addOption(OPTION_METHOD, true, "CSV list of methods. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
-        opts.addOption(OPTION_RUNS, true, "number of repetitions to be performed (default: 1)");
-        opts.addOption(OPTION_SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
-        opts.addOption(OPTION_SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
-        opts.addOption(OPTION_TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
-        opts.addOption(OPTION_SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
-        opts.addOption(OPTION_SHRINK_FEATURES, false, "reduce the feature space using an evolutionary search");
-        opts.addOption(OPTION_BALANCE_CLASSES, false, "equalize the number of instances for each class");
+        addOption(CLIOption.METADATA, true, "path of the file containing data sets metadata (default: none)");
+        addOption(CLIOption.METHOD, true, "CSV list of methods. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
+        addOption(CLIOption.RUNS, true, "number of repetitions to be performed (default: 1)");
+        addOption(CLIOption.SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
+        addOption(CLIOption.SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
+        addOption(CLIOption.TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
+        addOption(CLIOption.SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
+        addOption(CLIOption.SAVE_SETS, false, "save the training and testing data sets to a .csv file (default: false)");
+        addOption(CLIOption.SHRINK_FEATURES, false, "reduce the feature space using an evolutionary search");
+        addOption(CLIOption.BALANCE_CLASSES, false, "equalize the number of instances for each class");
 
         // instantiates the cli based on the provided arguments
         try
         {
-            cmd = new DefaultParser().parse(opts, args);
+            commandLine = new DefaultParser().parse(options, args);
 
-            if (!cmd.hasOption(OPTION_METADATA) || !cmd.hasOption(OPTION_METHOD))
+            if (!hasOption(CLIOption.METADATA) || !hasOption(CLIOption.METHOD))
             {
                 throw new ParseException("Missing mandatory arguments");
             }
@@ -60,8 +57,8 @@ public class CLIHelper
         {
             // automatically generate the help statement
             String mandatoryArgs = "METADATA METHOD";
-            String optionalArgs = "[RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL] [SHRINK_FEATURES] [BALANCE_CLASSES]";
-            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar " + mandatoryArgs + " " + optionalArgs, opts);
+            String optionalArgs = "[RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL] [SAVE_SETS] [SHRINK_FEATURES] [BALANCE_CLASSES]";
+            new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar " + mandatoryArgs + " " + optionalArgs, options);
 
             // exit with status code 1, indicating abnormal termination
             System.exit(1);
@@ -71,9 +68,9 @@ public class CLIHelper
     public static Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
-        if (cmd.hasOption(OPTION_METADATA))
+        if (hasOption(CLIOption.METADATA))
         {
-            metadata.addAll(IOHelper.loadDataSetsMetadataFromFile(cmd.getOptionValue(OPTION_METADATA)));
+            metadata.addAll(IOHelper.loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
         }
         return metadata;
     }
@@ -81,60 +78,86 @@ public class CLIHelper
     public static List<MethodConfiguration> getMethods()
     {
         List<MethodConfiguration> methods = new ArrayList<>();
-        if (cmd.hasOption(OPTION_METHOD))
+        if (hasOption(CLIOption.METHOD))
         {
-            Arrays.stream(cmd.getOptionValue(OPTION_METHOD).split(",")).forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
+            Arrays.stream(getOptionValue(CLIOption.METHOD).split(",")).forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
         }
         return methods;
     }
 
     public static int getNumberOfRuns()
     {
-        return cmd.hasOption(OPTION_RUNS) ? Integer.parseInt(cmd.getOptionValue(OPTION_RUNS)) : 1;
+        return hasOption(CLIOption.RUNS) ? Integer.parseInt(getOptionValue(CLIOption.RUNS)) : 1;
     }
 
     public static boolean skipTrain()
     {
-        return cmd.hasOption(OPTION_SKIP_TRAIN);
+        return hasOption(CLIOption.SKIP_TRAIN);
     }
 
     public static boolean skipTest()
     {
-        return cmd.hasOption(OPTION_SKIP_TEST);
+        return hasOption(CLIOption.SKIP_TEST);
     }
 
     public static boolean includeEmptyInstances()
     {
-        return cmd.hasOption(OPTION_TEST_EMPTY);
+        return hasOption(CLIOption.TEST_EMPTY);
     }
 
     public static boolean saveModel()
     {
-        return cmd.hasOption(OPTION_SAVE_MODEL);
+        return hasOption(CLIOption.SAVE_MODEL);
+    }
+
+    public static boolean saveSets()
+    {
+        return hasOption(CLIOption.SAVE_SETS);
     }
 
     public static boolean shrinkFeatures()
     {
-        return cmd.hasOption(OPTION_SHRINK_FEATURES);
+        return hasOption(CLIOption.SHRINK_FEATURES);
     }
 
     public static boolean balanceClasses()
     {
-        return cmd.hasOption(OPTION_BALANCE_CLASSES);
+        return hasOption(CLIOption.BALANCE_CLASSES);
     }
 
     public static void printConfiguration() throws IOException
     {
-        System.out.println("---- CONFIGURATION ----");
-        System.out.println(OPTION_METADATA + " : " + getDataSetsMetadata());
-        System.out.println(OPTION_METHOD + " : " + getMethods());
-        System.out.println(OPTION_RUNS + " : " + getNumberOfRuns());
-        System.out.println(OPTION_SKIP_TRAIN + " : " + skipTrain());
-        System.out.println(OPTION_SKIP_TEST + " : " + skipTest());
-        System.out.println(OPTION_TEST_EMPTY + " : " + includeEmptyInstances());
-        System.out.println(OPTION_SAVE_MODEL + " : " + saveModel());
-        System.out.println(OPTION_SHRINK_FEATURES + " : " + shrinkFeatures());
-        System.out.println(OPTION_BALANCE_CLASSES + " : " + balanceClasses());
-        System.out.println("-----------------------");
+        Logger.debug("---- CONFIGURATION ----");
+        Logger.debug("{} : {}", CLIOption.METADATA, getDataSetsMetadata());
+        Logger.debug("{} : {}", CLIOption.METHOD, getMethods());
+        Logger.debug("{} : {}", CLIOption.RUNS, getNumberOfRuns());
+        Logger.debug("{} : {}", CLIOption.SKIP_TRAIN, skipTrain());
+        Logger.debug("{} : {}", CLIOption.SKIP_TEST, skipTest());
+        Logger.debug("{} : {}", CLIOption.TEST_EMPTY, includeEmptyInstances());
+        Logger.debug("{} : {}", CLIOption.SAVE_MODEL, saveModel());
+        Logger.debug("{} : {}", CLIOption.SAVE_SETS, saveSets());
+        Logger.debug("{} : {}", CLIOption.SHRINK_FEATURES, shrinkFeatures());
+        Logger.debug("{} : {}", CLIOption.BALANCE_CLASSES, balanceClasses());
+        Logger.debug("-----------------------");
+    }
+
+    private static String camelCaseOption(CLIOption opt)
+    {
+        return StringUtils.remove(WordUtils.capitalizeFully(opt.name(), '_'), "_");
+    }
+
+    private static void addOption(CLIOption opt, boolean hasArg, String description)
+    {
+        options.addOption(camelCaseOption(opt), hasArg, description);
+    }
+
+    private static String getOptionValue(CLIOption opt)
+    {
+        return commandLine.getOptionValue(camelCaseOption(opt));
+    }
+
+    private static boolean hasOption(CLIOption opt)
+    {
+        return commandLine.hasOption(camelCaseOption(opt));
     }
 }

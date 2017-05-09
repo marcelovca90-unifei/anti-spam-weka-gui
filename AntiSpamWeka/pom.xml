@@ -66,6 +66,11 @@
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog</artifactId>
+            <version>1.2</version>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
         <dependency>
@@ -136,8 +141,20 @@
 
         <dependency>
             <groupId>weka-packages</groupId>
+            <artifactId>MultiObjectiveEvolutionarySearch</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
             <artifactId>naiveBayesTree</artifactId>
             <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>PSOSearch</artifactId>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
@@ -149,6 +166,12 @@
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>SPegasos</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>SVMAttributeEval</artifactId>
             <version>1.0.1</version>
         </dependency>
     </dependencies>

@@ -2,11 +2,13 @@ package xyz.marcelo.common;
 
 import java.io.File;
 
+import org.pmw.tinylog.Logger;
+
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
-public class MethodEvaluation
+public final class MethodEvaluation
 {
     private Classifier classifier;
     private Evaluation evaluation;
@@ -119,8 +121,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            System.out.println("Unexpected exception: " + e);
-            e.printStackTrace();
+            Logger.error("Unexpected exception: " + e);
         }
     }
 
@@ -135,8 +136,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            System.out.println("Unexpected exception: " + e);
-            e.printStackTrace();
+            Logger.error("Unexpected exception: " + e);
         }
     }
 }

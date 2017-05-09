@@ -9,12 +9,13 @@ JAR_PATH="$(pwd)/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 METADATA="$(pwd)/../../anti-spam-weka-data/2017_MULT10/metadata.txt"
 METHOD=(A1DE A2DE BFTREE DTNB FURIA HP J48 J48C J48G JRIP MLP MLPCS NB NBTREE RBF RF RT SGD SMO SPEGASOS SVM)
 RUNS=10
-SKIP_TRAIN="-skipTrain"
-SKIP_TEST="-skipTest"
-SHRINK_FEATURES="-shrinkFeatures"
-BALANCE_CLASSES="-balanceClasses"
-TEST_EMPTY="-testEmpty"
-SAVE_MODEL="-saveModel"
+SKIP_TRAIN="-SkipTrain"
+SKIP_TEST="-SkipTest"
+SHRINK_FEATURES="-ShrinkFeatures"
+BALANCE_CLASSES="-BalanceClasses"
+TEST_EMPTY="-TestEmpty"
+SAVE_MODEL="-SaveModel"
+SAVE_MODEL="-SaveSets"
 
 # E-mail settings
 SENDER="sender@server.com"

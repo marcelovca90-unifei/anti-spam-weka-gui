@@ -1,13 +1,7 @@
 package xyz.marcelo.main;
 
-import static xyz.marcelo.common.Constants.TAG_HAM;
-import static xyz.marcelo.common.Constants.TAG_SPAM;
-
 import java.io.File;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 import org.apache.commons.math3.primes.Primes;
 
@@ -24,13 +18,10 @@ import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.ResultHelper;
 
-public class Main
+public final class Main
 {
     public static void main(String[] args) throws Exception
     {
-        // change global setting for Logger instances to WARNING level
-        Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
-
         // initialize the CLI helper with the provided arguments
         CLIHelper.initialize(args);
 
@@ -47,8 +38,8 @@ public class Main
             for (DataSetMetadata metadata : CLIHelper.getDataSetsMetadata())
             {
                 // import data set
-                String hamFilePath = metadata.getFolder() + File.separator + TAG_HAM;
-                String spamFilePath = metadata.getFolder() + File.separator + TAG_SPAM;
+                String hamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_HAM;
+                String spamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_SPAM;
                 dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set, if specified
@@ -94,6 +85,13 @@ public class Main
                     // add empty patterns to test set
                     if (CLIHelper.includeEmptyInstances()) testingSet.addAll(emptySet);
 
+                    // save the data sets to csv files, if specified
+                    if (CLIHelper.saveSets())
+                    {
+                        IOHelper.saveInstancesToFile(trainingSet, metadata.getFolder() + File.separator + "training.csv");
+                        IOHelper.saveInstancesToFile(testingSet, metadata.getFolder() + File.separator + "testing.csv");
+                    }
+
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
                     String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, randomSeed);
                     Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
@@ -122,7 +120,7 @@ public class Main
                         // if at the end of last run, detect and remove outliers; this may lead to additional runs
                         if (run == (CLIHelper.getNumberOfRuns() - 1))
                         {
-                            run -= ResultHelper.detectAndRemoveOutliers(false);
+                            run -= ResultHelper.detectAndRemoveOutliers();
                         }
                     }
 

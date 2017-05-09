@@ -1,29 +1,32 @@
 package xyz.marcelo.helper;
 
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.CfsSubsetEval;
-import weka.attributeSelection.EvolutionarySearch;
+import weka.attributeSelection.MultiObjectiveEvolutionarySearch;
 import weka.core.Instances;
+import weka.core.OptionHandler;
 import weka.core.Utils;
 import weka.filters.Filter;
+import weka.filters.SimpleBatchFilter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.supervised.instance.ClassBalancer;
 
-public class FilterHelper
+public final class FilterHelper
 {
     // remove less relevant attributes from the given data set
     public static Instances applyAttributeFilter(Instances dataSet) throws Exception
     {
-        CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
-        cfsSubsetEval.setOptions(Utils.splitOptions("-M -Z -P 1 -E 1"));
+        ASEvaluation evaluator = new CfsSubsetEval();
+        ((OptionHandler) evaluator).setOptions(Utils.splitOptions("-P 1 -E 1"));
 
-        EvolutionarySearch evolutionarySearch = new EvolutionarySearch();
-        evolutionarySearch.setOptions(Utils.splitOptions(
-                "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1 -report-frequency 20"));
+        ASSearch search = new MultiObjectiveEvolutionarySearch();
+        ((OptionHandler) search).setOptions(Utils.splitOptions("-generations 10 -population-size 100 -seed 1 -a 0"));
 
         AttributeSelection attributeSelection = new AttributeSelection();
         attributeSelection.setInputFormat(dataSet);
-        attributeSelection.setEvaluator(cfsSubsetEval);
-        attributeSelection.setSearch(evolutionarySearch);
+        attributeSelection.setEvaluator(evaluator);
+        attributeSelection.setSearch(search);
 
         return Filter.useFilter(dataSet, attributeSelection);
     }
@@ -31,11 +34,11 @@ public class FilterHelper
     // remove less relevant instances from the given data set
     public static Instances applyInstanceFilter(Instances dataSet) throws Exception
     {
-        ClassBalancer classBalancer = new ClassBalancer();
-        classBalancer.setInputFormat(dataSet);
-        classBalancer.setOptions(Utils.splitOptions("-num-intervals 10"));
-        classBalancer.setDebug(true);
+        SimpleBatchFilter batchFilter = new ClassBalancer();
+        batchFilter.setInputFormat(dataSet);
+        batchFilter.setOptions(Utils.splitOptions("-num-intervals 10"));
+        batchFilter.setDebug(true);
 
-        return Filter.useFilter(dataSet, classBalancer);
+        return Filter.useFilter(dataSet, batchFilter);
     }
 }

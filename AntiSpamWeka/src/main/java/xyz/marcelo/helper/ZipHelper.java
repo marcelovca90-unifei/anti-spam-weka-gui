@@ -3,7 +3,6 @@ package xyz.marcelo.helper;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +17,9 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
-public class ZipHelper
+public final class ZipHelper
 {
-    public static boolean isZipped(String filename) throws FileNotFoundException, IOException
+    public static boolean isZipped(String filename) throws IOException
     {
         // try to create a zip input stream for the given filename
         File file = new File(filename);
