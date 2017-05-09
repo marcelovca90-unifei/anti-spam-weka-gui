@@ -1,7 +1,10 @@
 package xyz.marcelo.main;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import org.apache.commons.math3.primes.Primes;
 
@@ -22,6 +25,9 @@ public final class Main
 {
     public static void main(String[] args) throws Exception
     {
+        // change global setting for Logger instances to WARNING level
+        Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
+
         // initialize the CLI helper with the provided arguments
         CLIHelper.initialize(args);
 

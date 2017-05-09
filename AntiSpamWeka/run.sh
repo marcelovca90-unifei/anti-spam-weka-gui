@@ -28,8 +28,8 @@ PASSWORD="sender123password"
 for METHOD in "${METHOD[@]}"; do
 
     # run the experiments
-    VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:-UseConcMarkSweepGC"
-    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -metadata ${METADATA} -method ${METHOD} -runs ${RUNS} ${BALANCE_CLASSES} ${TEST_EMPTY}"
+    VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:+UseG1GC"
+    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -Metadata ${METADATA} -Method ${METHOD} -Runs ${RUNS} ${BALANCE_CLASSES} ${TEST_EMPTY}"
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] >> [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} >> ${LOG_FILENAME}
