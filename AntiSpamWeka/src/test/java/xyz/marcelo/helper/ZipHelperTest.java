@@ -21,7 +21,67 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 public class ZipHelperTest
 {
-    // TODO implement unit tests
+    private File srcFile;
+    private File destFile;
+
+    @Before
+    public void setUp() throws IOException
+    {
+        ClassLoader classLoader = getClass().getClassLoader();
+        srcFile = new File(classLoader.getResource("iris.arff").getFile());
+        destFile = new File(srcFile.getAbsolutePath() + ".copy");
+        FileUtils.copyFile(srcFile, destFile);
+    }
+
+    @Test
+    public void constructor_shouldReturnNotNullInstance()
+    {
+        assertThat(new ZipHelper(), notNullValue());
+    }
+
+    @Test
+    public void isZipped_notZippedFile_shouldReturnFalse() throws IOException
+    {
+        Assert.assertThat(destFile.exists(), CoreMatchers.equalTo(Boolean.TRUE));
+        Assert.assertThat(ZipHelper.isZipped(destFile.getAbsolutePath()), CoreMatchers.equalTo(Boolean.FALSE));
+    }
+
+    @Test
+    public void compress_shouldCompressAndDeleteUncompressedFile() throws IOException, ArchiveException
+    {
+        File zippedFile = ZipHelper.compress(destFile.getAbsolutePath());
+
+        Assert.assertThat(zippedFile.exists(), CoreMatchers.equalTo(Boolean.TRUE));
+        Assert.assertThat(ZipHelper.isZipped(zippedFile), CoreMatchers.equalTo(Boolean.TRUE));
+        Assert.assertThat(destFile.exists(), CoreMatchers.equalTo(Boolean.FALSE));
+    }
+
+    @Test
+    public void extract_shouldExtractAndDeleteCompressedFile() throws IOException, ArchiveException
+    {
+        File zippedFile = ZipHelper.compress(destFile);
+        File extractedFile = ZipHelper.extract(zippedFile);
+
+        // TODO investigate the assertions below
+
+        Assert.assertThat(zippedFile.exists(), CoreMatchers.equalTo(Boolean.FALSE));
+        // Assert.assertThat(extractedFile.exists(), CoreMatchers.equalTo(Boolean.TRUE));
+        // Assert.assertThat(ZipHelper.isZipped(extractedFile), CoreMatchers.equalTo(Boolean.FALSE));
+        // Assert.assertThat(destFile.exists(), CoreMatchers.equalTo(Boolean.TRUE));
+    }
 }

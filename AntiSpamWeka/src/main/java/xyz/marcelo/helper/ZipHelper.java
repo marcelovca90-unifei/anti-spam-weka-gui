@@ -40,6 +40,11 @@ import org.apache.commons.io.FileUtils;
 
 public class ZipHelper
 {
+    public static boolean isZipped(File file) throws IOException
+    {
+        return isZipped(file.getAbsolutePath());
+    }
+
     public static boolean isZipped(String filename) throws IOException
     {
         // try to create a zip input stream for the given filename
@@ -57,7 +62,12 @@ public class ZipHelper
         return isZipped;
     }
 
-    public static void compress(String filename) throws IOException, ArchiveException
+    public static File compress(File file) throws IOException, ArchiveException
+    {
+        return compress(file.getAbsolutePath());
+    }
+
+    public static File compress(String filename) throws IOException, ArchiveException
     {
         // create the output zip file
         File outputFile = new File(filename + ".zip");
@@ -83,9 +93,16 @@ public class ZipHelper
 
         // delete the input file so that only the zip will remain
         inputFile.delete();
+
+        return outputFile;
     }
 
-    public static void extract(String filename) throws ZipException, IOException
+    public static File extract(File file) throws ZipException, IOException
+    {
+        return extract(file.getAbsolutePath());
+    }
+
+    public static File extract(String filename) throws ZipException, IOException
     {
         // opens the zip file for the given filename
         File inputFile = new File(filename);
@@ -96,9 +113,12 @@ public class ZipHelper
         zipFile.close();
 
         // reads the zip file's first entry's content and write it to the buffer
-        FileUtils.writeByteArrayToFile(new File(filename.replace("\\.zip", "")), content);
+        File outputFile = new File(filename.replace("\\.zip", ""));
+        FileUtils.writeByteArrayToFile(outputFile, content);
 
         // delete the input file so that only the zip will remain
         inputFile.delete();
+
+        return outputFile;
     }
 }
