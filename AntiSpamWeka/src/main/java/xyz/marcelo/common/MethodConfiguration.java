@@ -21,10 +21,9 @@
  ******************************************************************************/
 package xyz.marcelo.common;
 
-import java.util.logging.Logger;
+import org.pmw.tinylog.Logger;
 
 import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A2DE;
@@ -116,9 +115,9 @@ public enum MethodConfiguration
 
     private final String name;
     private final String config;
-    private final Class<? extends Classifier> clazz;
+    private final Class<? extends AbstractClassifier> clazz;
 
-    private MethodConfiguration(final String name, final String config, final Class<? extends Classifier> clazz)
+    private MethodConfiguration(final String name, final String config, final Class<? extends AbstractClassifier> clazz)
     {
         this.name = name;
         this.config = config;
@@ -135,25 +134,25 @@ public enum MethodConfiguration
         return config;
     }
 
-    public Class<? extends Classifier> getClazz()
+    public Class<? extends AbstractClassifier> getClazz()
     {
         return clazz;
     }
 
     // dynamically instantiates a classifier for the given method configuration
-    public static Classifier buildClassifierFor(MethodConfiguration methodConfiguration)
+    public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)
     {
-        Classifier classifier = null;
+        AbstractClassifier classifier = null;
 
         try
         {
             classifier = methodConfiguration.getClazz().newInstance();
 
-            ((AbstractClassifier) classifier).setOptions(Utils.splitOptions(methodConfiguration.getConfig()));
+            classifier.setOptions(Utils.splitOptions(methodConfiguration.getConfig()));
         }
         catch (Exception e)
         {
-            Logger.getLogger(MethodConfiguration.class.getName()).severe("Unexpected exception: " + e);
+            Logger.error("Unexpected exception: " + e);
         }
 
         return classifier;
