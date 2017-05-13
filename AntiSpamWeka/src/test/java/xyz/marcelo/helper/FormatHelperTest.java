@@ -69,7 +69,7 @@ public class FormatHelperTest
     @Test
     public void constructor_shouldReturnNotNullInstance()
     {
-        assertThat(methodEvaluation, notNullValue());
+        assertThat(new FormatHelper(), notNullValue());
     }
 
     @Test
