@@ -21,7 +21,61 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import weka.core.Instances;
+
 public class FilterHelperTest
 {
-    // TODO implement unit tests
+    private Instances dataSet;
+
+    @Before
+    public void setUp() throws IOException
+    {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("iris.arff").getFile());
+        FileReader reader = new FileReader(file);
+
+        dataSet = new Instances(reader);
+        dataSet.setClassIndex(dataSet.numAttributes() - 1);
+    }
+
+    @Test
+    public void constructor_shouldReturnNotNullInstance()
+    {
+        assertThat(new FilterHelper(), notNullValue());
+    }
+
+    @Test
+    public void applyAttributeFilter_shouldReturnDataSetWithPotentiallyyReducedAttributes() throws Exception
+    {
+        int attributesBefore = dataSet.numAttributes();
+
+        dataSet = FilterHelper.applyAttributeFilter(dataSet);
+
+        int attributesAfter = dataSet.numAttributes();
+
+        assertThat(attributesAfter, lessThanOrEqualTo(attributesBefore));
+    }
+
+    @Test
+    public void applyInstanceFilter_shouldReturnDataSetWithPotentiallyyReducedInstances() throws Exception
+    {
+        int instancesBefore = dataSet.size();
+
+        dataSet = FilterHelper.applyInstanceFilter(dataSet);
+
+        int instancesAfter = dataSet.size();
+
+        assertThat(instancesAfter, lessThanOrEqualTo(instancesBefore));
+    }
 }

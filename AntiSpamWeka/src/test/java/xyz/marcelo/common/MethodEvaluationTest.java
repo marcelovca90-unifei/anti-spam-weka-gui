@@ -60,7 +60,7 @@ public class MethodEvaluationTest
     @Before
     public void setUp()
     {
-        methodEvaluation = new MethodEvaluation("/some/folder/DATA_SET/STAT_METHOD/100/", MethodConfiguration.RT);
+        methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
         methodEvaluation.setClassifier(classifier);
         methodEvaluation.setEvaluation(evaluation);
     }
