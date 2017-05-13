@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-public final class CLIHelperTest
+public class CLIHelperTest
 {
     // TODO implement unit tests
 }

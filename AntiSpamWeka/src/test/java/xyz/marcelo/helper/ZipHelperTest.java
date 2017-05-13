@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-public final class ZipHelperTest
+public class ZipHelperTest
 {
     // TODO implement unit tests
 }

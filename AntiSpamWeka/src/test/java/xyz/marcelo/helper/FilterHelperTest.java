@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-public final class FilterHelperTest
+public class FilterHelperTest
 {
     // TODO implement unit tests
 }

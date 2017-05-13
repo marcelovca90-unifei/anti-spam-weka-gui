@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-public final class FormatHelperTest
+public class FormatHelperTest
 {
     // TODO implement unit tests
 }

@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-public final class IOHelperTest
+public class IOHelperTest
 {
     // TODO implement unit tests
 }
