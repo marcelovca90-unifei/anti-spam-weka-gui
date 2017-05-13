@@ -38,7 +38,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
-public final class ZipHelper
+public class ZipHelper
 {
     public static boolean isZipped(String filename) throws IOException
     {

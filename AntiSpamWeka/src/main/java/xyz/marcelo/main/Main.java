@@ -42,7 +42,7 @@ import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.ResultHelper;
 
-public final class Main
+public class Main
 {
     public static void main(String[] args) throws Exception
     {
@@ -70,8 +70,10 @@ public final class Main
                 dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set, if specified
+                int numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 if (CLIHelper.shrinkFeatures()) dataSet = FilterHelper.applyAttributeFilter(dataSet);
                 if (CLIHelper.balanceClasses()) dataSet = FilterHelper.applyInstanceFilter(dataSet);
+                int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // build empty patterns set, if specified
                 if (CLIHelper.includeEmptyInstances())
@@ -129,7 +131,8 @@ public final class Main
                     // setup the classifier evaluation
                     baseEvaluation.setClassifier(classifier);
                     baseEvaluation.setEvaluation(evaluation);
-                    baseEvaluation.setNumberOfActualFeatures(dataSet.numAttributes() - 1);
+                    baseEvaluation.setNumberOfTotalFeatures(numberOfTotalFeatures);
+                    baseEvaluation.setNumberOfActualFeatures(numberOfActualFeatures);
 
                     // if the classifier could not be loaded from the filesystem, then train it
                     if (!CLIHelper.skipTrain()) baseEvaluation.train(trainingSet);

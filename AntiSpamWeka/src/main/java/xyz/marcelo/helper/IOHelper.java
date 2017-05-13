@@ -46,7 +46,7 @@ import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
-public final class IOHelper
+public class IOHelper
 {
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";

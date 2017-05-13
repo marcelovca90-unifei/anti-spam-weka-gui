@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.common;
 
-public final class DataSetMetadata
+public class DataSetMetadata
 {
     private String folder;
     private int emptyHamCount;

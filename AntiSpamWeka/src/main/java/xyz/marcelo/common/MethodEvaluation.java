@@ -29,7 +29,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
-public final class MethodEvaluation
+public class MethodEvaluation
 {
     private Classifier classifier;
     private Evaluation evaluation;
@@ -84,6 +84,11 @@ public final class MethodEvaluation
         return numberOfTotalFeatures;
     }
 
+    public void setNumberOfTotalFeatures(int numberOfTotalFeatures)
+    {
+        this.numberOfTotalFeatures = numberOfTotalFeatures;
+    }
+
     public int getNumberOfActualFeatures()
     {
         return numberOfActualFeatures;
@@ -127,23 +132,9 @@ public final class MethodEvaluation
         this.dataSetName = parts[parts.length - 3];
         this.statMethod = parts[parts.length - 2];
         this.numberOfTotalFeatures = Integer.parseInt(parts[parts.length - 1]);
+        this.numberOfActualFeatures = numberOfTotalFeatures;
 
         this.methodConfiguration = methodConfiguration;
-    }
-
-    public void test(Instances testSet)
-    {
-        try
-        {
-            // test the classifier
-            testStart = System.currentTimeMillis();
-            evaluation.evaluateModel(classifier, testSet);
-            testEnd = System.currentTimeMillis();
-        }
-        catch (Exception e)
-        {
-            Logger.error("Unexpected exception: " + e);
-        }
     }
 
     public void train(Instances trainSet)
@@ -154,6 +145,21 @@ public final class MethodEvaluation
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
+        }
+        catch (Exception e)
+        {
+            Logger.error("Unexpected exception: " + e);
+        }
+    }
+
+    public void test(Instances testSet)
+    {
+        try
+        {
+            // test the classifier
+            testStart = System.currentTimeMillis();
+            evaluation.evaluateModel(classifier, testSet);
+            testEnd = System.currentTimeMillis();
         }
         catch (Exception e)
         {

@@ -41,7 +41,7 @@ import xyz.marcelo.common.Constants.CLIOption;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
-public final class CLIHelper
+public class CLIHelper
 {
     private static CommandLine commandLine;
 

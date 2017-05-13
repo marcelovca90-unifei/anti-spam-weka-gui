@@ -33,7 +33,7 @@ import weka.filters.SimpleBatchFilter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.supervised.instance.ClassBalancer;
 
-public final class FilterHelper
+public class FilterHelper
 {
     // remove less relevant attributes from the given data set
     public static Instances applyAttributeFilter(Instances dataSet) throws Exception

@@ -21,7 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.common;
 
-public final class Constants
+public class Constants
 {
     public enum CLIOption
     {

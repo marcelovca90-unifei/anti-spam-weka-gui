@@ -36,7 +36,7 @@ import xyz.marcelo.common.Constants.MessageType;
 import xyz.marcelo.common.Constants.Metric;
 import xyz.marcelo.common.MethodEvaluation;
 
-public final class ResultHelper
+public class ResultHelper
 {
     private static Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
 

@@ -31,7 +31,7 @@ import xyz.marcelo.common.Constants.Metric;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.MethodEvaluation;
 
-public final class FormatHelper
+public class FormatHelper
 {
     // displays the experiment's [last results] or [mean ± standard deviation] for every metric
     public static void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
