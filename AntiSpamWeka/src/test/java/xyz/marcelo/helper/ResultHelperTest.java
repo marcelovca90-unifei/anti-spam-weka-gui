@@ -21,7 +21,78 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.Random;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import weka.classifiers.Evaluation;
+import xyz.marcelo.common.MethodEvaluation;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ResultHelperTest
 {
-    // TODO implement unit tests
+    @Mock
+    private Evaluation evaluation;
+
+    @Mock
+    private MethodEvaluation methodEvaluation;
+
+    @Before
+    public void setUp()
+    {
+        Random random = new Random();
+
+        when(evaluation.precision(Mockito.anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.recall(Mockito.anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.areaUnderPRC(Mockito.anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.areaUnderROC(Mockito.anyInt())).thenReturn(random.nextDouble());
+
+        when(methodEvaluation.getEvaluation()).thenReturn(evaluation);
+        when(methodEvaluation.getTrainStart()).thenReturn(System.currentTimeMillis() - 1000);
+        when(methodEvaluation.getTrainEnd()).thenReturn(System.currentTimeMillis() - 750);
+        when(methodEvaluation.getTestStart()).thenReturn(System.currentTimeMillis() - 500);
+        when(methodEvaluation.getTestEnd()).thenReturn(System.currentTimeMillis() - 250);
+    }
+
+    @Test
+    public void constructor_shouldReturnNotNullInstance()
+    {
+        assertThat(new ResultHelper(), notNullValue());
+    }
+
+    @Test
+    public void reset_shouldReturnSuccess()
+    {
+        ResultHelper.reset();
+    }
+
+    @Test
+    public void computeSingleRunResults_shouldReturnSuccess()
+    {
+        ResultHelper.computeSingleRunResults(methodEvaluation);
+    }
+
+    @Test
+    public void detectAndRemoveOutliers_shouldReturnPossibleOutliersCount()
+    {
+        ResultHelper.computeSingleRunResults(methodEvaluation);
+
+        assertThat(ResultHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
+    }
+
+    @Test
+    public void getMetricsToDescriptiveStatisticsMap_shouldReturnNotNullMap()
+    {
+        assertThat(ResultHelper.getMetricsToDescriptiveStatisticsMap(), notNullValue());
+    }
 }

@@ -46,24 +46,24 @@ public class ResultHelper
         results.clear();
     }
 
-    // compute and persist all metrics' results for a given TimedEvaluation
-    public static void computeSingleRunResults(MethodEvaluation timedEvaluation)
+    // compute and persist all metrics' results for a given MethodEvaluation
+    public static void computeSingleRunResults(MethodEvaluation methodEvaluation)
     {
-        Double hamPrecision = 100.0 * timedEvaluation.getEvaluation().precision(MessageType.HAM.ordinal());
-        Double spamPrecision = 100.0 * timedEvaluation.getEvaluation().precision(MessageType.SPAM.ordinal());
+        Double hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.HAM.ordinal());
+        Double spamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.SPAM.ordinal());
 
-        Double hamRecall = 100.0 * timedEvaluation.getEvaluation().recall(MessageType.HAM.ordinal());
-        Double spamRecall = 100.0 * timedEvaluation.getEvaluation().recall(MessageType.SPAM.ordinal());
+        Double hamRecall = 100.0 * methodEvaluation.getEvaluation().recall(MessageType.HAM.ordinal());
+        Double spamRecall = 100.0 * methodEvaluation.getEvaluation().recall(MessageType.SPAM.ordinal());
 
-        Double hamAreaUnderPRC = 100.0 * timedEvaluation.getEvaluation().areaUnderPRC(MessageType.HAM.ordinal());
-        Double spamAreaUnderPRC = 100.0 * timedEvaluation.getEvaluation().areaUnderPRC(MessageType.SPAM.ordinal());
+        Double hamAreaUnderPRC = 100.0 * methodEvaluation.getEvaluation().areaUnderPRC(MessageType.HAM.ordinal());
+        Double spamAreaUnderPRC = 100.0 * methodEvaluation.getEvaluation().areaUnderPRC(MessageType.SPAM.ordinal());
 
-        Double hamAreaUnderROC = 100.0 * timedEvaluation.getEvaluation().areaUnderROC(MessageType.HAM.ordinal());
-        Double spamAreaUnderROC = 100.0 * timedEvaluation.getEvaluation().areaUnderROC(MessageType.SPAM.ordinal());
+        Double hamAreaUnderROC = 100.0 * methodEvaluation.getEvaluation().areaUnderROC(MessageType.HAM.ordinal());
+        Double spamAreaUnderROC = 100.0 * methodEvaluation.getEvaluation().areaUnderROC(MessageType.SPAM.ordinal());
 
-        Double trainTime = (double) (timedEvaluation.getTrainEnd() - timedEvaluation.getTrainStart());
+        Double trainTime = (double) (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
 
-        Double testTime = (double) (timedEvaluation.getTestEnd() - timedEvaluation.getTestStart());
+        Double testTime = (double) (methodEvaluation.getTestEnd() - methodEvaluation.getTestStart());
 
         addSingleRunResult(Metric.HAM_PRECISION, hamPrecision);
         addSingleRunResult(Metric.SPAM_PRECISION, spamPrecision);
