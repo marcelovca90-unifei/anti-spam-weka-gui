@@ -5,7 +5,7 @@
 
 **Linha de Pesquisa:** Inteligência Artificial
 
-**Projeto:** Estudo e Pesquisa em Sistemas Anti-Spam
+**Projeto:** Estudo e Pesquisa em Sistemas Anti-Spam [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
 
 **Orientador:** Otávio Augusto Salgado Carpinteiro
 
