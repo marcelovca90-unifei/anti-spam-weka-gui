@@ -1,11 +1,11 @@
-# Universidade Federal de Itajubá
+# Universidade Federal de Itajubá [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
 ## Programa de Pós-graduação em Ciência da Computação
 
 **Área de Concentração:** Matemática da Computação
 
 **Linha de Pesquisa:** Inteligência Artificial
 
-**Projeto:** Estudo e Pesquisa em Sistemas Anti-Spam [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
+**Projeto:** Estudo e Pesquisa em Sistemas Anti-Spam
 
 **Orientador:** Otávio Augusto Salgado Carpinteiro
 
