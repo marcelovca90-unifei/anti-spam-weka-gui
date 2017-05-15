@@ -10,4 +10,4 @@ before_script:
   - cd AntiSpamWeka
 
 script:
-  - mvn clean build
+  - mvn clean install
