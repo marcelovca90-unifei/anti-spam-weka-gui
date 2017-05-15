@@ -24,6 +24,7 @@ package xyz.marcelo.helper;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.Random;
@@ -32,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import weka.classifiers.Evaluation;
@@ -52,10 +52,10 @@ public class ResultHelperTest
     {
         Random random = new Random();
 
-        when(evaluation.precision(Mockito.anyInt())).thenReturn(random.nextDouble());
-        when(evaluation.recall(Mockito.anyInt())).thenReturn(random.nextDouble());
-        when(evaluation.areaUnderPRC(Mockito.anyInt())).thenReturn(random.nextDouble());
-        when(evaluation.areaUnderROC(Mockito.anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.precision(anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.recall(anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.areaUnderPRC(anyInt())).thenReturn(random.nextDouble());
+        when(evaluation.areaUnderROC(anyInt())).thenReturn(random.nextDouble());
 
         when(methodEvaluation.getEvaluation()).thenReturn(evaluation);
         when(methodEvaluation.getTrainStart()).thenReturn(System.currentTimeMillis() - 1000);

@@ -55,6 +55,12 @@ public class MethodConfigurationTest
     }
 
     @Test
+    public void getSplitPercent_allValues_shouldReturnNotNullDouble()
+    {
+        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getSplitPercent(), notNullValue()));
+    }
+
+    @Test
     public void getClazz_allValues_shouldReturnNotNullClass()
     {
         Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getClazz(), notNullValue()));

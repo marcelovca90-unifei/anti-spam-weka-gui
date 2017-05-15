@@ -105,7 +105,7 @@ public class Main
                     dataSet.randomize(random);
 
                     // build train and test sets
-                    double splitPercent = 0.5;
+                    double splitPercent = method.getSplitPercent();
                     int trainingSetSize = (int) Math.round(dataSet.numInstances() * splitPercent);
                     int testingSetSize = dataSet.numInstances() - trainingSetSize;
                     trainingSet = new Instances(dataSet, 0, trainingSetSize);

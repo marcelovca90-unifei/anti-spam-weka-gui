@@ -80,10 +80,10 @@ public enum MethodConfiguration
     JRIP("Repeated Incremental Pruning to Produce Error Reduction", "-F 3 -N 2.0 -O 2 -S 1", JRip.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html
-    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 500 -V 0 -S 1 -E 20 -H a", MultilayerPerceptron.class),
+    MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a", 0.6, MultilayerPerceptron.class),
 
     // http://weka.sourceforge.net/doc.packages/multilayerPerceptronCS/weka/classifiers/functions/MultilayerPerceptronCS.html
-    MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 500 -V 0 -S 1 -E 20 -H a", MultilayerPerceptronCS.class),
+    MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a", 0.6, MultilayerPerceptronCS.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html
     NB("Naive Bayes", "", NaiveBayes.class),
@@ -115,12 +115,22 @@ public enum MethodConfiguration
 
     private final String name;
     private final String config;
+    private final double splitPercent;
     private final Class<? extends AbstractClassifier> clazz;
 
     private MethodConfiguration(final String name, final String config, final Class<? extends AbstractClassifier> clazz)
     {
         this.name = name;
         this.config = config;
+        this.splitPercent = 0.5;
+        this.clazz = clazz;
+    }
+
+    private MethodConfiguration(final String name, final String config, final double splitPercent, final Class<? extends AbstractClassifier> clazz)
+    {
+        this.name = name;
+        this.config = config;
+        this.splitPercent = splitPercent;
         this.clazz = clazz;
     }
 
@@ -132,6 +142,11 @@ public enum MethodConfiguration
     public String getConfig()
     {
         return config;
+    }
+
+    public double getSplitPercent()
+    {
+        return splitPercent;
     }
 
     public Class<? extends AbstractClassifier> getClazz()
