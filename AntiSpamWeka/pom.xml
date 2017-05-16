@@ -164,20 +164,26 @@
 
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>LibSVM-Weka</artifactId>
+            <artifactId>LibLINEAR</artifactId>
+            <version>1.9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>LibLINEAR-CJLin</artifactId>
+            <version>1.96-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>LibSVM</artifactId>
             <version>1.0.10</version>
         </dependency>
 
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibSVM-CJLin</artifactId>
-            <version>1.0.10</version>
-        </dependency>
-
-        <dependency>
-            <groupId>weka-packages</groupId>
-            <artifactId>multilayerPerceptronCS</artifactId>
-            <version>1.0.1</version>
+            <version>3.21</version>
         </dependency>
 
         <dependency>

@@ -27,9 +27,9 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A2DE;
+import weka.classifiers.functions.LibLINEAR;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.MultilayerPerceptron;
-import weka.classifiers.functions.MultilayerPerceptronCS;
 import weka.classifiers.functions.RBFNetwork;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SMO;
@@ -79,11 +79,14 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/JRip.html
     JRIP("Repeated Incremental Pruning to Produce Error Reduction", "-F 3 -N 2.0 -O 2 -S 1", JRip.class),
 
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibLINEAR.html
+    LIBLINEAR("Large linear classifier", "-S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000", LibLINEAR.class),
+
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
+    LIBSVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C 1.0 -E 0.001 -P 0.1 -H -seed 1", LibSVM.class),
+
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html
     MLP("Multilayer perceptron", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a", 0.6, MultilayerPerceptron.class),
-
-    // http://weka.sourceforge.net/doc.packages/multilayerPerceptronCS/weka/classifiers/functions/MultilayerPerceptronCS.html
-    MLPCS("Multilayer perceptron with context-sensitive Multiple Task Learning", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a", 0.6, MultilayerPerceptronCS.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html
     NB("Naive Bayes", "", NaiveBayes.class),
@@ -104,13 +107,11 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm",
+            "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
-    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
-
-    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html
-    SVM("Support vector machine", "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C 1.0 -E 0.001 -P 0.1 -H -seed 1", LibSVM.class);
+    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
 
     private final String name;
     private final String config;
