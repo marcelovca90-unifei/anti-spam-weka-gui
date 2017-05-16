@@ -24,7 +24,7 @@ package xyz.marcelo.main;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
-public class MainTest
+public class RunnerTest
 {
     @Test(expected = ParseException.class)
     public void main_withNullArgs_shouldThrowException() throws Exception
