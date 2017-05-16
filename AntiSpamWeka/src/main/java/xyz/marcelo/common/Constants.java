@@ -23,6 +23,8 @@ package xyz.marcelo.common;
 
 public class Constants
 {
+    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
+
     public enum CLIOption
     {
         METADATA,

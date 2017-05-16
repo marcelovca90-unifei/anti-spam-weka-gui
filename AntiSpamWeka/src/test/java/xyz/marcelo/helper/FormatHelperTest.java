@@ -21,12 +21,6 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,77 +30,58 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import xyz.marcelo.common.Constants.Metric;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.MethodEvaluation;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ResultHelper.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FormatHelperTest
 {
     private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
 
     private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
 
-    private MethodEvaluation methodEvaluation;
+    private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
+
+    private MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
 
     @Before
     public void setUp()
     {
-        methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
+        results.clear();
 
-        mockStatic(ResultHelper.class);
-
-        Map<Metric, DescriptiveStatistics> map = new HashMap<>();
-        Arrays.stream(Metric.values()).forEach(m -> map.put(m, new DescriptiveStatistics(new Random().doubles(10, 0, 100).toArray())));
-
-        when(ResultHelper.getMetricsToDescriptiveStatisticsMap()).thenReturn(map);
-    }
-
-    @Test
-    public void constructor_shouldReturnNotNullInstance()
-    {
-        assertThat(new FormatHelper(), notNullValue());
+        Arrays.stream(Metric.values()).forEach(m -> results.put(m, new DescriptiveStatistics(new Random().doubles(10, 0, 100).toArray())));
     }
 
     @Test
     public void summarizeResults_doNotPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.summarizeResults(methodEvaluation, false, false);
-
-        verifyStatic();
+        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, false, false);
     }
 
     @Test
     public void summarizeResults_doNotPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.summarizeResults(methodEvaluation, false, true);
-
-        verifyStatic();
+        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, false, true);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.summarizeResults(methodEvaluation, true, false);
-
-        verifyStatic();
+        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, true, false);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.summarizeResults(methodEvaluation, true, true);
-
-        verifyStatic();
+        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, true, true);
     }
 
     @Test
-    public void printHeader()
+    public void printHeader_shouldReturnSuccess()
     {
-        FormatHelper.printHeader();
+        FormatHelper.getInstance().printHeader();
     }
 }

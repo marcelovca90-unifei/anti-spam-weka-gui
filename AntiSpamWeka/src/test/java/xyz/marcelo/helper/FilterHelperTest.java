@@ -21,7 +21,6 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 
@@ -31,9 +30,12 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import weka.core.Instances;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FilterHelperTest
 {
     private Instances dataSet;
@@ -50,17 +52,11 @@ public class FilterHelperTest
     }
 
     @Test
-    public void constructor_shouldReturnNotNullInstance()
-    {
-        assertThat(new FilterHelper(), notNullValue());
-    }
-
-    @Test
     public void applyAttributeFilter_shouldReturnDataSetWithPotentiallyyReducedAttributes() throws Exception
     {
         int attributesBefore = dataSet.numAttributes();
 
-        dataSet = FilterHelper.applyAttributeFilter(dataSet);
+        dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
 
         int attributesAfter = dataSet.numAttributes();
 
@@ -72,7 +68,7 @@ public class FilterHelperTest
     {
         int instancesBefore = dataSet.size();
 
-        dataSet = FilterHelper.applyInstanceFilter(dataSet);
+        dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
 
         int instancesAfter = dataSet.size();
 

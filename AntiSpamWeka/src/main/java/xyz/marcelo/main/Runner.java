@@ -42,43 +42,51 @@ import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.ResultHelper;
 
-public class Main
+public final class Runner
 {
+    // used to suppress the default public constructor
+    private Runner()
+    {
+    }
+
     public static void main(String[] args) throws Exception
     {
         // change global setting for Logger instances to WARNING level
         Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
 
         // initialize the CLI helper with the provided arguments
-        CLIHelper.initialize(args);
+        CLIHelper.getInstance().initialize(args);
 
         // print the parsed, args-provided parameters
-        CLIHelper.printConfiguration();
+        CLIHelper.getInstance().printConfiguration();
 
         // objects that will hold all kinds of data sets
-        Instances dataSet = null, trainingSet = null, testingSet = null, emptySet = null;
+        Instances dataSet = null;
+        Instances trainingSet = null;
+        Instances testingSet = null;
+        Instances emptySet = null;
 
-        for (MethodConfiguration method : CLIHelper.getMethods())
+        for (MethodConfiguration method : CLIHelper.getInstance().getMethods())
         {
-            FormatHelper.printHeader();
+            FormatHelper.getInstance().printHeader();
 
-            for (DataSetMetadata metadata : CLIHelper.getDataSetsMetadata())
+            for (DataSetMetadata metadata : CLIHelper.getInstance().getDataSetsMetadata())
             {
                 // import data set
                 String hamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_HAM;
                 String spamFilePath = metadata.getFolder() + File.separator + IOHelper.TAG_SPAM;
-                dataSet = IOHelper.loadInstancesFromFile(hamFilePath, spamFilePath);
+                dataSet = IOHelper.getInstance().loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
-                if (CLIHelper.shrinkFeatures()) dataSet = FilterHelper.applyAttributeFilter(dataSet);
-                if (CLIHelper.balanceClasses()) dataSet = FilterHelper.applyInstanceFilter(dataSet);
+                if (CLIHelper.getInstance().shrinkFeatures()) dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
+                if (CLIHelper.getInstance().balanceClasses()) dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // build empty patterns set, if specified
-                if (CLIHelper.includeEmptyInstances())
+                if (CLIHelper.getInstance().includeEmptyInstances())
                 {
-                    emptySet = IOHelper.createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
+                    emptySet = IOHelper.getInstance().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
                 }
 
                 // initialize random number generator
@@ -94,9 +102,9 @@ public class Main
                 Integer randomSeed = 1;
 
                 // reset run results keeper
-                ResultHelper.reset();
+                ResultHelper.getInstance().reset();
 
-                for (int run = 0; run < CLIHelper.getNumberOfRuns(); run++)
+                for (int run = 0; run < CLIHelper.getInstance().getNumberOfRuns(); run++)
                 {
                     // set random number generator's seed
                     random.setSeed(randomSeed = Primes.nextPrime(++randomSeed));
@@ -112,18 +120,18 @@ public class Main
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (CLIHelper.includeEmptyInstances()) testingSet.addAll(emptySet);
+                    if (CLIHelper.getInstance().includeEmptyInstances()) testingSet.addAll(emptySet);
 
                     // save the data sets to csv files, if specified
-                    if (CLIHelper.saveSets())
+                    if (CLIHelper.getInstance().saveSets())
                     {
-                        IOHelper.saveInstancesToFile(trainingSet, metadata.getFolder() + File.separator + "training.csv");
-                        IOHelper.saveInstancesToFile(testingSet, metadata.getFolder() + File.separator + "testing.csv");
+                        IOHelper.getInstance().saveInstancesToFile(trainingSet, metadata.getFolder() + File.separator + "training.csv");
+                        IOHelper.getInstance().saveInstancesToFile(testingSet, metadata.getFolder() + File.separator + "testing.csv");
                     }
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
-                    String classifierFilename = IOHelper.buildClassifierFilename(metadata.getFolder(), method, splitPercent, randomSeed);
-                    Classifier classifier = CLIHelper.skipTrain() ? IOHelper.loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
+                    String classifierFilename = IOHelper.getInstance().buildClassifierFilename(metadata.getFolder(), method, splitPercent, randomSeed);
+                    Classifier classifier = CLIHelper.getInstance().skipTrain() ? IOHelper.getInstance().loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation evaluation = new Evaluation(testingSet);
@@ -135,33 +143,33 @@ public class Main
                     baseEvaluation.setNumberOfActualFeatures(numberOfActualFeatures);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!CLIHelper.skipTrain()) baseEvaluation.train(trainingSet);
+                    if (!CLIHelper.getInstance().skipTrain()) baseEvaluation.train(trainingSet);
 
                     // if the testing should not be skipped
-                    if (!CLIHelper.skipTest())
+                    if (!CLIHelper.getInstance().skipTest())
                     {
                         // evaluate the classifier
                         baseEvaluation.test(testingSet);
 
                         // compute and log the partial results for this configuration
-                        ResultHelper.computeSingleRunResults(baseEvaluation);
-                        FormatHelper.summarizeResults(baseEvaluation, false, true);
+                        ResultHelper.getInstance().computeSingleRunResults(baseEvaluation);
+                        FormatHelper.getInstance().summarizeResults(baseEvaluation, false, true);
 
                         // if at the end of last run, detect and remove outliers; this may lead to additional runs
-                        if (run == (CLIHelper.getNumberOfRuns() - 1))
+                        if (run == (CLIHelper.getInstance().getNumberOfRuns() - 1))
                         {
-                            run -= ResultHelper.detectAndRemoveOutliers();
+                            run -= ResultHelper.getInstance().detectAndRemoveOutliers();
                         }
                     }
 
                     // persist the classifier, if specified in args
-                    if (CLIHelper.saveModel()) IOHelper.saveModelToFile(classifierFilename, classifier);
+                    if (CLIHelper.getInstance().saveModel()) IOHelper.getInstance().saveModelToFile(classifierFilename, classifier);
                 }
 
                 // log the final results for this configuration
-                if (!CLIHelper.skipTest())
+                if (!CLIHelper.getInstance().skipTest())
                 {
-                    FormatHelper.summarizeResults(baseEvaluation, true, true);
+                    FormatHelper.getInstance().summarizeResults(baseEvaluation, true, true);
                 }
             }
         }

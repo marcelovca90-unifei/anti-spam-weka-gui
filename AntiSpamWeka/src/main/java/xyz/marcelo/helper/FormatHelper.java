@@ -33,11 +33,27 @@ import xyz.marcelo.common.MethodEvaluation;
 
 public class FormatHelper
 {
-    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
-    public static void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    // used to suppress the default public constructor
+    private FormatHelper()
     {
-        Map<Metric, DescriptiveStatistics> results = ResultHelper.getMetricsToDescriptiveStatisticsMap();
+    }
 
+    private static final FormatHelper INSTANCE = new FormatHelper();
+
+    public static final FormatHelper getInstance()
+    {
+        return INSTANCE;
+    }
+
+    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    {
+        summarizeResults(ResultHelper.getInstance().getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
+    }
+
+    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    public void summarizeResults(Map<Metric, DescriptiveStatistics> results, MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    {
         MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
 
         StringBuilder sb = new StringBuilder();
@@ -51,20 +67,11 @@ public class FormatHelper
         {
             if (!printStats)
             {
-                double[] values = results.get(metric).getValues();
-                if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-                    sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
-                else
-                    sb.append(String.format("%.2f\t", values[values.length - 1]));
+                buildResultLineWithoutStats(results, formatMillis, sb, metric);
             }
             else
             {
-                double mean = results.get(metric).getMean();
-                double standardDeviation = results.get(metric).getStandardDeviation();
-                if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-                    sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
-                else
-                    sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
+                buildResultLineWithStats(results, formatMillis, sb, metric);
             }
         }
 
@@ -74,7 +81,26 @@ public class FormatHelper
             Logger.info(sb.toString());
     }
 
-    public static void printHeader()
+    private void buildResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    {
+        double[] values = results.get(metric).getValues();
+        if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
+            sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
+        else
+            sb.append(String.format("%.2f\t", values[values.length - 1]));
+    }
+
+    private void buildResultLineWithStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    {
+        double mean = results.get(metric).getMean();
+        double standardDeviation = results.get(metric).getStandardDeviation();
+        if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
+            sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
+        else
+            sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
+    }
+
+    public void printHeader()
     {
         StringBuilder sb = new StringBuilder();
 
@@ -96,7 +122,7 @@ public class FormatHelper
         Logger.info(sb.toString());
     }
 
-    private static String formatMilliseconds(double millis)
+    private String formatMilliseconds(double millis)
     {
         return DurationFormatUtils.formatDurationHMS((Double.valueOf(Math.abs(millis))).longValue());
     }

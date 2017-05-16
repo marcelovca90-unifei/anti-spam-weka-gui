@@ -23,57 +23,55 @@ package xyz.marcelo.helper;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 import org.apache.commons.cli.ParseException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(IOHelper.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CLIHelperTest
 {
-    private final String[] emptyArgs = new String[0];
-    private final String[] notEmptyArgsWithWrongMetadata = new String[] { "-Metadata", "SOME_METADATA" };
-    private final String[] notEmptyArgsWithWrongMethod = new String[] { "-Method", "SOME_METHOD" };
-    private final String[] fullArgs = new String[] { "-Metadata", System.getProperty("user.home"), "-Method", "RT" };
+    private String[] emptyArgs;
+    private String[] notEmptyArgsWithWrongMetadata;
+    private String[] notEmptyArgsWithWrongMethod;
+    private String[] fullArgs;
 
-    @Test
-    public void constructor_shouldReturnNotNullInstance()
+    @Before
+    public void setUp()
     {
-        assertThat(new CLIHelper(), notNullValue());
+        ClassLoader classLoader = getClass().getClassLoader();
+        emptyArgs = new String[0];
+        notEmptyArgsWithWrongMetadata = new String[] { "-Metadata", "SOME_METADATA" };
+        notEmptyArgsWithWrongMethod = new String[] { "-Method", "SOME_METHOD" };
+        fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Method", "RT" };
     }
 
     @Test(expected = ParseException.class)
     public void initialize_emptyArgs_shouldThrowException() throws ParseException
     {
-        CLIHelper.initialize(emptyArgs);
+        CLIHelper.getInstance().initialize(emptyArgs);
     }
 
     @Test
     public void initialize_notEmptyArgs_shouldNotThrowException() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = ParseException.class)
     public void getDataSetsMetadata_incorrectArgs_shouldThrowException() throws ParseException, IOException
     {
         try
         {
-            CLIHelper.initialize(notEmptyArgsWithWrongMetadata);
+            CLIHelper.getInstance().initialize(notEmptyArgsWithWrongMetadata);
         }
         catch (Exception e)
         {
-            assertThat(CLIHelper.getDataSetsMetadata(), notNullValue());
+            assertThat(CLIHelper.getInstance().getDataSetsMetadata(), notNullValue());
             throw e;
         }
     }
@@ -81,13 +79,9 @@ public class CLIHelperTest
     @Test
     public void getDataSetsMetadata_correctArgs_shouldReturnSuccess() throws ParseException, IOException
     {
-        mockStatic(IOHelper.class);
-        when(IOHelper.loadDataSetsMetadataFromFile(Mockito.anyString())).thenReturn(new HashSet<>());
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        CLIHelper.initialize(fullArgs);
-
-        assertThat(CLIHelper.getDataSetsMetadata(), notNullValue());
-        verifyStatic();
+        assertThat(CLIHelper.getInstance().getDataSetsMetadata(), notNullValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -95,96 +89,91 @@ public class CLIHelperTest
     {
         try
         {
-            CLIHelper.initialize(notEmptyArgsWithWrongMethod);
+            CLIHelper.getInstance().initialize(notEmptyArgsWithWrongMethod);
         }
         catch (Exception e)
         {
-            assertThat(CLIHelper.getMethods(), notNullValue());
+            assertThat(CLIHelper.getInstance().getMethods(), notNullValue());
             throw e;
         }
     }
 
     @Test
-    public void getMethods_correctArgs_shouldReturnSuccess() throws ParseException
+    public void getMethods_correctArgs_shouldReturnNotNullMethodsList() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.getMethods(), notNullValue());
+        assertThat(CLIHelper.getInstance().getMethods(), notNullValue());
     }
 
     @Test
-    public void getNumberOfRuns() throws ParseException
+    public void getNumberOfRuns_shouldReturnNotNullInteger() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.getNumberOfRuns(), notNullValue());
+        assertThat(CLIHelper.getInstance().getNumberOfRuns(), notNullValue());
     }
 
     @Test
-    public void skipTrain() throws ParseException
+    public void skipTrain_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.skipTrain(), notNullValue());
+        assertThat(CLIHelper.getInstance().skipTrain(), notNullValue());
     }
 
     @Test
-    public void skipTest() throws ParseException
+    public void skipTest_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.skipTest(), notNullValue());
+        assertThat(CLIHelper.getInstance().skipTest(), notNullValue());
     }
 
     @Test
-    public void includeEmptyInstances() throws ParseException
+    public void includeEmptyInstances_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.includeEmptyInstances(), notNullValue());
+        assertThat(CLIHelper.getInstance().includeEmptyInstances(), notNullValue());
     }
 
     @Test
-    public void saveModel() throws ParseException
+    public void saveModel_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.saveModel(), notNullValue());
+        assertThat(CLIHelper.getInstance().saveModel(), notNullValue());
     }
 
     @Test
-    public void saveSets() throws ParseException
+    public void saveSets_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.saveSets(), notNullValue());
+        assertThat(CLIHelper.getInstance().saveSets(), notNullValue());
     }
 
     @Test
-    public void shrinkFeatures() throws ParseException
+    public void shrinkFeature_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.shrinkFeatures(), notNullValue());
+        assertThat(CLIHelper.getInstance().shrinkFeatures(), notNullValue());
     }
 
     @Test
-    public void balanceClasses() throws ParseException
+    public void balanceClasse_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.initialize(fullArgs);
+        CLIHelper.getInstance().initialize(fullArgs);
 
-        assertThat(CLIHelper.balanceClasses(), notNullValue());
+        assertThat(CLIHelper.getInstance().balanceClasses(), notNullValue());
     }
 
     @Test
-    public void printConfiguration() throws ParseException, IOException
+    public void printConfiguration_shouldReturnSuccess() throws ParseException, IOException
     {
-        mockStatic(IOHelper.class);
-        when(IOHelper.loadDataSetsMetadataFromFile(Mockito.anyString())).thenReturn(new HashSet<>());
-        CLIHelper.initialize(fullArgs);
-
-        CLIHelper.printConfiguration();
-
-        verifyStatic();
+        CLIHelper.getInstance().initialize(fullArgs);
+        CLIHelper.getInstance().printConfiguration();
     }
 }

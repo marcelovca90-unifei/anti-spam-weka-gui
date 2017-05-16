@@ -30,9 +30,12 @@ import static org.junit.Assert.assertThat;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import weka.classifiers.AbstractClassifier;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MethodConfigurationTest
 {
     @Test

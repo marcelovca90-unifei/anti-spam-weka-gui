@@ -43,11 +43,25 @@ import xyz.marcelo.common.MethodConfiguration;
 
 public class CLIHelper
 {
-    private static CommandLine commandLine;
+    // used to suppress the default public constructor
+    private CLIHelper()
+    {
+    }
 
-    private static Options options;
+    private static final CLIHelper INSTANCE = new CLIHelper();
 
-    public static void initialize(String[] args) throws ParseException
+    public static final CLIHelper getInstance()
+    {
+        return INSTANCE;
+    }
+
+    private static final String OPTION_VALUE_MASK = "{} : {}";
+
+    private CommandLine commandLine;
+
+    private Options options;
+
+    public void initialize(String[] args) throws ParseException
     {
         // create Options object
         options = new Options();
@@ -84,17 +98,17 @@ public class CLIHelper
         }
     }
 
-    public static Set<DataSetMetadata> getDataSetsMetadata() throws IOException
+    public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
         if (hasOption(CLIOption.METADATA))
         {
-            metadata.addAll(IOHelper.loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
+            metadata.addAll(IOHelper.getInstance().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
         }
         return metadata;
     }
 
-    public static List<MethodConfiguration> getMethods()
+    public List<MethodConfiguration> getMethods()
     {
         List<MethodConfiguration> methods = new ArrayList<>();
         if (hasOption(CLIOption.METHOD))
@@ -104,78 +118,78 @@ public class CLIHelper
         return methods;
     }
 
-    public static int getNumberOfRuns()
+    public int getNumberOfRuns()
     {
         return hasOption(CLIOption.RUNS) ? Integer.parseInt(getOptionValue(CLIOption.RUNS)) : 1;
     }
 
-    public static boolean skipTrain()
+    public boolean skipTrain()
     {
         return hasOption(CLIOption.SKIP_TRAIN);
     }
 
-    public static boolean skipTest()
+    public boolean skipTest()
     {
         return hasOption(CLIOption.SKIP_TEST);
     }
 
-    public static boolean includeEmptyInstances()
+    public boolean includeEmptyInstances()
     {
         return hasOption(CLIOption.TEST_EMPTY);
     }
 
-    public static boolean saveModel()
+    public boolean saveModel()
     {
         return hasOption(CLIOption.SAVE_MODEL);
     }
 
-    public static boolean saveSets()
+    public boolean saveSets()
     {
         return hasOption(CLIOption.SAVE_SETS);
     }
 
-    public static boolean shrinkFeatures()
+    public boolean shrinkFeatures()
     {
         return hasOption(CLIOption.SHRINK_FEATURES);
     }
 
-    public static boolean balanceClasses()
+    public boolean balanceClasses()
     {
         return hasOption(CLIOption.BALANCE_CLASSES);
     }
 
-    public static void printConfiguration() throws IOException
+    public void printConfiguration() throws IOException
     {
         Logger.debug("---- CONFIGURATION ----");
-        Logger.debug("{} : {}", CLIOption.METADATA, getDataSetsMetadata());
-        Logger.debug("{} : {}", CLIOption.METHOD, getMethods());
-        Logger.debug("{} : {}", CLIOption.RUNS, getNumberOfRuns());
-        Logger.debug("{} : {}", CLIOption.SKIP_TRAIN, skipTrain());
-        Logger.debug("{} : {}", CLIOption.SKIP_TEST, skipTest());
-        Logger.debug("{} : {}", CLIOption.TEST_EMPTY, includeEmptyInstances());
-        Logger.debug("{} : {}", CLIOption.SAVE_MODEL, saveModel());
-        Logger.debug("{} : {}", CLIOption.SAVE_SETS, saveSets());
-        Logger.debug("{} : {}", CLIOption.SHRINK_FEATURES, shrinkFeatures());
-        Logger.debug("{} : {}", CLIOption.BALANCE_CLASSES, balanceClasses());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.METADATA, getDataSetsMetadata());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.METHOD, getMethods());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.RUNS, getNumberOfRuns());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TRAIN, skipTrain());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TEST, skipTest());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.TEST_EMPTY, includeEmptyInstances());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_MODEL, saveModel());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_SETS, saveSets());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SHRINK_FEATURES, shrinkFeatures());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.BALANCE_CLASSES, balanceClasses());
         Logger.debug("-----------------------");
     }
 
-    private static String camelCaseOption(CLIOption opt)
+    private String camelCaseOption(CLIOption opt)
     {
         return StringUtils.remove(WordUtils.capitalizeFully(opt.name(), '_'), "_");
     }
 
-    private static void addOption(CLIOption opt, boolean hasArg, String description)
+    private void addOption(CLIOption opt, boolean hasArg, String description)
     {
         options.addOption(camelCaseOption(opt), hasArg, description);
     }
 
-    private static String getOptionValue(CLIOption opt)
+    private String getOptionValue(CLIOption opt)
     {
         return commandLine.getOptionValue(camelCaseOption(opt));
     }
 
-    private static boolean hasOption(CLIOption opt)
+    private boolean hasOption(CLIOption opt)
     {
         return commandLine.hasOption(camelCaseOption(opt));
     }

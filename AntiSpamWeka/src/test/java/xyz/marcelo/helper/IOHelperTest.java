@@ -35,6 +35,8 @@ import java.util.Set;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -42,6 +44,7 @@ import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
 import xyz.marcelo.common.MethodConfiguration;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IOHelperTest
 {
     private String metadataFilename;
@@ -56,12 +59,14 @@ public class IOHelperTest
         metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
         hamDataFilename = classLoader.getResource("data-sets-bin/ham").getFile();
         spamDataFilename = classLoader.getResource("data-sets-bin/spam").getFile();
+
+        System.out.println(metadataFilename);
     }
 
     @Test
-    public void loadDataSetsMetadataFromFile() throws IOException
+    public void loadDataSetsMetadataFromFile_shouldProperlyDeserializeDataSetsMetadata() throws IOException
     {
-        Set<DataSetMetadata> set = IOHelper.loadDataSetsMetadataFromFile(metadataFilename);
+        Set<DataSetMetadata> set = IOHelper.getInstance().loadDataSetsMetadataFromFile(metadataFilename);
 
         assertThat(set, notNullValue());
         assertThat(set.size(), equalTo(2));
@@ -75,9 +80,9 @@ public class IOHelperTest
     }
 
     @Test
-    public void loadInstancesFromFile() throws IOException
+    public void loadInstancesFromFile_shouldDeserializeInstances() throws IOException
     {
-        dataSet = IOHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = IOHelper.getInstance().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
         assertThat(dataSet, notNullValue());
         assertThat(dataSet.size(), greaterThan(0));
@@ -88,24 +93,24 @@ public class IOHelperTest
     }
 
     @Test
-    public void saveInstancesToFile() throws IOException
+    public void saveInstancesToFile_shouldProperlySerializeInstances() throws IOException
     {
-        dataSet = IOHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = IOHelper.getInstance().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
-        File file = IOHelper.saveInstancesToFile(dataSet, "data-set.csv");
+        File file = IOHelper.getInstance().saveInstancesToFile(dataSet, "data-set.csv");
 
         assertThat(file.exists(), equalTo(Boolean.TRUE));
         assertThat(file.delete(), equalTo(Boolean.TRUE));
     }
 
     @Test
-    public void createEmptyInstances()
+    public void createEmptyInstances_shouldReturnDataSetWithGivenAmountOfInstances()
     {
         int featureAmount = RandomUtils.nextInt(1, 11);
         int emptyHamCount = RandomUtils.nextInt(1, 101);
         int emptySpamCount = RandomUtils.nextInt(1, 101);
 
-        Instances emptyInstances = IOHelper.createEmptyInstances(featureAmount, emptyHamCount, emptySpamCount);
+        Instances emptyInstances = IOHelper.getInstance().createEmptyInstances(featureAmount, emptyHamCount, emptySpamCount);
 
         assertThat(emptyInstances, notNullValue());
         assertThat(emptyInstances.size(), equalTo(emptyHamCount + emptySpamCount));
@@ -116,14 +121,14 @@ public class IOHelperTest
     }
 
     @Test
-    public void buildClassifierFilename()
+    public void buildClassifierFilename_shouldReturnStringWithClassifierDetails()
     {
         String folder = "/some/folder";
         MethodConfiguration method = MethodConfiguration.RT;
         double splitPercent = RandomUtils.nextDouble();
         int seed = RandomUtils.nextInt();
 
-        String filename = IOHelper.buildClassifierFilename(folder, method, splitPercent, seed);
+        String filename = IOHelper.getInstance().buildClassifierFilename(folder, method, splitPercent, seed);
 
         assertThat(filename, notNullValue());
         assertThat(filename, containsString(folder));
@@ -132,22 +137,22 @@ public class IOHelperTest
     }
 
     @Test
-    public void saveModelToFile() throws Exception
+    public void saveModelToFile_shouldProperlySerializeModel() throws Exception
     {
-        File file = IOHelper.saveModelToFile("dummy.model", (Classifier) null);
+        File file = IOHelper.getInstance().saveModelToFile("dummy.model", (Classifier) null);
 
         assertThat(file.exists(), equalTo(Boolean.TRUE));
         assertThat(file.delete(), equalTo(Boolean.TRUE));
     }
 
     @Test
-    public void loadModelFromFile() throws Exception
+    public void loadModelFromFile_shouldProperlyDeserializeModel() throws Exception
     {
         AbstractClassifier baseClassifier = MethodConfiguration.buildClassifierFor(MethodConfiguration.RT);
 
-        File file = IOHelper.saveModelToFile("dummy.model", baseClassifier);
+        File file = IOHelper.getInstance().saveModelToFile("dummy.model", baseClassifier);
 
-        Classifier recoveredClassifier = IOHelper.loadModelFromFile("dummy.model");
+        Classifier recoveredClassifier = IOHelper.getInstance().loadModelFromFile("dummy.model");
 
         assertThat(file.exists(), equalTo(Boolean.TRUE));
         assertThat(file.delete(), equalTo(Boolean.TRUE));

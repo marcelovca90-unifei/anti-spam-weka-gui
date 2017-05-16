@@ -40,7 +40,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>xyz.marcelo.main.Main</mainClass>
+                            <mainClass>xyz.marcelo.main.Runner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

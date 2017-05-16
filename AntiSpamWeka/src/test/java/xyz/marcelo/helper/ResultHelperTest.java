@@ -65,34 +65,28 @@ public class ResultHelperTest
     }
 
     @Test
-    public void constructor_shouldReturnNotNullInstance()
-    {
-        assertThat(new ResultHelper(), notNullValue());
-    }
-
-    @Test
     public void reset_shouldReturnSuccess()
     {
-        ResultHelper.reset();
+        ResultHelper.getInstance().reset();
     }
 
     @Test
     public void computeSingleRunResults_shouldReturnSuccess()
     {
-        ResultHelper.computeSingleRunResults(methodEvaluation);
+        ResultHelper.getInstance().computeSingleRunResults(methodEvaluation);
     }
 
     @Test
     public void detectAndRemoveOutliers_shouldReturnPossibleOutliersCount()
     {
-        ResultHelper.computeSingleRunResults(methodEvaluation);
+        ResultHelper.getInstance().computeSingleRunResults(methodEvaluation);
 
-        assertThat(ResultHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
+        assertThat(ResultHelper.getInstance().detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
     }
 
     @Test
     public void getMetricsToDescriptiveStatisticsMap_shouldReturnNotNullMap()
     {
-        assertThat(ResultHelper.getMetricsToDescriptiveStatisticsMap(), notNullValue());
+        assertThat(ResultHelper.getInstance().getMetricsToDescriptiveStatisticsMap(), notNullValue());
     }
 }

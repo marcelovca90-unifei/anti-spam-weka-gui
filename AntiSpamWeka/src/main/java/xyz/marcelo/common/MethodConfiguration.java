@@ -167,7 +167,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            Logger.error("Unexpected exception: " + e);
+            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
         }
 
         return classifier;

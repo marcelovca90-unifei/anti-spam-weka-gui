@@ -35,8 +35,20 @@ import weka.filters.supervised.instance.ClassBalancer;
 
 public class FilterHelper
 {
+    // used to suppress the default public constructor
+    private FilterHelper()
+    {
+    }
+
+    private static final FilterHelper INSTANCE = new FilterHelper();
+
+    public static final FilterHelper getInstance()
+    {
+        return INSTANCE;
+    }
+
     // remove less relevant attributes from the given data set
-    public static Instances applyAttributeFilter(Instances dataSet) throws Exception
+    public Instances applyAttributeFilter(Instances dataSet) throws Exception
     {
         ASEvaluation evaluator = new CfsSubsetEval();
         ((OptionHandler) evaluator).setOptions(Utils.splitOptions("-P 1 -E 1"));
@@ -53,7 +65,7 @@ public class FilterHelper
     }
 
     // remove less relevant instances from the given data set
-    public static Instances applyInstanceFilter(Instances dataSet) throws Exception
+    public Instances applyInstanceFilter(Instances dataSet) throws Exception
     {
         SimpleBatchFilter batchFilter = new ClassBalancer();
         batchFilter.setInputFormat(dataSet);

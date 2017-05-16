@@ -38,16 +38,28 @@ import xyz.marcelo.common.MethodEvaluation;
 
 public class ResultHelper
 {
-    private static Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
+    // used to suppress the default public constructor
+    private ResultHelper()
+    {
+    }
+
+    private static final ResultHelper INSTANCE = new ResultHelper();
+
+    public static final ResultHelper getInstance()
+    {
+        return INSTANCE;
+    }
+
+    private Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
 
     // clears the data in result keeper
-    public static void reset()
+    public void reset()
     {
         results.clear();
     }
 
     // compute and persist all metrics' results for a given MethodEvaluation
-    public static void computeSingleRunResults(MethodEvaluation methodEvaluation)
+    public void computeSingleRunResults(MethodEvaluation methodEvaluation)
     {
         Double hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.HAM.ordinal());
         Double spamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.SPAM.ordinal());
@@ -77,9 +89,15 @@ public class ResultHelper
         addSingleRunResult(Metric.TEST_TIME, testTime);
     }
 
-    // detects, removes and returns the number of outliers in the result keeper
+    // detects, removes and return the amount of outliers in the result keeper, if any
+    public int detectAndRemoveOutliers()
+    {
+        return removeOutliers(detectOutliers());
+    }
+
+    // detects and returns the indices of outliers in the result keeper, if any
     // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
-    public static int detectAndRemoveOutliers()
+    private Set<Integer> detectOutliers()
     {
         // detect outlier(s) for each metric
         Set<Integer> outlierIndices = new TreeSet<>();
@@ -101,6 +119,12 @@ public class ResultHelper
             }
         }
 
+        return outlierIndices;
+    }
+
+    // removes and returns the number of outliers in the result keeper
+    private int removeOutliers(Set<Integer> outlierIndices)
+    {
         // remove outlier(s) from result keeper, if any
         if (!outlierIndices.isEmpty())
         {
@@ -117,7 +141,6 @@ public class ResultHelper
                     }
                 }
             }
-
             results = filteredResults;
         }
 
@@ -126,7 +149,7 @@ public class ResultHelper
     }
 
     // converts the double resuls for each metric to analog descriptive statistics
-    protected static Map<Metric, DescriptiveStatistics> getMetricsToDescriptiveStatisticsMap()
+    protected Map<Metric, DescriptiveStatistics> getMetricsToDescriptiveStatisticsMap()
     {
         Map<Metric, DescriptiveStatistics> statistics = new EnumMap<>(Metric.class);
 
@@ -135,18 +158,18 @@ public class ResultHelper
         return statistics;
     }
 
-    private static void addSingleRunResult(Metric key, Double value)
+    private void addSingleRunResult(Metric key, Double value)
     {
         results.putIfAbsent(key, new LinkedList<>());
         results.get(key).add(value);
     }
 
-    private static DescriptiveStatistics doubleArrayToDescriptiveStatistics(List<Double> values)
+    private DescriptiveStatistics doubleArrayToDescriptiveStatistics(List<Double> values)
     {
         return new DescriptiveStatistics(ArrayUtils.toPrimitive(values.toArray(new Double[0])));
     }
 
-    private static double getMedianAbsoluteDeviation(DescriptiveStatistics stats)
+    private double getMedianAbsoluteDeviation(DescriptiveStatistics stats)
     {
         double median = stats.getPercentile(50);
         DescriptiveStatistics mads = new DescriptiveStatistics();

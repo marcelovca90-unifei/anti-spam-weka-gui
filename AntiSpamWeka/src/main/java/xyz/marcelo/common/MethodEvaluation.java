@@ -148,7 +148,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error("Unexpected exception: " + e);
+            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
         }
     }
 
@@ -163,7 +163,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error("Unexpected exception: " + e);
+            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
         }
     }
 }
