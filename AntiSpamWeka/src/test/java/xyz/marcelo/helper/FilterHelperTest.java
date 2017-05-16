@@ -42,7 +42,7 @@ public class FilterHelperTest
     public void setUp() throws IOException
     {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("iris.arff").getFile());
+        File file = new File(classLoader.getResource("data-sets-arff/iris.arff").getFile());
         FileReader reader = new FileReader(file);
 
         dataSet = new Instances(reader);

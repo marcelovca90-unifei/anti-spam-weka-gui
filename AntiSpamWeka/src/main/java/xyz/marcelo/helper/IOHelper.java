@@ -62,8 +62,8 @@ public class IOHelper
 
         while ((line = reader.readLine()) != null)
         {
-            // only process the line if it is not empty and does not start with a comment mark (# or //)
-            if (!StringUtils.isEmpty(line) && !line.startsWith("#") && !line.startsWith("//"))
+            // only process the line if it is not empty and does not start with a comment mark (#)
+            if (!StringUtils.isEmpty(line) && !line.startsWith("#"))
             {
                 // replaces the user home symbol (~) with the actual folder path
                 if (line.startsWith("~"))
@@ -146,10 +146,12 @@ public class IOHelper
         return dataSet;
     }
 
-    public static void saveInstancesToFile(Instances instances, String filename) throws IOException
+    public static File saveInstancesToFile(Instances instances, String filename) throws IOException
     {
         // create output file's buffered writer
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(filename)));
+        File file = new File(filename);
+        FileWriter writer = new FileWriter(file);
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
         // write attribute names
         for (int i = 0; i < instances.numAttributes(); i++)
@@ -169,6 +171,8 @@ public class IOHelper
         // flush and close the buffered writer
         bufferedWriter.flush();
         bufferedWriter.close();
+
+        return file;
     }
 
     public static Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
@@ -227,9 +231,30 @@ public class IOHelper
         return dataSet;
     }
 
-    public static boolean fileExists(String filename)
+    public static String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
     {
-        return new File(filename).exists();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(folder + File.separator);
+        sb.append(method.getClazz().getSimpleName());
+        sb.append("_TRAIN=" + (int) (100 * splitPercent));
+        sb.append("_TEST=" + (int) (100 * (1.0 - splitPercent)));
+        sb.append("_SEED=" + seed);
+        sb.append(".model");
+
+        return sb.toString();
+    }
+
+    public static File saveModelToFile(String filename, Classifier classifier) throws Exception
+    {
+        weka.core.SerializationHelper.write(filename, classifier);
+
+        return new File(filename);
+    }
+
+    public static Classifier loadModelFromFile(String filename) throws Exception
+    {
+        return (Classifier) weka.core.SerializationHelper.read(filename);
     }
 
     private static ByteBuffer readBytesFromFile(String filename) throws FileNotFoundException, IOException
@@ -253,43 +278,5 @@ public class IOHelper
             attributes.add(new Attribute("x" + i));
         attributes.add(new Attribute(TAG_CLASS, Arrays.asList(TAG_HAM, TAG_SPAM)));
         return attributes;
-    }
-
-    public static String buildClassifierFilename(String folder, MethodConfiguration method, double trainRatio, int seed)
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(folder + File.separator);
-        sb.append(method.getClazz().getSimpleName());
-        sb.append("_TRAIN=" + (int) (100 * trainRatio));
-        sb.append("_TEST=" + (int) (100 * (1.0 - trainRatio)));
-        sb.append("_SEED=" + seed);
-        sb.append(".model");
-
-        return sb.toString();
-    }
-
-    public static void saveModelToFile(String filename, Classifier classifier) throws Exception
-    {
-        weka.core.SerializationHelper.write(filename, classifier);
-
-        File outputFileZip = new File(filename + ".zip");
-
-        if (outputFileZip.exists())
-        {
-            outputFileZip.delete();
-            outputFileZip.createNewFile();
-        }
-
-        ZipHelper.compress(filename);
-    }
-
-    public static Classifier loadModelFromFile(String filename) throws Exception
-    {
-        String filenameZip = filename + ".zip";
-
-        if (IOHelper.fileExists(filenameZip) && ZipHelper.isZipped(filenameZip)) ZipHelper.extract(filenameZip);
-
-        return (Classifier) weka.core.SerializationHelper.read(filename);
     }
 }

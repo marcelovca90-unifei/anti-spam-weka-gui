@@ -21,7 +21,137 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+
+import org.apache.commons.lang3.RandomUtils;
+import org.junit.Before;
+import org.junit.Test;
+
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
+import xyz.marcelo.common.DataSetMetadata;
+import xyz.marcelo.common.MethodConfiguration;
+
 public class IOHelperTest
 {
-    // TODO implement unit tests
+    private String metadataFilename;
+    private String hamDataFilename;
+    private String spamDataFilename;
+    private Instances dataSet;
+
+    @Before
+    public void setUp() throws IOException
+    {
+        ClassLoader classLoader = getClass().getClassLoader();
+        metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
+        hamDataFilename = classLoader.getResource("data-sets-bin/ham").getFile();
+        spamDataFilename = classLoader.getResource("data-sets-bin/spam").getFile();
+    }
+
+    @Test
+    public void loadDataSetsMetadataFromFile() throws IOException
+    {
+        Set<DataSetMetadata> set = IOHelper.loadDataSetsMetadataFromFile(metadataFilename);
+
+        assertThat(set, notNullValue());
+        assertThat(set.size(), equalTo(2));
+
+        set.stream().forEach(v ->
+        {
+            assertThat(v.getFolder(), notNullValue());
+            assertThat(v.getEmptyHamCount(), notNullValue());
+            assertThat(v.getEmptySpamCount(), notNullValue());
+        });
+    }
+
+    @Test
+    public void loadInstancesFromFile() throws IOException
+    {
+        dataSet = IOHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+
+        assertThat(dataSet, notNullValue());
+        assertThat(dataSet.size(), greaterThan(0));
+        assertThat(dataSet.classAttribute(), notNullValue());
+        assertThat(dataSet.numAttributes(), equalTo(11));
+        assertThat(dataSet.classIndex(), notNullValue());
+        assertThat(dataSet.numClasses(), equalTo(2));
+    }
+
+    @Test
+    public void saveInstancesToFile() throws IOException
+    {
+        dataSet = IOHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+
+        File file = IOHelper.saveInstancesToFile(dataSet, "data-set.csv");
+
+        assertThat(file.exists(), equalTo(Boolean.TRUE));
+        assertThat(file.delete(), equalTo(Boolean.TRUE));
+    }
+
+    @Test
+    public void createEmptyInstances()
+    {
+        int featureAmount = RandomUtils.nextInt(1, 11);
+        int emptyHamCount = RandomUtils.nextInt(1, 101);
+        int emptySpamCount = RandomUtils.nextInt(1, 101);
+
+        Instances emptyInstances = IOHelper.createEmptyInstances(featureAmount, emptyHamCount, emptySpamCount);
+
+        assertThat(emptyInstances, notNullValue());
+        assertThat(emptyInstances.size(), equalTo(emptyHamCount + emptySpamCount));
+        assertThat(emptyInstances.classAttribute(), notNullValue());
+        assertThat(emptyInstances.numAttributes(), equalTo(featureAmount + 1));
+        assertThat(emptyInstances.classIndex(), notNullValue());
+        assertThat(emptyInstances.numClasses(), equalTo(2));
+    }
+
+    @Test
+    public void buildClassifierFilename()
+    {
+        String folder = "/some/folder";
+        MethodConfiguration method = MethodConfiguration.RT;
+        double splitPercent = RandomUtils.nextDouble();
+        int seed = RandomUtils.nextInt();
+
+        String filename = IOHelper.buildClassifierFilename(folder, method, splitPercent, seed);
+
+        assertThat(filename, notNullValue());
+        assertThat(filename, containsString(folder));
+        assertThat(filename, containsString(method.getClazz().getSimpleName()));
+        assertThat(filename, containsString(String.valueOf(seed)));
+    }
+
+    @Test
+    public void saveModelToFile() throws Exception
+    {
+        File file = IOHelper.saveModelToFile("dummy.model", (Classifier) null);
+
+        assertThat(file.exists(), equalTo(Boolean.TRUE));
+        assertThat(file.delete(), equalTo(Boolean.TRUE));
+    }
+
+    @Test
+    public void loadModelFromFile() throws Exception
+    {
+        AbstractClassifier baseClassifier = MethodConfiguration.buildClassifierFor(MethodConfiguration.RT);
+
+        File file = IOHelper.saveModelToFile("dummy.model", baseClassifier);
+
+        Classifier recoveredClassifier = IOHelper.loadModelFromFile("dummy.model");
+
+        assertThat(file.exists(), equalTo(Boolean.TRUE));
+        assertThat(file.delete(), equalTo(Boolean.TRUE));
+        assertThat(recoveredClassifier, notNullValue());
+        assertThat(recoveredClassifier, instanceOf(MethodConfiguration.RT.getClazz()));
+    }
 }
