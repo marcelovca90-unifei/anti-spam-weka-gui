@@ -1,4 +1,4 @@
-#### Prerequisites:
+### Prerequisites:
 
 [Git](https://git-scm.com/downloads) + [JDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html) / [OpenJDK 8](http://openjdk.java.net/install/) + [Apache Maven](https://maven.apache.org/download.cgi) + [SendEmail](http://caspian.dotconf.net/menu/Software/SendEmail/#download)
 
@@ -28,6 +28,6 @@
 
 `sudo update-alternatives --config liblapack.so.3`
 
-#### 3. Configuring and performing training, testing and e-mail sending
+#### 5. Configuring and performing training, testing and e-mail sending
 
 `cd ~/anti-spam-weka/AntiSpamWeka/ && vi run.sh && ./run.sh`
