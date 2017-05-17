@@ -1,24 +1,17 @@
-# Universidade Federal de Itajubá [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
-## Programa de Pós-graduação em Ciência da Computação
+# anti-spam-weka [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
 
-**Área de Concentração:** Matemática da Computação
-
-**Linha de Pesquisa:** Inteligência Artificial
-
-**Projeto:** Estudo e Pesquisa em Sistemas Anti-Spam
-
-**Orientador:** Otávio Augusto Salgado Carpinteiro
+Project of my master's degree in Computer Science ("Study and Research in Anti-Spam Systems").
 
 - - - -
 
-Biblioteca de aprendizado de máquina:
+Machine learning library:
 - [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)
 
-Bases de dados:
+Data sets:
 - [2017_BASE2](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_BASE2) (com 8, 16, 32, 64, 128, 256 e 512 características - CHI2, DF e MI)
 - [2017_MULT10](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_MULT10) (com 10, 20, 30, 40, 50, 60, 70, 80, 90 e 100 características - CHI2, DF e MI)
 
-Métodos de classificação:
+Classification methods:
 - [A1DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 1-Dependence Estimator
 - [A2DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 2-Dependence Estimator
 - [BFTREE](http://weka.sourceforge.net/doc.packages/bestFirstTree/weka/classifiers/trees/BFTree.html) - Best-first tree
@@ -41,14 +34,9 @@ Métodos de classificação:
 - [SPEGASOS](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html) - Stochastic Primal Estimated sub-GrAdient SOlver for SVM
 - [SVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support Vector Machine
 
-Métricas:
-- Porcentagem de acertos na classificação de hams (*Ham Precision*)
-- Porcentagem de revocação na classificação de hams (*Ham Recall*)
-- Porcentagem de acertos na classificação de spams (*Spam Precision*)
-- Porcentagem de revocação na classificação de hams (*Spam Recall*)
-- Área sobre a Curva Precisão-Revocação de Ham (*Area Under Ham PR Curve*)
-- Área sobre a Curva Precisão-Revocação de Spam (*Area Under Spam PR Curve*)
-- Área sobre a Curva Característica de Operação do Receptor de Ham (*Area Under Ham ROC Curve*)
-- Área sobre a Curva Característica de Operação do Receptor de Spam (*Area Under Spam ROC Curve*)
-- Tempo de treinamento (*Training Time*)
-- Tempo de classificação (*Test Time*)
+Metrics:
+- Ham and Spam Precision
+- Ham and Spam Recall
+- Area Under Ham and Spam Precision-Recall Curves
+- Area Under Ham and Spam Receiver Operating Characteristic Curves
+- Training and Testing Times
