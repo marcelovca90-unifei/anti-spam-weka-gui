@@ -37,6 +37,6 @@ Classification methods:
 Metrics:
 - Ham and Spam Precision
 - Ham and Spam Recall
-- Area Under Ham and Spam Precision-Recall Curves
-- Area Under Ham and Spam Receiver Operating Characteristic Curves
+- Area Under Ham and Spam Precision-Recall (PR) Curves
+- Area Under Ham and Spam Receiver Operating Characteristic (ROC) Curves
 - Training and Testing Times
