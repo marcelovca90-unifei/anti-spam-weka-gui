@@ -37,8 +37,8 @@ Classification methods:
 - [SVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support Vector Machine
 
 Metrics:
-- Ham and Spam Precision
-- Ham and Spam Recall
+- Ham and Spam Precision `(TP / (TP + FP))`
+- Ham and Spam Recall `(TP / (TP + FN))`
 - Area Under Ham and Spam Precision-Recall (PR) Curves
 - Area Under Ham and Spam Receiver Operating Characteristic (ROC) Curves
 - Training and Testing Times
