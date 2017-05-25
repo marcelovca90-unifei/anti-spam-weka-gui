@@ -59,24 +59,24 @@ public class IOHelperTest
         metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
         hamDataFilename = classLoader.getResource("data-sets-bin/ham").getFile();
         spamDataFilename = classLoader.getResource("data-sets-bin/spam").getFile();
-
-        System.out.println(metadataFilename);
     }
 
     @Test
     public void loadDataSetsMetadataFromFile_shouldProperlyDeserializeDataSetsMetadata() throws IOException
     {
-        Set<DataSetMetadata> set = IOHelper.getInstance().loadDataSetsMetadataFromFile(metadataFilename);
+        Set<DataSetMetadata> metadatum = IOHelper.getInstance().loadDataSetsMetadataFromFile(metadataFilename);
 
-        assertThat(set, notNullValue());
-        assertThat(set.size(), equalTo(2));
+        assertThat(metadatum, notNullValue());
+        assertThat(metadatum.size(), equalTo(2));
 
-        set.stream().forEach(v ->
-        {
-            assertThat(v.getFolder(), notNullValue());
-            assertThat(v.getEmptyHamCount(), notNullValue());
-            assertThat(v.getEmptySpamCount(), notNullValue());
-        });
+        metadatum
+            .stream()
+            .forEach(v ->
+            {
+                assertThat(v.getFolder(), notNullValue());
+                assertThat(v.getEmptyHamCount(), notNullValue());
+                assertThat(v.getEmptySpamCount(), notNullValue());
+            });
     }
 
     @Test

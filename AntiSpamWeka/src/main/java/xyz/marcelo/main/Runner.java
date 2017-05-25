@@ -52,7 +52,9 @@ public final class Runner
     public static void main(String[] args) throws Exception
     {
         // change global setting for Logger instances to WARNING level
-        Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.WARNING));
+        Arrays
+            .stream(LogManager.getLogManager().getLogger("").getHandlers())
+            .forEach(h -> h.setLevel(Level.WARNING));
 
         // initialize the CLI helper with the provided arguments
         CLIHelper.getInstance().initialize(args);
@@ -79,15 +81,15 @@ public final class Runner
 
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
-                if (CLIHelper.getInstance().shrinkFeatures()) dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
-                if (CLIHelper.getInstance().balanceClasses()) dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
+                if (CLIHelper.getInstance().shrinkFeatures())
+                    dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
+                if (CLIHelper.getInstance().balanceClasses())
+                    dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // build empty patterns set, if specified
                 if (CLIHelper.getInstance().includeEmptyInstances())
-                {
                     emptySet = IOHelper.getInstance().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
-                }
 
                 // initialize random number generator
                 Random random = new Random();
@@ -120,7 +122,8 @@ public final class Runner
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (CLIHelper.getInstance().includeEmptyInstances()) testingSet.addAll(emptySet);
+                    if (CLIHelper.getInstance().includeEmptyInstances())
+                        testingSet.addAll(emptySet);
 
                     // save the data sets to csv files, if specified
                     if (CLIHelper.getInstance().saveSets())
@@ -143,7 +146,8 @@ public final class Runner
                     baseEvaluation.setNumberOfActualFeatures(numberOfActualFeatures);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!CLIHelper.getInstance().skipTrain()) baseEvaluation.train(trainingSet);
+                    if (!CLIHelper.getInstance().skipTrain())
+                        baseEvaluation.train(trainingSet);
 
                     // if the testing should not be skipped
                     if (!CLIHelper.getInstance().skipTest())
@@ -157,20 +161,17 @@ public final class Runner
 
                         // if at the end of last run, detect and remove outliers; this may lead to additional runs
                         if (run == (CLIHelper.getInstance().getNumberOfRuns() - 1))
-                        {
                             run -= ResultHelper.getInstance().detectAndRemoveOutliers();
-                        }
                     }
 
                     // persist the classifier, if specified in args
-                    if (CLIHelper.getInstance().saveModel()) IOHelper.getInstance().saveModelToFile(classifierFilename, classifier);
+                    if (CLIHelper.getInstance().saveModel())
+                        IOHelper.getInstance().saveModelToFile(classifierFilename, classifier);
                 }
 
                 // log the final results for this configuration
                 if (!CLIHelper.getInstance().skipTest())
-                {
                     FormatHelper.getInstance().summarizeResults(baseEvaluation, true, true);
-                }
             }
         }
     }

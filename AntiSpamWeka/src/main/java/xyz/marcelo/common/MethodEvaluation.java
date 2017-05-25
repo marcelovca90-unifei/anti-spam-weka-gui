@@ -137,11 +137,11 @@ public class MethodEvaluation
         this.methodConfiguration = methodConfiguration;
     }
 
+    // train the classifier with the given data set
     public void train(Instances trainSet)
     {
         try
         {
-            // train the classifier
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
@@ -152,11 +152,11 @@ public class MethodEvaluation
         }
     }
 
+    // test the classifier agains the given data set
     public void test(Instances testSet)
     {
         try
         {
-            // test the classifier
             testStart = System.currentTimeMillis();
             evaluation.evaluateModel(classifier, testSet);
             testEnd = System.currentTimeMillis();

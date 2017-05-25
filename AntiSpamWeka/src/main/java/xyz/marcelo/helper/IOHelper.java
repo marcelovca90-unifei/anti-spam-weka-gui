@@ -80,9 +80,7 @@ public class IOHelper
                 {
                     // replaces the user home symbol (~) with the actual folder path
                     if (line.startsWith("~"))
-                    {
                         line = line.replaceAll("~", System.getProperty("user.home"));
-                    }
                     String[] parts = line.split(",");
                     String folder = parts[0];
                     Integer emptyHamAmount = Integer.parseInt(parts[1]);
@@ -192,10 +190,11 @@ public class IOHelper
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file)))
         {
             // write attribute names
-            for (int i = 0; i < instances.numAttributes(); i++)
+            for (int attrIndex = 0; attrIndex < instances.numAttributes(); attrIndex++)
             {
-                if (i > 0) bufferedWriter.write(",");
-                bufferedWriter.write(i != instances.classIndex() ? instances.attribute(i).name() : TAG_CLASS);
+                if (attrIndex > 0)
+                    bufferedWriter.write(",");
+                bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : TAG_CLASS);
             }
             bufferedWriter.write(System.lineSeparator());
 

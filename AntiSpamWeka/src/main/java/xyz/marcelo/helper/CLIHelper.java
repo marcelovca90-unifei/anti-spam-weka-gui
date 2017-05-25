@@ -84,9 +84,7 @@ public class CLIHelper
             commandLine = new DefaultParser().parse(options, args);
 
             if (!hasOption(CLIOption.METADATA) || !hasOption(CLIOption.METHOD))
-            {
                 throw new ParseException("Missing mandatory arguments");
-            }
         }
         catch (ParseException e)
         {
@@ -94,6 +92,8 @@ public class CLIHelper
             String mandatoryArgs = "METADATA METHOD";
             String optionalArgs = "[RUNS] [SKIP_TRAIN] [SKIP_TEST] [TEST_EMPTY] [SAVE_MODEL] [SAVE_SETS] [SHRINK_FEATURES] [BALANCE_CLASSES]";
             new HelpFormatter().printHelp("java -jar AntiSpamWeka.jar " + mandatoryArgs + " " + optionalArgs, options);
+
+            // rethrow the exception
             throw e;
         }
     }
@@ -102,9 +102,7 @@ public class CLIHelper
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
         if (hasOption(CLIOption.METADATA))
-        {
             metadata.addAll(IOHelper.getInstance().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
-        }
         return metadata;
     }
 
@@ -113,7 +111,9 @@ public class CLIHelper
         List<MethodConfiguration> methods = new ArrayList<>();
         if (hasOption(CLIOption.METHOD))
         {
-            Arrays.stream(getOptionValue(CLIOption.METHOD).split(",")).forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
+            Arrays
+                .stream(getOptionValue(CLIOption.METHOD).split(","))
+                .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
         }
         return methods;
     }

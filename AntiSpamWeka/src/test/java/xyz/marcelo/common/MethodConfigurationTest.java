@@ -42,31 +42,41 @@ public class MethodConfigurationTest
     public void enum_MethodConfiguration_shouldReturnTwentyOneValues()
     {
         assertThat(MethodConfiguration.values().length, equalTo(21));
-        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
     }
 
     @Test
     public void getName_allValues_shouldReturnNotNullString()
     {
-        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getName(), notNullValue()));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getName(), notNullValue()));
     }
 
     @Test
     public void getConfig_allValues_shouldReturnNotNullString()
     {
-        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getConfig(), notNullValue()));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getConfig(), notNullValue()));
     }
 
     @Test
     public void getSplitPercent_allValues_shouldReturnNotNullDouble()
     {
-        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getSplitPercent(), notNullValue()));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getSplitPercent(), notNullValue()));
     }
 
     @Test
     public void getClazz_allValues_shouldReturnNotNullClass()
     {
-        Arrays.stream(MethodConfiguration.values()).forEach(v -> assertThat(v.getClazz(), notNullValue()));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getClazz(), notNullValue()));
     }
 
     @Test
@@ -78,13 +88,15 @@ public class MethodConfigurationTest
     @Test
     public void buildClassifierFor_validMethodConfiguration_shouldReturnNotNullClassifier()
     {
-        Arrays.stream(MethodConfiguration.values()).forEach(v ->
-        {
-            AbstractClassifier classifier = MethodConfiguration.buildClassifierFor(v);
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v ->
+            {
+                AbstractClassifier classifier = MethodConfiguration.buildClassifierFor(v);
 
-            assertThat(classifier, notNullValue());
-            assertThat(classifier, instanceOf(v.getClazz()));
-            assertThat(classifier.getOptions(), notNullValue());
-        });
+                assertThat(classifier, notNullValue());
+                assertThat(classifier, instanceOf(v.getClazz()));
+                assertThat(classifier.getOptions(), notNullValue());
+            });
     }
 }

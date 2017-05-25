@@ -112,10 +112,10 @@ public class ResultHelper
                 double value = stats.getElement(i);
                 double zScore = (value - mean) / standardDeviation;
                 double modifiedZScore = 0.6745 * (value - median) / getMedianAbsoluteDeviation(stats);
+
+                // if the zScore or modified zScore extrapolate the threshold, then its an outlier
                 if (Math.abs(zScore) > 3 || Math.abs(modifiedZScore) > 3.5)
-                {
                     outlierIndices.add(i);
-                }
             }
         }
 
@@ -134,12 +134,8 @@ public class ResultHelper
                 Metric key = entry.getKey();
                 filteredResults.put(key, new LinkedList<>());
                 for (int i = 0; i < results.get(key).size(); i++)
-                {
                     if (!outlierIndices.contains(i))
-                    {
                         filteredResults.get(key).add(results.get(key).get(i));
-                    }
-                }
             }
             results = filteredResults;
         }

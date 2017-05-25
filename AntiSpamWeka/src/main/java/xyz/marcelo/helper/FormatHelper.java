@@ -66,13 +66,9 @@ public class FormatHelper
         for (Metric metric : Metric.values())
         {
             if (!printStats)
-            {
                 buildResultLineWithoutStats(results, formatMillis, sb, metric);
-            }
             else
-            {
                 buildResultLineWithStats(results, formatMillis, sb, metric);
-            }
         }
 
         if (!printStats)

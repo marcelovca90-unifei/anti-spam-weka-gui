@@ -44,20 +44,26 @@ public class ConstantsTest
     public void enum_CLIOption_shouldReturnTenValues()
     {
         assertThat(Constants.CLIOption.values().length, equalTo(10));
-        Arrays.stream(Constants.CLIOption.values()).forEach(v -> assertThat(Constants.CLIOption.valueOf(v.name()), notNullValue()));
+        Arrays
+            .stream(Constants.CLIOption.values())
+            .forEach(v -> assertThat(Constants.CLIOption.valueOf(v.name()), notNullValue()));
     }
 
     @Test
     public void enum_MessageType_shouldReturnTwoValues()
     {
         assertThat(Constants.MessageType.values().length, equalTo(2));
-        Arrays.stream(Constants.MessageType.values()).forEach(v -> assertThat(Constants.MessageType.valueOf(v.name()), notNullValue()));
+        Arrays
+            .stream(Constants.MessageType.values())
+            .forEach(v -> assertThat(Constants.MessageType.valueOf(v.name()), notNullValue()));
     }
 
     @Test
     public void enum_Metric_shouldReturnTenValues()
     {
         assertThat(Constants.Metric.values().length, equalTo(10));
-        Arrays.stream(Constants.Metric.values()).forEach(v -> assertThat(Constants.Metric.valueOf(v.name()), notNullValue()));
+        Arrays
+            .stream(Constants.Metric.values())
+            .forEach(v -> assertThat(Constants.Metric.valueOf(v.name()), notNullValue()));
     }
 }
