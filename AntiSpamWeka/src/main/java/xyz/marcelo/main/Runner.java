@@ -82,9 +82,9 @@ public final class Runner
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 if (CLIHelper.getInstance().shrinkFeatures())
-                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.BASIC);
+                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.CfsSubsetEval_GreedyStepwise);
                 if (CLIHelper.getInstance().balanceClasses())
-                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.BASIC);
+                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.ClassBalancer);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // build empty patterns set, if specified
