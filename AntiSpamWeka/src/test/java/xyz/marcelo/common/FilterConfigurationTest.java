@@ -19,59 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package xyz.marcelo.common;
 
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import weka.core.Instances;
-
 @RunWith(MockitoJUnitRunner.class)
-public class FilterHelperTest
+public class FilterConfigurationTest
 {
-    private Instances dataSet;
-
-    @Before
-    public void setUp() throws IOException
-    {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("data-sets-arff/iris.arff").getFile());
-        FileReader reader = new FileReader(file);
-
-        dataSet = new Instances(reader);
-        dataSet.setClassIndex(dataSet.numAttributes() - 1);
-    }
+    // TODO implement actual tests
 
     @Test
-    public void applyAttributeFilter_shouldReturnDataSetWithPotentiallyyReducedAttributes() throws Exception
+    public void test()
     {
-        int attributesBefore = dataSet.numAttributes();
-
-        dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
-
-        int attributesAfter = dataSet.numAttributes();
-
-        assertThat(attributesAfter, lessThanOrEqualTo(attributesBefore));
-    }
-
-    @Test
-    public void applyInstanceFilter_shouldReturnDataSetWithPotentiallyyReducedInstances() throws Exception
-    {
-        int instancesBefore = dataSet.size();
-
-        dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
-
-        int instancesAfter = dataSet.size();
-
-        assertThat(instancesAfter, lessThanOrEqualTo(instancesBefore));
+        assertThat(new FilterConfiguration(), notNullValue());
     }
 }

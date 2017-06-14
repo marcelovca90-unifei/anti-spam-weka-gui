@@ -34,10 +34,10 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import xyz.marcelo.common.DataSetMetadata;
+import xyz.marcelo.common.FilterConfiguration;
 import xyz.marcelo.common.MethodConfiguration;
 import xyz.marcelo.common.MethodEvaluation;
 import xyz.marcelo.helper.CLIHelper;
-import xyz.marcelo.helper.FilterHelper;
 import xyz.marcelo.helper.FormatHelper;
 import xyz.marcelo.helper.IOHelper;
 import xyz.marcelo.helper.ResultHelper;
@@ -82,9 +82,9 @@ public final class Runner
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 if (CLIHelper.getInstance().shrinkFeatures())
-                    dataSet = FilterHelper.getInstance().applyAttributeFilter(dataSet);
+                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.BASIC);
                 if (CLIHelper.getInstance().balanceClasses())
-                    dataSet = FilterHelper.getInstance().applyInstanceFilter(dataSet);
+                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.BASIC);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // build empty patterns set, if specified
