@@ -135,9 +135,9 @@ public class FilterConfiguration
 
         try
         {
-            Logger.debug("Applying {} to the data set", filter.getDescription());
+            Logger.debug("Applying {} to the data set (numAttributes: {})", filter.getDescription(), dataSet.numAttributes());
             filteredDataSet = Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
-            Logger.debug("Applied {} to the data set", filter.getDescription());
+            Logger.debug("Applied {} to the data set (numAttributes: {})", filter.getDescription(), filteredDataSet.numAttributes());
         }
         catch (Exception e)
         {
@@ -205,9 +205,9 @@ public class FilterConfiguration
 
         try
         {
-            Logger.debug("Applying {} to the data set", filter.getDescription());
+            Logger.debug("Applying {} to the data set (size: {})", filter.getDescription(), dataSet.size());
             filteredDataSet = Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
-            Logger.debug("Applied {} to the data set", filter.getDescription());
+            Logger.debug("Applied {} to the data set (size: {})", filter.getDescription(), filteredDataSet.size());
         }
         catch (Exception e)
         {
