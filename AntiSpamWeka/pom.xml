@@ -119,6 +119,12 @@
             <artifactId>AnDE</artifactId>
             <version>1.2.1</version>
         </dependency>
+        
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>attributeSelectionSearchMethods</artifactId>
+            <version>1.0.7</version>
+        </dependency>
 
         <dependency>
             <groupId>weka-packages</groupId>

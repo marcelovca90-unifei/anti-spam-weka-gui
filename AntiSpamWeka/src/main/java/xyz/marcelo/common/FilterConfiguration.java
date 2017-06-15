@@ -30,6 +30,7 @@ import weka.attributeSelection.CorrelationAttributeEval;
 import weka.attributeSelection.GainRatioAttributeEval;
 import weka.attributeSelection.GreedyStepwise;
 import weka.attributeSelection.InfoGainAttributeEval;
+import weka.attributeSelection.MultiObjectiveEvolutionarySearch;
 import weka.attributeSelection.OneRAttributeEval;
 import weka.attributeSelection.PrincipalComponents;
 import weka.attributeSelection.Ranker;
@@ -49,18 +50,24 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
+    private static final String GREEDY_STEPWISE_CONFIG = "-T -1.7976931348623157E308 -N -1 -num-slots 1";
+    private static final String MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG = "-generations 10 -population-size 100 -seed 1 -a 0";
+    private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
+
     public enum AttributeFilter
     {
-        CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, "-P 1 -E 1", GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
-        CorrelationAttributeEval_Ranker(CorrelationAttributeEval.class, "", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        GainRatioAttributeEval_Ranker(GainRatioAttributeEval.class, "", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        InfoGainAttributeEval_Ranker(InfoGainAttributeEval.class, "", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        OneRAttributeEval_Ranker(OneRAttributeEval.class, "-S 1 -F 10 -B 6", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        PrincipalComponents_Ranker(PrincipalComponents.class, "-R 0.95 -A 5", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        ReliefFAttributeEval_Ranker(ReliefFAttributeEval.class, "-M -1 -D 1 -K 10", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        SVMAttributeEval_Ranker(SVMAttributeEval.class, "-X 1 -Y 0 -Z 0 -P 1.0E-25 -T 1.0E-10 -C 1.0 -N 0", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, "-T -1.7976931348623157E308 -N -1"),
-        WrapperSubsetEval_GreedyStepwise(WrapperSubsetEval.class, "-B weka.classifiers.rules.ZeroR -F 5 -T 0.01 -R 1 -E DEFAULT --", GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1");
+        CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, "-P 1 -E 1", GreedyStepwise.class, GREEDY_STEPWISE_CONFIG),
+        CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, "-P 1 -E 1", MultiObjectiveEvolutionarySearch.class, MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG),
+        CorrelationAttributeEval_Ranker(CorrelationAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
+        GainRatioAttributeEval_Ranker(GainRatioAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
+        InfoGainAttributeEval_Ranker(InfoGainAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
+        OneRAttributeEval_Ranker(OneRAttributeEval.class, "-S 1 -F 10 -B 6", Ranker.class, RANKER_CONFIG),
+        PrincipalComponents_Ranker(PrincipalComponents.class, "-R 0.95 -A 5", Ranker.class, RANKER_CONFIG),
+        ReliefFAttributeEval_Ranker(ReliefFAttributeEval.class, "-M -1 -D 1 -K 10", Ranker.class, RANKER_CONFIG),
+        SVMAttributeEval_Ranker(SVMAttributeEval.class, "-X 1 -Y 0 -Z 0 -P 1.0E-25 -T 1.0E-10 -C 1.0 -N 0", Ranker.class, RANKER_CONFIG),
+        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
+        WrapperSubsetEval_GreedyStepwise(WrapperSubsetEval.class, "-B weka.classifiers.rules.ZeroR -F 5 -T 0.01 -R 1 -E DEFAULT --", GreedyStepwise.class, GREEDY_STEPWISE_CONFIG),
+        WrapperSubsetEval_MultiObjectiveEvolutionarySearch(WrapperSubsetEval.class, "-B weka.classifiers.rules.ZeroR -F 5 -T 0.01 -R 1 -E DEFAULT --", MultiObjectiveEvolutionarySearch.class, MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG);
 
         private final Class<? extends ASEvaluation> evalClazz;
         private final String evalConfig;
@@ -97,7 +104,7 @@ public class FilterConfiguration
 
         public String getDescription()
         {
-            return String.format("AttributeFilter [evalClass=%s, evalConfig=\"%s\", searchClass=%s, searchConfig=\"%s\"]", evalClazz.getSimpleName(), evalConfig, searchClazz.getSimpleName(), searchConfig);
+            return String.format("AttributeFilter [evalClass=%s, searchClass=%s]", evalClazz.getSimpleName(), searchClazz.getSimpleName());
         }
     };
 
@@ -175,7 +182,7 @@ public class FilterConfiguration
 
         public String getDescription()
         {
-            return String.format("InstanceFilter [class=%s, config=%s]", clazz.getSimpleName(), config);
+            return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
         }
     };
 
