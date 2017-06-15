@@ -41,9 +41,11 @@ import weka.core.Instances;
 import weka.core.OptionHandler;
 import weka.core.Utils;
 import weka.filters.Filter;
-import weka.filters.SimpleBatchFilter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.supervised.instance.ClassBalancer;
+import weka.filters.supervised.instance.Resample;
+import weka.filters.supervised.instance.SpreadSubsample;
+import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
@@ -147,37 +149,33 @@ public class FilterConfiguration
 
     public enum InstanceFilter
     {
-        ClassBalancer("ClassBalancer", "-num-intervals 10", ClassBalancer.class);
+        ClassBalancer(ClassBalancer.class, "-num-intervals 10"),
+        Resample(Resample.class, "-B 0.0 -S 1 -Z 100.0"),
+        SpreadSubsample(SpreadSubsample.class, "-M 0.0 -X 0.0 -S 1"),
+        StratifiedRemoveFolds(StratifiedRemoveFolds.class, "-S 0 -N 10 -F 1");
 
-        private InstanceFilter(String batchName, String batchConfig, Class<? extends SimpleBatchFilter> batchClazz)
+        private InstanceFilter(Class<? extends Filter> clazz, String config)
         {
-            this.batchName = batchName;
-            this.batchConfig = batchConfig;
-            this.batchClazz = batchClazz;
+            this.clazz = clazz;
+            this.config = config;
         }
 
-        private final String batchName;
-        private final String batchConfig;
-        private final Class<? extends SimpleBatchFilter> batchClazz;
+        private final Class<? extends Filter> clazz;
+        private final String config;
 
-        public String getBatchName()
+        public Class<? extends Filter> getClazz()
         {
-            return batchName;
+            return clazz;
         }
 
-        public String getBatchConfig()
+        public String getConfig()
         {
-            return batchConfig;
-        }
-
-        public Class<? extends SimpleBatchFilter> getBatchClazz()
-        {
-            return batchClazz;
+            return config;
         }
 
         public String getDescription()
         {
-            return String.format("InstanceFilter [batchName=%s, batchConfig=%s]", batchName, batchConfig);
+            return String.format("InstanceFilter [class=%s, config=%s]", clazz.getSimpleName(), config);
         }
     };
 
@@ -188,9 +186,9 @@ public class FilterConfiguration
 
         try
         {
-            filter = instanceFilter.getBatchClazz().newInstance();
+            filter = instanceFilter.getClazz().newInstance();
             filter.setInputFormat(dataSet);
-            filter.setOptions(Utils.splitOptions(instanceFilter.getBatchConfig()));
+            filter.setOptions(Utils.splitOptions(instanceFilter.getConfig()));
             filter.setDebug(true);
         }
         catch (Exception e)
