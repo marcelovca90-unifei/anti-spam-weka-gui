@@ -42,7 +42,11 @@ import weka.attributeSelection.RankSearch;
 import weka.attributeSelection.Ranker;
 import weka.attributeSelection.ReliefFAttributeEval;
 import weka.attributeSelection.SVMAttributeEval;
+import weka.attributeSelection.ScatterSearchV1;
+import weka.attributeSelection.SignificanceAttributeEval;
 import weka.attributeSelection.SymmetricalUncertAttributeEval;
+import weka.attributeSelection.SymmetricalUncertAttributeSetEval;
+import weka.attributeSelection.TabuSearch;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 import weka.core.Utils;
@@ -67,8 +71,10 @@ public class FilterConfiguration
         CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
         CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, MultiObjectiveEvolutionarySearch.class, "-generations 10 -population-size 100 -seed 1 -a 0"),
         CfsSubsetEval_PSOSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, PSOSearch.class, "-N 20 -I 20 -T 0 -M 0.01 -A 0.33 -B 0.33 -C 0.34 -R 20 -S 1"),
-        CfsSubsetEval_RandomSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, RandomSearch.class, "-F 25.0 -seed 1"),
+        CfsSubsetEval_RandomSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, RandomSearch.class, "-F 10.0 -seed 1"),
         CfsSubsetEval_RankSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, RankSearch.class, "-S 1 -R 0 -N 0 -I 0.0 -A weka.attributeSelection.GainRatioAttributeEval --"),
+        CfsSubsetEval_ScatterSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, ScatterSearchV1.class, "-T 0.0 -Z -1 -R 0 -S 1 -D"),
+        CfsSubsetEval_TabuSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, TabuSearch.class, "-Z -1 -P 1.0 -S 1 -N -1"),
 
         // Individual-attribute-rank-based Feature Subset Selection
         CorrelationAttributeEval_Ranker(CorrelationAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
@@ -77,9 +83,11 @@ public class FilterConfiguration
         OneRAttributeEval_Ranker(OneRAttributeEval.class, "-S 1 -F 10 -B 6", Ranker.class, RANKER_CONFIG),
         PrincipalComponents_Ranker(PrincipalComponents.class, "-R 0.95 -A 5", Ranker.class, RANKER_CONFIG),
         ReliefFAttributeEval_Ranker(ReliefFAttributeEval.class, "-M -1 -D 1 -K 10", Ranker.class, RANKER_CONFIG),
+        SignificanceAttributeEval_Ranker(SignificanceAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
         SVMAttributeEval_Ranker(SVMAttributeEval.class, "-X 1 -Y 0 -Z 0 -P 1.0E-25 -T 1.0E-10 -C 1.0 -N 0", Ranker.class, RANKER_CONFIG),
-        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG);
-
+        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
+        SymmetricalUncertAttributeSetEval_Ranker(SymmetricalUncertAttributeSetEval.class, "", Ranker.class, RANKER_CONFIG);
+        
         private final Class<? extends ASEvaluation> evalClazz;
         private final String evalConfig;
         private final Class<? extends ASSearch> searchClazz;
