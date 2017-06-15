@@ -25,19 +25,24 @@ import org.pmw.tinylog.Logger;
 
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
+import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.CorrelationAttributeEval;
+import weka.attributeSelection.EvolutionarySearch;
+import weka.attributeSelection.ExhaustiveSearch;
 import weka.attributeSelection.GainRatioAttributeEval;
 import weka.attributeSelection.GreedyStepwise;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.MultiObjectiveEvolutionarySearch;
 import weka.attributeSelection.OneRAttributeEval;
+import weka.attributeSelection.PSOSearch;
 import weka.attributeSelection.PrincipalComponents;
+import weka.attributeSelection.RandomSearch;
+import weka.attributeSelection.RankSearch;
 import weka.attributeSelection.Ranker;
 import weka.attributeSelection.ReliefFAttributeEval;
 import weka.attributeSelection.SVMAttributeEval;
 import weka.attributeSelection.SymmetricalUncertAttributeEval;
-import weka.attributeSelection.WrapperSubsetEval;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 import weka.core.Utils;
@@ -50,14 +55,22 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
-    private static final String GREEDY_STEPWISE_CONFIG = "-T -1.7976931348623157E308 -N -1 -num-slots 1";
-    private static final String MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG = "-generations 10 -population-size 100 -seed 1 -a 0";
+    private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
     private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
 
     public enum AttributeFilter
     {
-        CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, "-P 1 -E 1", GreedyStepwise.class, GREEDY_STEPWISE_CONFIG),
-        CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, "-P 1 -E 1", MultiObjectiveEvolutionarySearch.class, MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG),
+        // Correlation-based Feature Subset Selection
+        CfsSubsetEval_BestFirst(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, BestFirst.class, "-D 1 -N 5"),
+        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class, "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
+        CfsSubsetEval_ExhaustiveSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, ExhaustiveSearch.class, ""),
+        CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
+        CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, MultiObjectiveEvolutionarySearch.class, "-generations 10 -population-size 100 -seed 1 -a 0"),
+        CfsSubsetEval_PSOSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, PSOSearch.class, "-N 20 -I 20 -T 0 -M 0.01 -A 0.33 -B 0.33 -C 0.34 -R 20 -S 1"),
+        CfsSubsetEval_RandomSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, RandomSearch.class, "-F 25.0 -seed 1"),
+        CfsSubsetEval_RankSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, RankSearch.class, "-S 1 -R 0 -N 0 -I 0.0 -A weka.attributeSelection.GainRatioAttributeEval --"),
+
+        // Individual-attribute-rank-based Feature Subset Selection
         CorrelationAttributeEval_Ranker(CorrelationAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
         GainRatioAttributeEval_Ranker(GainRatioAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
         InfoGainAttributeEval_Ranker(InfoGainAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
@@ -65,9 +78,7 @@ public class FilterConfiguration
         PrincipalComponents_Ranker(PrincipalComponents.class, "-R 0.95 -A 5", Ranker.class, RANKER_CONFIG),
         ReliefFAttributeEval_Ranker(ReliefFAttributeEval.class, "-M -1 -D 1 -K 10", Ranker.class, RANKER_CONFIG),
         SVMAttributeEval_Ranker(SVMAttributeEval.class, "-X 1 -Y 0 -Z 0 -P 1.0E-25 -T 1.0E-10 -C 1.0 -N 0", Ranker.class, RANKER_CONFIG),
-        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
-        WrapperSubsetEval_GreedyStepwise(WrapperSubsetEval.class, "-B weka.classifiers.rules.ZeroR -F 5 -T 0.01 -R 1 -E DEFAULT --", GreedyStepwise.class, GREEDY_STEPWISE_CONFIG),
-        WrapperSubsetEval_MultiObjectiveEvolutionarySearch(WrapperSubsetEval.class, "-B weka.classifiers.rules.ZeroR -F 5 -T 0.01 -R 1 -E DEFAULT --", MultiObjectiveEvolutionarySearch.class, MULTIOBJECTIVE_EVOLUTIONARY_SEARCH_CONFIG);
+        SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG);
 
         private final Class<? extends ASEvaluation> evalClazz;
         private final String evalConfig;
