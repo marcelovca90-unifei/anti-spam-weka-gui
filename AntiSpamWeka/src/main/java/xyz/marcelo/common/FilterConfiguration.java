@@ -87,7 +87,7 @@ public class FilterConfiguration
         SVMAttributeEval_Ranker(SVMAttributeEval.class, "-X 1 -Y 0 -Z 0 -P 1.0E-25 -T 1.0E-10 -C 1.0 -N 0", Ranker.class, RANKER_CONFIG),
         SymmetricalUncertAttributeEval_Ranker(SymmetricalUncertAttributeEval.class, "", Ranker.class, RANKER_CONFIG),
         SymmetricalUncertAttributeSetEval_Ranker(SymmetricalUncertAttributeSetEval.class, "", Ranker.class, RANKER_CONFIG);
-        
+
         private final Class<? extends ASEvaluation> evalClazz;
         private final String evalConfig;
         private final Class<? extends ASSearch> searchClazz;
@@ -125,7 +125,7 @@ public class FilterConfiguration
         {
             return String.format("AttributeFilter [evalClass=%s, searchClass=%s]", evalClazz.getSimpleName(), searchClazz.getSimpleName());
         }
-    };
+    }
 
     // remove less relevant attributes from the given data set
     private static Filter buildAttributeFilterFor(AttributeFilter attributeFilter, Instances dataSet)
@@ -203,7 +203,7 @@ public class FilterConfiguration
         {
             return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
         }
-    };
+    }
 
     // remove less relevant instances from the given data set
     private static Filter buildInstanceFilterFor(InstanceFilter instanceFilter, Instances dataSet)

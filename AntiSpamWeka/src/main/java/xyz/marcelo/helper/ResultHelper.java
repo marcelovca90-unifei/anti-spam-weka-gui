@@ -31,6 +31,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.pmw.tinylog.Logger;
 
 import xyz.marcelo.common.Constants.MessageType;
 import xyz.marcelo.common.Constants.Metric;
@@ -96,7 +97,6 @@ public class ResultHelper
     }
 
     // detects and returns the indices of outliers in the result keeper, if any
-    // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
     private Set<Integer> detectOutliers()
     {
         // detect outlier(s) for each metric
@@ -104,18 +104,26 @@ public class ResultHelper
         for (Metric metric : Metric.values())
         {
             DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
+
             double mean = stats.getMean();
             double standardDeviation = stats.getStandardDeviation();
             double median = stats.getPercentile(50);
+            double medianAbsoluteDeviation = getMedianAbsoluteDeviation(stats);
+
             for (int i = 0; i < stats.getValues().length; i++)
             {
                 double value = stats.getElement(i);
                 double zScore = (value - mean) / standardDeviation;
-                double modifiedZScore = 0.6745 * (value - median) / getMedianAbsoluteDeviation(stats);
+                double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
 
-                // if the zScore or modified zScore extrapolate the threshold, then its an outlier
-                if (Math.abs(zScore) > 3 || Math.abs(modifiedZScore) > 3.5)
+                // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
+                // if the modified zScore extrapolate the threshold, then its an outlier
+                if (Math.abs(modifiedZScore) > 3.5)
+                {
+                    String scores = String.format("V=%.4f\tZS=%.4f\tMZS=%.4f", value, zScore, modifiedZScore);
+                    Logger.debug("Outlier detected at index {}\t{}\t{}", i, metric, scores);
                     outlierIndices.add(i);
+                }
             }
         }
 
