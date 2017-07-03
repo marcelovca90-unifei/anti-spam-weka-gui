@@ -121,7 +121,7 @@ public class ResultHelper
                 if (Math.abs(modifiedZScore) > 3.5)
                 {
                     String scores = String.format("V=%.4f\tZS=%.4f\tMZS=%.4f", value, zScore, modifiedZScore);
-                    Logger.debug("Outlier detected at index {}\t{}\t{}", i, metric, scores);
+                    Logger.trace("OUTLIER DETECTED\tI={}\tM={}\t{}", i, metric, scores);
                     outlierIndices.add(i);
                 }
             }
