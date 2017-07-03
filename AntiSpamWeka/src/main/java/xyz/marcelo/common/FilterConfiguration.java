@@ -66,7 +66,8 @@ public class FilterConfiguration
     {
         // Correlation-based Feature Subset Selection
         CfsSubsetEval_BestFirst(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, BestFirst.class, "-D 1 -N 5"),
-        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class, "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
+        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class,
+                "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
         CfsSubsetEval_ExhaustiveSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, ExhaustiveSearch.class, ""),
         CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
         CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, MultiObjectiveEvolutionarySearch.class, "-generations 10 -population-size 100 -seed 1 -a 0"),
@@ -157,20 +158,16 @@ public class FilterConfiguration
 
     public static Instances buildAndApply(Instances dataSet, AttributeFilter filter)
     {
-        Instances filteredDataSet = null;
-
         try
         {
-            Logger.debug("Applying {} to the data set (numAttributes: {})", filter.getDescription(), dataSet.numAttributes());
-            filteredDataSet = Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
-            Logger.debug("Applied {} to the data set (numAttributes: {})", filter.getDescription(), filteredDataSet.numAttributes());
+            Logger.debug("Applying {} to the data set (numAttributes: {}). This may take a while.", filter.getDescription(), dataSet.numAttributes());
+            return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
         }
         catch (Exception e)
         {
             Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+            return null;
         }
-
-        return filteredDataSet;
     }
 
     public enum InstanceFilter
@@ -227,19 +224,15 @@ public class FilterConfiguration
 
     public static Instances buildAndApply(Instances dataSet, InstanceFilter filter)
     {
-        Instances filteredDataSet = null;
-
         try
         {
-            Logger.debug("Applying {} to the data set (size: {})", filter.getDescription(), dataSet.size());
-            filteredDataSet = Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
-            Logger.debug("Applied {} to the data set (size: {})", filter.getDescription(), filteredDataSet.size());
+            Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
+            return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
         }
         catch (Exception e)
         {
             Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+            return null;
         }
-
-        return filteredDataSet;
     }
 }
