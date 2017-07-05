@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.main;
+package io.github.marcelovca90.main;
 
 import java.io.File;
 import java.util.Arrays;
@@ -29,18 +29,18 @@ import java.util.logging.LogManager;
 
 import org.apache.commons.math3.primes.Primes;
 
+import io.github.marcelovca90.common.DataSetMetadata;
+import io.github.marcelovca90.common.FilterConfiguration;
+import io.github.marcelovca90.common.MethodConfiguration;
+import io.github.marcelovca90.common.MethodEvaluation;
+import io.github.marcelovca90.helper.CLIHelper;
+import io.github.marcelovca90.helper.FormatHelper;
+import io.github.marcelovca90.helper.IOHelper;
+import io.github.marcelovca90.helper.ResultHelper;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import xyz.marcelo.common.DataSetMetadata;
-import xyz.marcelo.common.FilterConfiguration;
-import xyz.marcelo.common.MethodConfiguration;
-import xyz.marcelo.common.MethodEvaluation;
-import xyz.marcelo.helper.CLIHelper;
-import xyz.marcelo.helper.FormatHelper;
-import xyz.marcelo.helper.IOHelper;
-import xyz.marcelo.helper.ResultHelper;
 
 public final class Runner
 {

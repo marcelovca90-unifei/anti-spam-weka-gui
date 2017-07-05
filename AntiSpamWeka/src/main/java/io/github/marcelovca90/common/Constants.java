@@ -19,23 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.common;
+package io.github.marcelovca90.common;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
-public class FilterConfigurationTest
+public class Constants
 {
-    // TODO implement actual tests
+    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
 
-    @Test
-    public void test()
+    public enum CLIOption
     {
-        assertThat(new FilterConfiguration(), notNullValue());
+        METADATA,
+        METHOD,
+        RUNS,
+        SKIP_TRAIN,
+        SKIP_TEST,
+        SHRINK_FEATURES,
+        BALANCE_CLASSES,
+        TEST_EMPTY,
+        SAVE_MODEL,
+        SAVE_SETS;
+    }
+
+    public enum Metric
+    {
+        HAM_PRECISION,
+        SPAM_PRECISION,
+        HAM_RECALL,
+        SPAM_RECALL,
+        HAM_AREA_UNDER_PRC,
+        SPAM_AREA_UNDER_PRC,
+        HAM_AREA_UNDER_ROC,
+        SPAM_AREA_UNDER_ROC,
+        TRAIN_TIME,
+        TEST_TIME
+    }
+
+    public enum MessageType
+    {
+        HAM,
+        SPAM
     }
 }

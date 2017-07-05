@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package io.github.marcelovca90.helper;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -38,11 +38,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.common.DataSetMetadata;
+import io.github.marcelovca90.common.MethodConfiguration;
+import io.github.marcelovca90.helper.IOHelper;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
-import xyz.marcelo.common.DataSetMetadata;
-import xyz.marcelo.common.MethodConfiguration;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IOHelperTest

@@ -40,7 +40,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>xyz.marcelo.main.Runner</mainClass>
+                            <mainClass>io.github.marcelovca90.main.Runner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -139,7 +139,7 @@
             <artifactId>MultiObjectiveEvolutionarySearch</artifactId>
             <version>1.0.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>probabilisticSignificanceAE</artifactId>
@@ -151,7 +151,7 @@
             <artifactId>PSOSearch</artifactId>
             <version>1.2.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>tabuAndScatterSearch</artifactId>

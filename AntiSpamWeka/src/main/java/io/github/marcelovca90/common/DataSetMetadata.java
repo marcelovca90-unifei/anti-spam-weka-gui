@@ -19,16 +19,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.main;
+package io.github.marcelovca90.common;
 
-import org.apache.commons.cli.ParseException;
-import org.junit.Test;
-
-public class RunnerTest
+public class DataSetMetadata
 {
-    @Test(expected = ParseException.class)
-    public void main_withNullArgs_shouldThrowException() throws Exception
+    private String folder;
+    private int emptyHamCount;
+    private int emptySpamCount;
+
+    public String getFolder()
     {
-        Runner.main(null);
+        return folder;
+    }
+
+    public int getEmptyHamCount()
+    {
+        return emptyHamCount;
+    }
+
+    public int getEmptySpamCount()
+    {
+        return emptySpamCount;
+    }
+
+    public DataSetMetadata(String folder, int emptyHamCount, int emptySpamCount)
+    {
+        super();
+        this.folder = folder;
+        this.emptyHamCount = emptyHamCount;
+        this.emptySpamCount = emptySpamCount;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "DataSetMetadata [folder=" + folder + ", emptyHamCount=" + emptyHamCount + ", emptySpamCount=" + emptySpamCount + "]";
     }
 }

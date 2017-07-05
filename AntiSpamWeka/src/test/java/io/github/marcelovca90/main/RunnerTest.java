@@ -19,43 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.common;
+package io.github.marcelovca90.main;
 
-public class Constants
+import org.apache.commons.cli.ParseException;
+import org.junit.Test;
+
+import io.github.marcelovca90.main.Runner;
+
+public class RunnerTest
 {
-    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
-
-    public enum CLIOption
+    @Test(expected = ParseException.class)
+    public void main_withNullArgs_shouldThrowException() throws Exception
     {
-        METADATA,
-        METHOD,
-        RUNS,
-        SKIP_TRAIN,
-        SKIP_TEST,
-        SHRINK_FEATURES,
-        BALANCE_CLASSES,
-        TEST_EMPTY,
-        SAVE_MODEL,
-        SAVE_SETS;
-    }
-
-    public enum Metric
-    {
-        HAM_PRECISION,
-        SPAM_PRECISION,
-        HAM_RECALL,
-        SPAM_RECALL,
-        HAM_AREA_UNDER_PRC,
-        SPAM_AREA_UNDER_PRC,
-        HAM_AREA_UNDER_ROC,
-        SPAM_AREA_UNDER_ROC,
-        TRAIN_TIME,
-        TEST_TIME
-    }
-
-    public enum MessageType
-    {
-        HAM,
-        SPAM
+        Runner.main(null);
     }
 }

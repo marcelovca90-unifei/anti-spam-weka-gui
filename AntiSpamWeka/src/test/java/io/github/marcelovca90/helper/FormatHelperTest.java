@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package io.github.marcelovca90.helper;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,9 +32,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import xyz.marcelo.common.Constants.Metric;
-import xyz.marcelo.common.MethodConfiguration;
-import xyz.marcelo.common.MethodEvaluation;
+import io.github.marcelovca90.common.MethodConfiguration;
+import io.github.marcelovca90.common.MethodEvaluation;
+import io.github.marcelovca90.common.Constants.Metric;
+import io.github.marcelovca90.helper.FormatHelper;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormatHelperTest

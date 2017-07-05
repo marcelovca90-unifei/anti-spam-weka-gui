@@ -19,40 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.common;
+package io.github.marcelovca90.common;
 
-public class DataSetMetadata
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import io.github.marcelovca90.common.FilterConfiguration;
+
+@RunWith(MockitoJUnitRunner.class)
+public class FilterConfigurationTest
 {
-    private String folder;
-    private int emptyHamCount;
-    private int emptySpamCount;
+    // TODO implement actual tests
 
-    public String getFolder()
+    @Test
+    public void test()
     {
-        return folder;
-    }
-
-    public int getEmptyHamCount()
-    {
-        return emptyHamCount;
-    }
-
-    public int getEmptySpamCount()
-    {
-        return emptySpamCount;
-    }
-
-    public DataSetMetadata(String folder, int emptyHamCount, int emptySpamCount)
-    {
-        super();
-        this.folder = folder;
-        this.emptyHamCount = emptyHamCount;
-        this.emptySpamCount = emptySpamCount;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "DataSetMetadata [folder=" + folder + ", emptyHamCount=" + emptyHamCount + ", emptySpamCount=" + emptySpamCount + "]";
+        assertThat(new FilterConfiguration(), notNullValue());
     }
 }

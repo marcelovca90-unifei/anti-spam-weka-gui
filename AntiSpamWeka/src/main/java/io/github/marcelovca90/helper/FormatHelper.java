@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package io.github.marcelovca90.helper;
 
 import java.util.Map;
 
@@ -27,9 +27,9 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
-import xyz.marcelo.common.Constants.Metric;
-import xyz.marcelo.common.MethodConfiguration;
-import xyz.marcelo.common.MethodEvaluation;
+import io.github.marcelovca90.common.MethodConfiguration;
+import io.github.marcelovca90.common.MethodEvaluation;
+import io.github.marcelovca90.common.Constants.Metric;
 
 public class FormatHelper
 {

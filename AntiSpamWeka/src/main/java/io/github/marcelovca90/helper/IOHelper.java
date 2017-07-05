@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package io.github.marcelovca90.helper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -38,14 +38,14 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Logger;
 
+import io.github.marcelovca90.common.Constants;
+import io.github.marcelovca90.common.DataSetMetadata;
+import io.github.marcelovca90.common.MethodConfiguration;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import xyz.marcelo.common.Constants;
-import xyz.marcelo.common.DataSetMetadata;
-import xyz.marcelo.common.MethodConfiguration;
 
 public class IOHelper
 {

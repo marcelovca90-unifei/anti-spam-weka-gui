@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package xyz.marcelo.helper;
+package io.github.marcelovca90.helper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.pmw.tinylog.Logger;
 
-import xyz.marcelo.common.Constants.CLIOption;
-import xyz.marcelo.common.DataSetMetadata;
-import xyz.marcelo.common.MethodConfiguration;
+import io.github.marcelovca90.common.DataSetMetadata;
+import io.github.marcelovca90.common.MethodConfiguration;
+import io.github.marcelovca90.common.Constants.CLIOption;
 
 public class CLIHelper
 {
