@@ -21,6 +21,7 @@
  ******************************************************************************/
 package xyz.marcelo.helper;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,32 +97,38 @@ public class ResultHelper
         return removeOutliers(detectOutliers());
     }
 
-    // detects and returns the indices of outliers in the result keeper, if any
+    // detects and returns the indices of outliers in the result keeper, if any. references:
+    // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
+    // https://commons.wikimedia.org/wiki/File:Normal_distribution_and_scales.gif
+    // http://colingorrie.github.io/outlier-detection.html
     private Set<Integer> detectOutliers()
     {
-        // detect outlier(s) for each metric
+        // set to keep the outlier(s) index(ices)
         Set<Integer> outlierIndices = new TreeSet<>();
+
+        // detect outlier(s) for each metric
         for (Metric metric : Metric.values())
         {
             DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
 
-            double mean = stats.getMean();
-            double standardDeviation = stats.getStandardDeviation();
-            double median = stats.getPercentile(50);
-            double medianAbsoluteDeviation = getMedianAbsoluteDeviation(stats);
-
             for (int i = 0; i < stats.getValues().length; i++)
             {
-                double value = stats.getElement(i);
-                double zScore = (value - mean) / standardDeviation;
-                double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
+                double value = stats.getValues()[i];
 
-                // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
-                // if the modified zScore extrapolate the threshold, then its an outlier
-                if (Math.abs(modifiedZScore) > 3.5)
+                // if the current value extrapoles any of the three thresholds, then it is considered an outlier
+                if (isOutlierByZScore(stats, value))
                 {
-                    String scores = String.format("V=%.4f\tZS=%.4f\tMZS=%.4f", value, zScore, modifiedZScore);
-                    Logger.trace("OUTLIER DETECTED\tI={}\tM={}\t{}", i, metric, scores);
+                    Logger.trace("Outlier detected by Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    outlierIndices.add(i);
+                }
+                else if (isOutlierByModifiedZScore(stats, value))
+                {
+                    Logger.trace("Outlier detected by Modified Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    outlierIndices.add(i);
+                }
+                else if (isOutlierByInterquartileRange(stats, value))
+                {
+                    Logger.trace("Outlier detected by Interquartile Range\tMetric={}\tIndex={}\tValue={}", metric, i, value);
                     outlierIndices.add(i);
                 }
             }
@@ -173,12 +180,31 @@ public class ResultHelper
         return new DescriptiveStatistics(ArrayUtils.toPrimitive(values.toArray(new Double[0])));
     }
 
-    private double getMedianAbsoluteDeviation(DescriptiveStatistics stats)
+    private boolean isOutlierByZScore(DescriptiveStatistics stats, double value)
+    {
+        double zScore = (value - stats.getMean()) / stats.getStandardDeviation();
+
+        return Math.abs(zScore) > 3;
+    }
+
+    private boolean isOutlierByModifiedZScore(DescriptiveStatistics stats, double value)
     {
         double median = stats.getPercentile(50);
-        DescriptiveStatistics mads = new DescriptiveStatistics();
-        for (double v : stats.getValues())
-            mads.addValue(Math.abs(v - median));
-        return mads.getPercentile(50);
+        double medianAbsoluteDeviation = new DescriptiveStatistics(
+            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+        double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
+
+        return Math.abs(modifiedZScore) > 3.5;
+    }
+
+    private boolean isOutlierByInterquartileRange(DescriptiveStatistics stats, double value)
+    {
+        double quartile1 = stats.getPercentile(25);
+        double quartile3 = stats.getPercentile(75);
+        double iqr = quartile3 - quartile1;
+        double lowerBound = quartile1 - (iqr * 1.5);
+        double upperBound = quartile3 + (iqr * 1.5);
+
+        return (value < lowerBound || value > upperBound);
     }
 }
