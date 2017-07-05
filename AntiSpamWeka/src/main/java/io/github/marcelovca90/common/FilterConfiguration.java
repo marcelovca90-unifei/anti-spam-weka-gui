@@ -59,6 +59,11 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
+    // used to suppress the default public constructor
+    private FilterConfiguration()
+    {
+    }
+
     private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
     private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
 
@@ -66,7 +71,8 @@ public class FilterConfiguration
     {
         // Correlation-based Feature Subset Selection
         CfsSubsetEval_BestFirst(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, BestFirst.class, "-D 1 -N 5"),
-        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class, "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
+        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class,
+                "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
         CfsSubsetEval_ExhaustiveSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, ExhaustiveSearch.class, ""),
         CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
         CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, MultiObjectiveEvolutionarySearch.class, "-generations 10 -population-size 100 -seed 1 -a 0"),
@@ -128,29 +134,18 @@ public class FilterConfiguration
     }
 
     // remove less relevant attributes from the given data set
-    private static Filter buildAttributeFilterFor(AttributeFilter attributeFilter, Instances dataSet)
+    private static Filter buildAttributeFilterFor(AttributeFilter attributeFilter, Instances dataSet) throws Exception
     {
-        Filter filter = null;
+        ASEvaluation evaluator = attributeFilter.getEvalClazz().newInstance();
+        ((OptionHandler) evaluator).setOptions(Utils.splitOptions(attributeFilter.getEvalConfig()));
 
-        try
-        {
-            ASEvaluation evaluator = attributeFilter.getEvalClazz().newInstance();
-            ((OptionHandler) evaluator).setOptions(Utils.splitOptions(attributeFilter.getEvalConfig()));
+        ASSearch search = attributeFilter.getSearchClazz().newInstance();
+        ((OptionHandler) search).setOptions(Utils.splitOptions(attributeFilter.getSearchConfig()));
 
-            ASSearch search = attributeFilter.getSearchClazz().newInstance();
-            ((OptionHandler) search).setOptions(Utils.splitOptions(attributeFilter.getSearchConfig()));
-
-            filter = new AttributeSelection();
-            filter.setInputFormat(dataSet);
-            ((AttributeSelection) filter).setEvaluator(evaluator);
-            ((AttributeSelection) filter).setSearch(search);
-
-            return filter;
-        }
-        catch (Exception e)
-        {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
-        }
+        Filter filter = new AttributeSelection();
+        filter.setInputFormat(dataSet);
+        ((AttributeSelection) filter).setEvaluator(evaluator);
+        ((AttributeSelection) filter).setSearch(search);
 
         return filter;
     }
@@ -202,36 +197,20 @@ public class FilterConfiguration
     }
 
     // remove less relevant instances from the given data set
-    private static Filter buildInstanceFilterFor(InstanceFilter instanceFilter, Instances dataSet)
+    private static Filter buildInstanceFilterFor(InstanceFilter instanceFilter, Instances dataSet) throws Exception
     {
-        Filter filter = null;
+        Filter filter = instanceFilter.getClazz().newInstance();
 
-        try
-        {
-            filter = instanceFilter.getClazz().newInstance();
-            filter.setInputFormat(dataSet);
-            filter.setOptions(Utils.splitOptions(instanceFilter.getConfig()));
-            filter.setDebug(true);
-        }
-        catch (Exception e)
-        {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
-        }
+        filter.setInputFormat(dataSet);
+        filter.setOptions(Utils.splitOptions(instanceFilter.getConfig()));
+        filter.setDebug(true);
 
         return filter;
     }
 
-    public static Instances buildAndApply(Instances dataSet, InstanceFilter filter)
+    public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
     {
-        try
-        {
-            Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
-            return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
-        }
-        catch (Exception e)
-        {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
-            return null;
-        }
+        Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
+        return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }
 }
