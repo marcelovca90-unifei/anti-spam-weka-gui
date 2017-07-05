@@ -21,16 +21,34 @@
  ******************************************************************************/
 package io.github.marcelovca90.main;
 
-import org.apache.commons.cli.ParseException;
-import org.junit.Test;
+import java.io.IOException;
 
-import io.github.marcelovca90.main.Runner;
+import org.apache.commons.cli.ParseException;
+import org.junit.Before;
+import org.junit.Test;
 
 public class RunnerTest
 {
+    private String metadataFilename;
+
+    @Before
+    public void setUp() throws IOException
+    {
+        ClassLoader classLoader = getClass().getClassLoader();
+        metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
+    }
+
     @Test(expected = ParseException.class)
     public void main_withNullArgs_shouldThrowException() throws Exception
     {
         Runner.main(null);
+    }
+
+    @Test(expected = Exception.class)
+    public void main_nullBuffer_shouldThrowException() throws Exception
+    {
+        String[] args = String.format("-Metadata %s -Method RT -Runs 3 -ShrinkFeatures -BalanceClasses -TestEmpty", metadataFilename).split(" ");
+
+        Runner.main(args);
     }
 }

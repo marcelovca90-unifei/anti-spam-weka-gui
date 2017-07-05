@@ -40,7 +40,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
-import io.github.marcelovca90.helper.IOHelper;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;

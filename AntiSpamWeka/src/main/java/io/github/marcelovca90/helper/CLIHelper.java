@@ -37,9 +37,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.pmw.tinylog.Logger;
 
+import io.github.marcelovca90.common.Constants.CLIOption;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
-import io.github.marcelovca90.common.Constants.CLIOption;
 
 public class CLIHelper
 {
@@ -101,20 +101,16 @@ public class CLIHelper
     public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
-        if (hasOption(CLIOption.METADATA))
-            metadata.addAll(IOHelper.getInstance().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
+        metadata.addAll(IOHelper.getInstance().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
         return metadata;
     }
 
     public List<MethodConfiguration> getMethods()
     {
         List<MethodConfiguration> methods = new ArrayList<>();
-        if (hasOption(CLIOption.METHOD))
-        {
-            Arrays
-                .stream(getOptionValue(CLIOption.METHOD).split(","))
-                .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
-        }
+        Arrays
+            .stream(getOptionValue(CLIOption.METHOD).split(","))
+            .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
         return methods;
     }
 
