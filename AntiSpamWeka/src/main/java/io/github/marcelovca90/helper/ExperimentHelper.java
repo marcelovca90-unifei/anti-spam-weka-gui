@@ -29,21 +29,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
 import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.Constants.Metric;
+import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
 
-public class ResultHelper
+public class ExperimentHelper
 {
     private Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
 
     // clears the data in result keeper
-    public void reset()
+    public void clearResultHistory()
     {
         results.clear();
     }
@@ -83,6 +86,77 @@ public class ResultHelper
     public int detectAndRemoveOutliers()
     {
         return removeOutliers(detectOutliers());
+    }
+
+    public void printHeader()
+    {
+        String[] fullMetricNames = new String[] {
+                "Timestamp", "Data Set", "Statistics Method", "Number of Features",
+                "Ham Precision", "Spam Precision", "Ham Recall", "Spam Recall",
+                "Ham Area Under PRC", "Spam Area Under PRC", "Ham Area Under ROC", "Spam Area Under ROC",
+                "Train Time", "Test Time"
+        };
+
+        String header = Arrays.stream(fullMetricNames).collect(Collectors.joining("\t"));
+
+        Logger.info(header);
+    }
+
+    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    public void summarizeResults(Map<Metric, DescriptiveStatistics> results, MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    {
+        MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(String.format("%s\t", methodEvaluation.getDataSetName()));
+        sb.append(String.format("%s\t", methodEvaluation.getStatMethod()));
+        sb.append(String.format("%d->%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
+        sb.append(String.format("%s\t", methodConfiguration.name()));
+
+        for (Metric metric : Metric.values())
+        {
+            if (!printStats)
+                buildResultLineWithoutStats(results, formatMillis, sb, metric);
+            else
+                buildResultLineWithStats(results, formatMillis, sb, metric);
+        }
+
+        if (!printStats)
+            Logger.debug(sb.toString());
+        else
+            Logger.info(sb.toString());
+    }
+
+    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    {
+        summarizeResults(getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
+    }
+
+    private void addSingleRunResult(Metric key, Double value)
+    {
+        results.putIfAbsent(key, new LinkedList<>());
+        results.get(key).add(value);
+    }
+
+    private void buildResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    {
+        double[] values = results.get(metric).getValues();
+        if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
+            sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
+        else
+            sb.append(String.format("%.2f\t", values[values.length - 1]));
+    }
+
+    private void buildResultLineWithStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    {
+        double mean = results.get(metric).getMean();
+        double standardDeviation = results.get(metric).getStandardDeviation();
+        if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
+            sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
+        else
+            sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
     }
 
     // detects and returns the indices of outliers in the result keeper, if any. references:
@@ -125,6 +199,54 @@ public class ResultHelper
         return outlierIndices;
     }
 
+    private DescriptiveStatistics doubleArrayToDescriptiveStatistics(List<Double> values)
+    {
+        return new DescriptiveStatistics(ArrayUtils.toPrimitive(values.toArray(new Double[0])));
+    }
+
+    private String formatMilliseconds(double millis)
+    {
+        return DurationFormatUtils.formatDurationHMS((Double.valueOf(Math.abs(millis))).longValue());
+    }
+
+    // converts the double resuls for each metric to analog descriptive statistics
+    private Map<Metric, DescriptiveStatistics> getMetricsToDescriptiveStatisticsMap()
+    {
+        Map<Metric, DescriptiveStatistics> statistics = new EnumMap<>(Metric.class);
+
+        results.forEach((k, v) -> statistics.put(k, doubleArrayToDescriptiveStatistics(v)));
+
+        return statistics;
+    }
+
+    private boolean isOutlierByInterquartileRange(DescriptiveStatistics stats, double value)
+    {
+        double quartile1 = stats.getPercentile(25);
+        double quartile3 = stats.getPercentile(75);
+        double iqr = quartile3 - quartile1;
+        double lowerBound = quartile1 - (iqr * 1.5);
+        double upperBound = quartile3 + (iqr * 1.5);
+
+        return (value < lowerBound || value > upperBound);
+    }
+
+    private boolean isOutlierByModifiedZScore(DescriptiveStatistics stats, double value)
+    {
+        double median = stats.getPercentile(50);
+        double medianAbsoluteDeviation = new DescriptiveStatistics(
+            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+        double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
+
+        return Math.abs(modifiedZScore) > 3.5;
+    }
+
+    private boolean isOutlierByZScore(DescriptiveStatistics stats, double value)
+    {
+        double zScore = (value - stats.getMean()) / stats.getStandardDeviation();
+
+        return Math.abs(zScore) > 3;
+    }
+
     // removes and returns the number of outliers in the result keeper
     private int removeOutliers(Set<Integer> outlierIndices)
     {
@@ -145,54 +267,5 @@ public class ResultHelper
 
         // returns the number of detected outliers (if any)
         return outlierIndices.size();
-    }
-
-    // converts the double resuls for each metric to analog descriptive statistics
-    protected Map<Metric, DescriptiveStatistics> getMetricsToDescriptiveStatisticsMap()
-    {
-        Map<Metric, DescriptiveStatistics> statistics = new EnumMap<>(Metric.class);
-
-        results.forEach((k, v) -> statistics.put(k, doubleArrayToDescriptiveStatistics(v)));
-
-        return statistics;
-    }
-
-    private void addSingleRunResult(Metric key, Double value)
-    {
-        results.putIfAbsent(key, new LinkedList<>());
-        results.get(key).add(value);
-    }
-
-    private DescriptiveStatistics doubleArrayToDescriptiveStatistics(List<Double> values)
-    {
-        return new DescriptiveStatistics(ArrayUtils.toPrimitive(values.toArray(new Double[0])));
-    }
-
-    private boolean isOutlierByZScore(DescriptiveStatistics stats, double value)
-    {
-        double zScore = (value - stats.getMean()) / stats.getStandardDeviation();
-
-        return Math.abs(zScore) > 3;
-    }
-
-    private boolean isOutlierByModifiedZScore(DescriptiveStatistics stats, double value)
-    {
-        double median = stats.getPercentile(50);
-        double medianAbsoluteDeviation = new DescriptiveStatistics(
-            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
-        double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
-
-        return Math.abs(modifiedZScore) > 3.5;
-    }
-
-    private boolean isOutlierByInterquartileRange(DescriptiveStatistics stats, double value)
-    {
-        double quartile1 = stats.getPercentile(25);
-        double quartile3 = stats.getPercentile(75);
-        double iqr = quartile3 - quartile1;
-        double lowerBound = quartile1 - (iqr * 1.5);
-        double upperBound = quartile3 + (iqr * 1.5);
-
-        return (value < lowerBound || value > upperBound);
     }
 }

@@ -21,6 +21,11 @@
  ******************************************************************************/
 package io.github.marcelovca90.helper;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,21 +35,28 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
+import weka.classifiers.Evaluation;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FormatHelperTest
+public class ExperimentHelperTest
 {
-    private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
-    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
-    private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
-    private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
+    @Mock
+    private Evaluation evaluationMock;
 
-    private final FormatHelper formatHelper = MetaHelper.getFormatHelper();
+    @Mock
+    private MethodEvaluation methodEvaluationMock;
+
+    private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
+    private final ExperimentHelper formatHelper = MetaHelper.getExperimentHelper();
+    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
+    private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
+    private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
 
     @Before
     public void setUp()
@@ -52,12 +64,45 @@ public class FormatHelperTest
         results.clear();
 
         Arrays.stream(Metric.values()).forEach(m -> results.put(m, new DescriptiveStatistics(new Random().doubles(10, 0, 100).toArray())));
+
+        Random random = new Random();
+
+        when(evaluationMock.precision(anyInt())).thenReturn(random.nextDouble());
+        when(evaluationMock.recall(anyInt())).thenReturn(random.nextDouble());
+        when(evaluationMock.areaUnderPRC(anyInt())).thenReturn(random.nextDouble());
+        when(evaluationMock.areaUnderROC(anyInt())).thenReturn(random.nextDouble());
+
+        when(methodEvaluationMock.getEvaluation()).thenReturn(evaluationMock);
+        when(methodEvaluationMock.getTrainStart()).thenReturn(System.currentTimeMillis() - 1000);
+        when(methodEvaluationMock.getTrainEnd()).thenReturn(System.currentTimeMillis() - 750);
+        when(methodEvaluationMock.getTestStart()).thenReturn(System.currentTimeMillis() - 500);
+        when(methodEvaluationMock.getTestEnd()).thenReturn(System.currentTimeMillis() - 250);
     }
 
     @Test
-    public void summarizeResults_doNotPrintStatsDoNotFormatMillis_shouldReturnSuccess()
+    public void computeSingleRunResults_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, false, false);
+        formatHelper.computeSingleRunResults(methodEvaluationMock);
+    }
+
+    @Test
+    public void detectAndRemoveOutliers_shouldReturnPossibleOutliersCount()
+    {
+        formatHelper.computeSingleRunResults(methodEvaluationMock);
+
+        assertThat(formatHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
+    }
+
+    @Test
+    public void printHeader_shouldReturnSuccess()
+    {
+        formatHelper.printHeader();
+    }
+
+    @Test
+    public void reset_shouldReturnSuccess()
+    {
+        formatHelper.clearResultHistory();
     }
 
     @Test
@@ -67,9 +112,9 @@ public class FormatHelperTest
     }
 
     @Test
-    public void summarizeResults_doPrintStatsDoNotFormatMillis_shouldReturnSuccess()
+    public void summarizeResults_doNotPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, true, false);
+        formatHelper.summarizeResults(results, methodEvaluation, false, false);
     }
 
     @Test
@@ -79,8 +124,13 @@ public class FormatHelperTest
     }
 
     @Test
-    public void printHeader_shouldReturnSuccess()
+    public void summarizeResults_doPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.printHeader();
+        formatHelper.summarizeResults(results, methodEvaluation, true, false);
     }
+
+    /*
+     * @Test public void getMetricsToDescriptiveStatisticsMap_shouldReturnNotNullMap() { assertThat(formatHelper.getMetricsToDescriptiveStatisticsMap(),
+     * notNullValue()); }
+     */
 }

@@ -45,7 +45,7 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class IOHelper
+public class InputOutputHelper
 {
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";

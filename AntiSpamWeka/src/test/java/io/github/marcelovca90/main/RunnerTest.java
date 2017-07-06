@@ -33,36 +33,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
-import io.github.marcelovca90.helper.CLIHelper;
-import io.github.marcelovca90.helper.FormatHelper;
-import io.github.marcelovca90.helper.IOHelper;
+import io.github.marcelovca90.helper.CommandLineHelper;
+import io.github.marcelovca90.helper.ExperimentHelper;
+import io.github.marcelovca90.helper.InputOutputHelper;
 import io.github.marcelovca90.helper.MetaHelper;
-import io.github.marcelovca90.helper.ResultHelper;
 import weka.core.Instances;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunnerTest
 {
     @Mock
-    private CLIHelper cliHelper;
+    private CommandLineHelper commandLineHelper;
 
     @Mock
-    private FormatHelper formatHelper;
+    private ExperimentHelper experimentHelper;
 
     @Mock
-    private IOHelper ioHelper;
-
-    @Spy
-    private ResultHelper resultHelper;
+    private InputOutputHelper inputOutputHelper;
 
     private String[] args;
     private String metadataFilename;
@@ -82,21 +78,27 @@ public class RunnerTest
         hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
 
-        dataSet = new IOHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
-        metadata = new IOHelper().loadDataSetsMetadataFromFile(metadataFilename);
+        dataSet = new InputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        metadata = new InputOutputHelper().loadDataSetsMetadataFromFile(metadataFilename);
         methods = Arrays.asList(MethodConfiguration.RT);
+    }
+
+    @After
+    public void tearDown()
+    {
+        MetaHelper.reset();
     }
 
     @Test
     public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        cliHelper = buildCLIHelper(args, metadata, methods, 2, true, true, false, false, false, false, false);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 2, true, true, false, false, false, false, false);
 
-        doNothing().when(formatHelper).printHeader();
+        doNothing().when(experimentHelper).printHeader();
 
-        when(ioHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
+        when(inputOutputHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
 
-        MetaHelper.initialize(cliHelper, formatHelper, ioHelper, resultHelper);
+        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
 
         Runner.main(args);
     }
@@ -104,22 +106,22 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        cliHelper = buildCLIHelper(args, metadata, methods, 20, false, false, true, true, true, true, true);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 10, false, false, true, true, true, true, true);
 
-        doNothing().when(formatHelper).printHeader();
+        doNothing().when(experimentHelper).printHeader();
 
-        when(ioHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
-        when(ioHelper.createEmptyInstances(anyInt(), anyInt(), anyInt())).thenReturn(dataSet);
+        when(inputOutputHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
+        when(inputOutputHelper.createEmptyInstances(anyInt(), anyInt(), anyInt())).thenReturn(dataSet);
 
-        MetaHelper.initialize(cliHelper, formatHelper, ioHelper, resultHelper);
+        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
 
         Runner.main(args);
     }
 
-    private CLIHelper buildCLIHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
+    private CommandLineHelper buildCLIHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
             boolean includeEmptyInstances, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses) throws Exception
     {
-        CLIHelper helper = mock(CLIHelper.class);
+        CommandLineHelper helper = mock(CommandLineHelper.class);
 
         doNothing().when(helper).initialize(any(String[].class));
         when(helper.getDataSetsMetadata()).thenReturn(metadata);

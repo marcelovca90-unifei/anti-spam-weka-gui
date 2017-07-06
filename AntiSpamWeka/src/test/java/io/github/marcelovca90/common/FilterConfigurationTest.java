@@ -101,7 +101,7 @@ public class FilterConfigurationTest
     @Test
     public void buildAttributeFilterFor_actualDataSet_shouldReturnNullDataSet() throws IOException
     {
-        dataSet = MetaHelper.getIoHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
         assertThat(FilterConfiguration.buildAndApply(dataSet, AttributeFilter.CfsSubsetEval_BestFirst), notNullValue());
     }
@@ -131,7 +131,7 @@ public class FilterConfigurationTest
     @Test
     public void buildInstanceFilterFor_dummyDataSet_shouldReturnNullDataSet() throws Exception
     {
-        dataSet = MetaHelper.getIoHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
         assertThat(FilterConfiguration.buildAndApply(dataSet, InstanceFilter.ClassBalancer), notNullValue());
     }

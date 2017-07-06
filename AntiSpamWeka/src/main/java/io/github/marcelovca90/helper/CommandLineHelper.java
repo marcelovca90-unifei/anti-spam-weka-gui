@@ -41,7 +41,7 @@ import io.github.marcelovca90.common.Constants.CLIOption;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
 
-public class CLIHelper
+public class CommandLineHelper
 {
     private static final String OPTION_VALUE_MASK = "{} : {}";
 
@@ -89,7 +89,7 @@ public class CLIHelper
     public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
-        metadata.addAll(MetaHelper.getIoHelper().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
+        metadata.addAll(MetaHelper.getInputOutputHelper().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
         return metadata;
     }
 
@@ -104,7 +104,7 @@ public class CLIHelper
 
     public int getNumberOfRuns()
     {
-        return hasOption(CLIOption.RUNS) ? Integer.parseInt(getOptionValue(CLIOption.RUNS)) : 1;
+        return Integer.parseInt(getOptionValue(CLIOption.RUNS));
     }
 
     public boolean skipTrain()

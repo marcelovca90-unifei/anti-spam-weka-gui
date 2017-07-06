@@ -45,14 +45,14 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 @RunWith(MockitoJUnitRunner.class)
-public class IOHelperTest
+public class InputOutputHelperTest
 {
     private String metadataFilename;
     private String hamDataFilename;
     private String spamDataFilename;
     private Instances dataSet;
 
-    private final IOHelper ioHelper = MetaHelper.getIoHelper();
+    private final InputOutputHelper ioHelper = MetaHelper.getInputOutputHelper();
 
     @Before
     public void setUp() throws IOException

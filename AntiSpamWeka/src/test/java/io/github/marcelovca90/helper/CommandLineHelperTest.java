@@ -34,14 +34,14 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CLIHelperTest
+public class CommandLineHelperTest
 {
     private String[] emptyArgs;
     private String[] notEmptyArgsWithWrongMetadata;
     private String[] notEmptyArgsWithWrongMethod;
     private String[] fullArgs;
 
-    private final CLIHelper cliHelper = MetaHelper.getCliHelper();
+    private final CommandLineHelper cliHelper = MetaHelper.getCommandLineHelper();
 
     @Before
     public void setUp()
@@ -50,7 +50,7 @@ public class CLIHelperTest
         emptyArgs = new String[0];
         notEmptyArgsWithWrongMetadata = new String[] { "-Metadata", "SOME_METADATA" };
         notEmptyArgsWithWrongMethod = new String[] { "-Method", "SOME_METHOD" };
-        fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Method", "RT" };
+        fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Method", "RT", "-Runs", "1" };
     }
 
     @Test(expected = ParseException.class)
