@@ -32,21 +32,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
-import io.github.marcelovca90.common.Constants.Metric;
-import io.github.marcelovca90.helper.FormatHelper;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormatHelperTest
 {
     private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
-
     private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
-
     private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
+    private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
 
-    private MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
+    private final FormatHelper formatHelper = MetaHelper.getFormatHelper();
 
     @Before
     public void setUp()
@@ -59,30 +57,30 @@ public class FormatHelperTest
     @Test
     public void summarizeResults_doNotPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, false, false);
+        formatHelper.summarizeResults(results, methodEvaluation, false, false);
     }
 
     @Test
     public void summarizeResults_doNotPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, false, true);
+        formatHelper.summarizeResults(results, methodEvaluation, false, true);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, true, false);
+        formatHelper.summarizeResults(results, methodEvaluation, true, false);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        FormatHelper.getInstance().summarizeResults(results, methodEvaluation, true, true);
+        formatHelper.summarizeResults(results, methodEvaluation, true, true);
     }
 
     @Test
     public void printHeader_shouldReturnSuccess()
     {
-        FormatHelper.getInstance().printHeader();
+        formatHelper.printHeader();
     }
 }

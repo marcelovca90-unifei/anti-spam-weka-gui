@@ -34,24 +34,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
-import io.github.marcelovca90.common.MethodEvaluation;
 import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.Constants.Metric;
+import io.github.marcelovca90.common.MethodEvaluation;
 
 public class ResultHelper
 {
-    // used to suppress the default public constructor
-    private ResultHelper()
-    {
-    }
-
-    private static final ResultHelper INSTANCE = new ResultHelper();
-
-    public static final ResultHelper getInstance()
-    {
-        return INSTANCE;
-    }
-
     private Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
 
     // clears the data in result keeper

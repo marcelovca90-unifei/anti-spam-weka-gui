@@ -36,7 +36,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.MethodEvaluation;
-import io.github.marcelovca90.helper.ResultHelper;
 import weka.classifiers.Evaluation;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,6 +46,8 @@ public class ResultHelperTest
 
     @Mock
     private MethodEvaluation methodEvaluation;
+
+    private final ResultHelper resultHelper = MetaHelper.getResultHelper();
 
     @Before
     public void setUp()
@@ -68,26 +69,26 @@ public class ResultHelperTest
     @Test
     public void reset_shouldReturnSuccess()
     {
-        ResultHelper.getInstance().reset();
+        resultHelper.reset();
     }
 
     @Test
     public void computeSingleRunResults_shouldReturnSuccess()
     {
-        ResultHelper.getInstance().computeSingleRunResults(methodEvaluation);
+        resultHelper.computeSingleRunResults(methodEvaluation);
     }
 
     @Test
     public void detectAndRemoveOutliers_shouldReturnPossibleOutliersCount()
     {
-        ResultHelper.getInstance().computeSingleRunResults(methodEvaluation);
+        resultHelper.computeSingleRunResults(methodEvaluation);
 
-        assertThat(ResultHelper.getInstance().detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
+        assertThat(resultHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
     }
 
     @Test
     public void getMetricsToDescriptiveStatisticsMap_shouldReturnNotNullMap()
     {
-        assertThat(ResultHelper.getInstance().getMetricsToDescriptiveStatisticsMap(), notNullValue());
+        assertThat(resultHelper.getMetricsToDescriptiveStatisticsMap(), notNullValue());
     }
 }

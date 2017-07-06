@@ -43,23 +43,11 @@ import io.github.marcelovca90.common.MethodConfiguration;
 
 public class CLIHelper
 {
-    // used to suppress the default public constructor
-    private CLIHelper()
-    {
-    }
-
-    private static final CLIHelper INSTANCE = new CLIHelper();
-
-    public static final CLIHelper getInstance()
-    {
-        return INSTANCE;
-    }
-
     private static final String OPTION_VALUE_MASK = "{} : {}";
 
-    private CommandLine commandLine;
-
     private Options options;
+
+    private CommandLine commandLine;
 
     public void initialize(String[] args) throws ParseException
     {
@@ -101,7 +89,7 @@ public class CLIHelper
     public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
     {
         Set<DataSetMetadata> metadata = new LinkedHashSet<>();
-        metadata.addAll(IOHelper.getInstance().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
+        metadata.addAll(MetaHelper.getIoHelper().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
         return metadata;
     }
 

@@ -39,7 +39,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.FilterConfiguration.AttributeFilter;
 import io.github.marcelovca90.common.FilterConfiguration.InstanceFilter;
-import io.github.marcelovca90.helper.IOHelper;
+import io.github.marcelovca90.helper.MetaHelper;
 import weka.core.Instances;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,8 +53,8 @@ public class FilterConfigurationTest
     public void setUp() throws IOException
     {
         ClassLoader classLoader = getClass().getClassLoader();
-        hamDataFilename = classLoader.getResource("data-sets-bin/ham").getFile();
-        spamDataFilename = classLoader.getResource("data-sets-bin/spam").getFile();
+        hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
+        spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
     }
 
     @Test(expected = IllegalAccessException.class)
@@ -101,7 +101,7 @@ public class FilterConfigurationTest
     @Test
     public void buildAttributeFilterFor_actualDataSet_shouldReturnNullDataSet() throws IOException
     {
-        dataSet = IOHelper.getInstance().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = MetaHelper.getIoHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
         assertThat(FilterConfiguration.buildAndApply(dataSet, AttributeFilter.CfsSubsetEval_BestFirst), notNullValue());
     }
@@ -131,7 +131,7 @@ public class FilterConfigurationTest
     @Test
     public void buildInstanceFilterFor_dummyDataSet_shouldReturnNullDataSet() throws Exception
     {
-        dataSet = IOHelper.getInstance().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = MetaHelper.getIoHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
         assertThat(FilterConfiguration.buildAndApply(dataSet, InstanceFilter.ClassBalancer), notNullValue());
     }

@@ -47,18 +47,6 @@ import weka.core.Instances;
 
 public class IOHelper
 {
-    // used to suppress the default public constructor
-    private IOHelper()
-    {
-    }
-
-    private static final IOHelper INSTANCE = new IOHelper();
-
-    public static final IOHelper getInstance()
-    {
-        return INSTANCE;
-    }
-
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
     public static final String TAG_CLASS = "class";

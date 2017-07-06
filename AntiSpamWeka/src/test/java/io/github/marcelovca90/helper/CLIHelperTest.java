@@ -41,6 +41,8 @@ public class CLIHelperTest
     private String[] notEmptyArgsWithWrongMethod;
     private String[] fullArgs;
 
+    private final CLIHelper cliHelper = MetaHelper.getCliHelper();
+
     @Before
     public void setUp()
     {
@@ -54,13 +56,13 @@ public class CLIHelperTest
     @Test(expected = ParseException.class)
     public void initialize_emptyArgs_shouldThrowException() throws ParseException
     {
-        CLIHelper.getInstance().initialize(emptyArgs);
+        cliHelper.initialize(emptyArgs);
     }
 
     @Test
     public void initialize_notEmptyArgs_shouldNotThrowException() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -68,11 +70,11 @@ public class CLIHelperTest
     {
         try
         {
-            CLIHelper.getInstance().initialize(notEmptyArgsWithWrongMetadata);
+            cliHelper.initialize(notEmptyArgsWithWrongMetadata);
         }
         catch (Exception e)
         {
-            assertThat(CLIHelper.getInstance().getDataSetsMetadata(), notNullValue());
+            assertThat(cliHelper.getDataSetsMetadata(), notNullValue());
             throw e;
         }
     }
@@ -80,9 +82,9 @@ public class CLIHelperTest
     @Test
     public void getDataSetsMetadata_correctArgs_shouldReturnSuccess() throws ParseException, IOException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().getDataSetsMetadata(), notNullValue());
+        assertThat(cliHelper.getDataSetsMetadata(), notNullValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -90,11 +92,11 @@ public class CLIHelperTest
     {
         try
         {
-            CLIHelper.getInstance().initialize(notEmptyArgsWithWrongMethod);
+            cliHelper.initialize(notEmptyArgsWithWrongMethod);
         }
         catch (Exception e)
         {
-            assertThat(CLIHelper.getInstance().getMethods(), notNullValue());
+            assertThat(cliHelper.getMethods(), notNullValue());
             throw e;
         }
     }
@@ -102,79 +104,79 @@ public class CLIHelperTest
     @Test
     public void getMethods_correctArgs_shouldReturnNotNullMethodsList() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().getMethods(), notNullValue());
+        assertThat(cliHelper.getMethods(), notNullValue());
     }
 
     @Test
     public void getNumberOfRuns_shouldReturnNotNullInteger() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().getNumberOfRuns(), notNullValue());
+        assertThat(cliHelper.getNumberOfRuns(), notNullValue());
     }
 
     @Test
     public void skipTrain_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().skipTrain(), notNullValue());
+        assertThat(cliHelper.skipTrain(), notNullValue());
     }
 
     @Test
     public void skipTest_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().skipTest(), notNullValue());
+        assertThat(cliHelper.skipTest(), notNullValue());
     }
 
     @Test
     public void includeEmptyInstances_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().includeEmptyInstances(), notNullValue());
+        assertThat(cliHelper.includeEmptyInstances(), notNullValue());
     }
 
     @Test
     public void saveModel_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().saveModel(), notNullValue());
+        assertThat(cliHelper.saveModel(), notNullValue());
     }
 
     @Test
     public void saveSets_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().saveSets(), notNullValue());
+        assertThat(cliHelper.saveSets(), notNullValue());
     }
 
     @Test
     public void shrinkFeature_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().shrinkFeatures(), notNullValue());
+        assertThat(cliHelper.shrinkFeatures(), notNullValue());
     }
 
     @Test
     public void balanceClasse_shouldReturnNotNullBoolean() throws ParseException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
+        cliHelper.initialize(fullArgs);
 
-        assertThat(CLIHelper.getInstance().balanceClasses(), notNullValue());
+        assertThat(cliHelper.balanceClasses(), notNullValue());
     }
 
     @Test
     public void printConfiguration_shouldReturnSuccess() throws ParseException, IOException
     {
-        CLIHelper.getInstance().initialize(fullArgs);
-        CLIHelper.getInstance().printConfiguration();
+        cliHelper.initialize(fullArgs);
+        cliHelper.printConfiguration();
     }
 }

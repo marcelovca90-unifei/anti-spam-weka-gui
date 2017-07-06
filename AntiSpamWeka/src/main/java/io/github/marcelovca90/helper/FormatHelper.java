@@ -27,28 +27,16 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
+import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
-import io.github.marcelovca90.common.Constants.Metric;
 
 public class FormatHelper
 {
-    // used to suppress the default public constructor
-    private FormatHelper()
-    {
-    }
-
-    private static final FormatHelper INSTANCE = new FormatHelper();
-
-    public static final FormatHelper getInstance()
-    {
-        return INSTANCE;
-    }
-
     // displays the experiment's [last results] or [mean ± standard deviation] for every metric
     public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
-        summarizeResults(ResultHelper.getInstance().getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
+        summarizeResults(MetaHelper.getResultHelper().getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
     }
 
     // displays the experiment's [last results] or [mean ± standard deviation] for every metric
