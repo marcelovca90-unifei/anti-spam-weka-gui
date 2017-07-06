@@ -47,12 +47,12 @@ import weka.core.Instances;
 @RunWith(MockitoJUnitRunner.class)
 public class InputOutputHelperTest
 {
-    private String metadataFilename;
-    private String hamDataFilename;
-    private String spamDataFilename;
-    private Instances dataSet;
-
     private final InputOutputHelper ioHelper = MetaHelper.getInputOutputHelper();
+
+    private Instances dataSet;
+    private String hamDataFilename;
+    private String metadataFilename;
+    private String spamDataFilename;
 
     @Before
     public void setUp() throws IOException
@@ -61,6 +61,39 @@ public class InputOutputHelperTest
         metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
         hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
+    }
+
+    @Test
+    public void buildClassifierFilename_shouldReturnStringWithClassifierDetails()
+    {
+        String folder = "/some/folder";
+        MethodConfiguration method = MethodConfiguration.RT;
+        double splitPercent = RandomUtils.nextDouble();
+        int seed = RandomUtils.nextInt();
+
+        String filename = ioHelper.buildClassifierFilename(folder, method, splitPercent, seed);
+
+        assertThat(filename, notNullValue());
+        assertThat(filename, containsString(folder));
+        assertThat(filename, containsString(method.getClazz().getSimpleName()));
+        assertThat(filename, containsString(String.valueOf(seed)));
+    }
+
+    @Test
+    public void createEmptyInstances_shouldReturnDataSetWithGivenAmountOfInstances()
+    {
+        int featureAmount = RandomUtils.nextInt(1, 11);
+        int emptyHamCount = RandomUtils.nextInt(1, 101);
+        int emptySpamCount = RandomUtils.nextInt(1, 101);
+
+        Instances emptyInstances = ioHelper.createEmptyInstances(featureAmount, emptyHamCount, emptySpamCount);
+
+        assertThat(emptyInstances, notNullValue());
+        assertThat(emptyInstances.size(), equalTo(emptyHamCount + emptySpamCount));
+        assertThat(emptyInstances.classAttribute(), notNullValue());
+        assertThat(emptyInstances.numAttributes(), equalTo(featureAmount + 1));
+        assertThat(emptyInstances.classIndex(), notNullValue());
+        assertThat(emptyInstances.numClasses(), equalTo(2));
     }
 
     @Test
@@ -95,59 +128,6 @@ public class InputOutputHelperTest
     }
 
     @Test
-    public void saveInstancesToFile_shouldProperlySerializeInstances() throws IOException
-    {
-        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
-
-        File file = ioHelper.saveInstancesToFile(dataSet, "data-set.csv");
-
-        assertThat(file.exists(), equalTo(Boolean.TRUE));
-        assertThat(file.delete(), equalTo(Boolean.TRUE));
-    }
-
-    @Test
-    public void createEmptyInstances_shouldReturnDataSetWithGivenAmountOfInstances()
-    {
-        int featureAmount = RandomUtils.nextInt(1, 11);
-        int emptyHamCount = RandomUtils.nextInt(1, 101);
-        int emptySpamCount = RandomUtils.nextInt(1, 101);
-
-        Instances emptyInstances = ioHelper.createEmptyInstances(featureAmount, emptyHamCount, emptySpamCount);
-
-        assertThat(emptyInstances, notNullValue());
-        assertThat(emptyInstances.size(), equalTo(emptyHamCount + emptySpamCount));
-        assertThat(emptyInstances.classAttribute(), notNullValue());
-        assertThat(emptyInstances.numAttributes(), equalTo(featureAmount + 1));
-        assertThat(emptyInstances.classIndex(), notNullValue());
-        assertThat(emptyInstances.numClasses(), equalTo(2));
-    }
-
-    @Test
-    public void buildClassifierFilename_shouldReturnStringWithClassifierDetails()
-    {
-        String folder = "/some/folder";
-        MethodConfiguration method = MethodConfiguration.RT;
-        double splitPercent = RandomUtils.nextDouble();
-        int seed = RandomUtils.nextInt();
-
-        String filename = ioHelper.buildClassifierFilename(folder, method, splitPercent, seed);
-
-        assertThat(filename, notNullValue());
-        assertThat(filename, containsString(folder));
-        assertThat(filename, containsString(method.getClazz().getSimpleName()));
-        assertThat(filename, containsString(String.valueOf(seed)));
-    }
-
-    @Test
-    public void saveModelToFile_shouldProperlySerializeModel() throws Exception
-    {
-        File file = ioHelper.saveModelToFile("dummy.model", (Classifier) null);
-
-        assertThat(file.exists(), equalTo(Boolean.TRUE));
-        assertThat(file.delete(), equalTo(Boolean.TRUE));
-    }
-
-    @Test
     public void loadModelFromFile_shouldProperlyDeserializeModel() throws Exception
     {
         AbstractClassifier baseClassifier = MethodConfiguration.buildClassifierFor(MethodConfiguration.RT);
@@ -160,5 +140,25 @@ public class InputOutputHelperTest
         assertThat(file.delete(), equalTo(Boolean.TRUE));
         assertThat(recoveredClassifier, notNullValue());
         assertThat(recoveredClassifier, instanceOf(MethodConfiguration.RT.getClazz()));
+    }
+
+    @Test
+    public void saveInstancesToFile_shouldProperlySerializeInstances() throws IOException
+    {
+        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+
+        File file = ioHelper.saveInstancesToFile(dataSet, "data-set.csv");
+
+        assertThat(file.exists(), equalTo(Boolean.TRUE));
+        assertThat(file.delete(), equalTo(Boolean.TRUE));
+    }
+
+    @Test
+    public void saveModelToFile_shouldProperlySerializeModel() throws Exception
+    {
+        File file = ioHelper.saveModelToFile("dummy.model", (Classifier) null);
+
+        assertThat(file.exists(), equalTo(Boolean.TRUE));
+        assertThat(file.delete(), equalTo(Boolean.TRUE));
     }
 }

@@ -42,6 +42,11 @@ import weka.core.Instances;
 
 public class Runner
 {
+    public static void main(String[] args) throws Exception
+    {
+        new Runner().run(args);
+    }
+
     private void run(String[] args) throws Exception
     {
         // change global setting for Logger instances to WARNING level
@@ -167,10 +172,5 @@ public class Runner
                     MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
             }
         }
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        new Runner().run(args);
     }
 }

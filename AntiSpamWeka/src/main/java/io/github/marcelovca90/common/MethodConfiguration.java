@@ -112,47 +112,6 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
 
-    private final String name;
-    private final String config;
-    private final double splitPercent;
-    private final Class<? extends AbstractClassifier> clazz;
-
-    private MethodConfiguration(final String name, final String config, final Class<? extends AbstractClassifier> clazz)
-    {
-        this.name = name;
-        this.config = config;
-        this.splitPercent = 0.5;
-        this.clazz = clazz;
-    }
-
-    private MethodConfiguration(final String name, final String config, final double splitPercent, final Class<? extends AbstractClassifier> clazz)
-    {
-        this.name = name;
-        this.config = config;
-        this.splitPercent = splitPercent;
-        this.clazz = clazz;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getConfig()
-    {
-        return config;
-    }
-
-    public double getSplitPercent()
-    {
-        return splitPercent;
-    }
-
-    public Class<? extends AbstractClassifier> getClazz()
-    {
-        return clazz;
-    }
-
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)
     {
@@ -170,5 +129,46 @@ public enum MethodConfiguration
         }
 
         return classifier;
+    }
+    private final Class<? extends AbstractClassifier> clazz;
+    private final String config;
+    private final String name;
+
+    private final double splitPercent;
+
+    private MethodConfiguration(final String name, final String config, final Class<? extends AbstractClassifier> clazz)
+    {
+        this.name = name;
+        this.config = config;
+        this.splitPercent = 0.5;
+        this.clazz = clazz;
+    }
+
+    private MethodConfiguration(final String name, final String config, final double splitPercent, final Class<? extends AbstractClassifier> clazz)
+    {
+        this.name = name;
+        this.config = config;
+        this.splitPercent = splitPercent;
+        this.clazz = clazz;
+    }
+
+    public Class<? extends AbstractClassifier> getClazz()
+    {
+        return clazz;
+    }
+
+    public String getConfig()
+    {
+        return config;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public double getSplitPercent()
+    {
+        return splitPercent;
     }
 }

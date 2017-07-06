@@ -46,17 +46,17 @@ import weka.classifiers.Evaluation;
 @RunWith(MockitoJUnitRunner.class)
 public class ExperimentHelperTest
 {
+    private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
+    private final ExperimentHelper formatHelper = MetaHelper.getExperimentHelper();
+    private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
+    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
+    private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
+
     @Mock
     private Evaluation evaluationMock;
 
     @Mock
     private MethodEvaluation methodEvaluationMock;
-
-    private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
-    private final ExperimentHelper formatHelper = MetaHelper.getExperimentHelper();
-    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
-    private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
-    private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
 
     @Before
     public void setUp()
@@ -128,9 +128,4 @@ public class ExperimentHelperTest
     {
         formatHelper.summarizeResults(results, methodEvaluation, true, false);
     }
-
-    /*
-     * @Test public void getMetricsToDescriptiveStatisticsMap_shouldReturnNotNullMap() { assertThat(formatHelper.getMetricsToDescriptiveStatisticsMap(),
-     * notNullValue()); }
-     */
 }

@@ -23,34 +23,18 @@ package io.github.marcelovca90.common;
 
 public class Constants
 {
-    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
-
     public enum CLIOption
     {
+        BALANCE_CLASSES,
         METADATA,
         METHOD,
         RUNS,
-        SKIP_TRAIN,
-        SKIP_TEST,
-        SHRINK_FEATURES,
-        BALANCE_CLASSES,
-        TEST_EMPTY,
         SAVE_MODEL,
-        SAVE_SETS;
-    }
-
-    public enum Metric
-    {
-        HAM_PRECISION,
-        SPAM_PRECISION,
-        HAM_RECALL,
-        SPAM_RECALL,
-        HAM_AREA_UNDER_PRC,
-        SPAM_AREA_UNDER_PRC,
-        HAM_AREA_UNDER_ROC,
-        SPAM_AREA_UNDER_ROC,
-        TRAIN_TIME,
-        TEST_TIME
+        SAVE_SETS,
+        SHRINK_FEATURES,
+        SKIP_TEST,
+        SKIP_TRAIN,
+        TEST_EMPTY;
     }
 
     public enum MessageType
@@ -58,4 +42,20 @@ public class Constants
         HAM,
         SPAM
     }
+
+    public enum Metric
+    {
+        HAM_AREA_UNDER_PRC,
+        HAM_AREA_UNDER_ROC,
+        HAM_PRECISION,
+        HAM_RECALL,
+        SPAM_AREA_UNDER_PRC,
+        SPAM_AREA_UNDER_ROC,
+        SPAM_PRECISION,
+        SPAM_RECALL,
+        TEST_TIME,
+        TRAIN_TIME
+    }
+
+    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
 }

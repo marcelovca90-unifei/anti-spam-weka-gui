@@ -45,9 +45,40 @@ public class CommandLineHelper
 {
     private static final String OPTION_VALUE_MASK = "{} : {}";
 
+    private CommandLine commandLine;
+
     private Options options;
 
-    private CommandLine commandLine;
+    public boolean balanceClasses()
+    {
+        return hasOption(CLIOption.BALANCE_CLASSES);
+    }
+
+    public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
+    {
+        Set<DataSetMetadata> metadata = new LinkedHashSet<>();
+        metadata.addAll(MetaHelper.getInputOutputHelper().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
+        return metadata;
+    }
+
+    public List<MethodConfiguration> getMethods()
+    {
+        List<MethodConfiguration> methods = new ArrayList<>();
+        Arrays
+            .stream(getOptionValue(CLIOption.METHOD).split(","))
+            .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
+        return methods;
+    }
+
+    public int getNumberOfRuns()
+    {
+        return Integer.parseInt(getOptionValue(CLIOption.RUNS));
+    }
+
+    public boolean includeEmptyInstances()
+    {
+        return hasOption(CLIOption.TEST_EMPTY);
+    }
 
     public void initialize(String[] args) throws ParseException
     {
@@ -86,40 +117,20 @@ public class CommandLineHelper
         }
     }
 
-    public Set<DataSetMetadata> getDataSetsMetadata() throws IOException
+    public void printConfiguration() throws IOException
     {
-        Set<DataSetMetadata> metadata = new LinkedHashSet<>();
-        metadata.addAll(MetaHelper.getInputOutputHelper().loadDataSetsMetadataFromFile(getOptionValue(CLIOption.METADATA)));
-        return metadata;
-    }
-
-    public List<MethodConfiguration> getMethods()
-    {
-        List<MethodConfiguration> methods = new ArrayList<>();
-        Arrays
-            .stream(getOptionValue(CLIOption.METHOD).split(","))
-            .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
-        return methods;
-    }
-
-    public int getNumberOfRuns()
-    {
-        return Integer.parseInt(getOptionValue(CLIOption.RUNS));
-    }
-
-    public boolean skipTrain()
-    {
-        return hasOption(CLIOption.SKIP_TRAIN);
-    }
-
-    public boolean skipTest()
-    {
-        return hasOption(CLIOption.SKIP_TEST);
-    }
-
-    public boolean includeEmptyInstances()
-    {
-        return hasOption(CLIOption.TEST_EMPTY);
+        Logger.debug("---- CONFIGURATION ----");
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.METADATA, getDataSetsMetadata());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.METHOD, getMethods());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.RUNS, getNumberOfRuns());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TRAIN, skipTrain());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TEST, skipTest());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.TEST_EMPTY, includeEmptyInstances());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_MODEL, saveModel());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_SETS, saveSets());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SHRINK_FEATURES, shrinkFeatures());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.BALANCE_CLASSES, balanceClasses());
+        Logger.debug("-----------------------");
     }
 
     public boolean saveModel()
@@ -137,35 +148,24 @@ public class CommandLineHelper
         return hasOption(CLIOption.SHRINK_FEATURES);
     }
 
-    public boolean balanceClasses()
+    public boolean skipTest()
     {
-        return hasOption(CLIOption.BALANCE_CLASSES);
+        return hasOption(CLIOption.SKIP_TEST);
     }
 
-    public void printConfiguration() throws IOException
+    public boolean skipTrain()
     {
-        Logger.debug("---- CONFIGURATION ----");
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.METADATA, getDataSetsMetadata());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.METHOD, getMethods());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.RUNS, getNumberOfRuns());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TRAIN, skipTrain());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TEST, skipTest());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.TEST_EMPTY, includeEmptyInstances());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_MODEL, saveModel());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_SETS, saveSets());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SHRINK_FEATURES, shrinkFeatures());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.BALANCE_CLASSES, balanceClasses());
-        Logger.debug("-----------------------");
-    }
-
-    private String camelCaseOption(CLIOption opt)
-    {
-        return StringUtils.remove(WordUtils.capitalizeFully(opt.name(), '_'), "_");
+        return hasOption(CLIOption.SKIP_TRAIN);
     }
 
     private void addOption(CLIOption opt, boolean hasArg, String description)
     {
         options.addOption(camelCaseOption(opt), hasArg, description);
+    }
+
+    private String camelCaseOption(CLIOption opt)
+    {
+        return StringUtils.remove(WordUtils.capitalizeFully(opt.name(), '_'), "_");
     }
 
     private String getOptionValue(CLIOption opt)

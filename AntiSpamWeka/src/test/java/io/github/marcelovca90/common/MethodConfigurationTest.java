@@ -40,47 +40,6 @@ import weka.classifiers.AbstractClassifier;
 public class MethodConfigurationTest
 {
     @Test
-    public void enum_MethodConfiguration_shouldReturnTwentyOneValues()
-    {
-        assertThat(MethodConfiguration.values().length, equalTo(21));
-        Arrays
-            .stream(MethodConfiguration.values())
-            .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
-    }
-
-    @Test
-    public void getName_allValues_shouldReturnNotNullString()
-    {
-        Arrays
-            .stream(MethodConfiguration.values())
-            .forEach(v -> assertThat(v.getName(), notNullValue()));
-    }
-
-    @Test
-    public void getConfig_allValues_shouldReturnNotNullString()
-    {
-        Arrays
-            .stream(MethodConfiguration.values())
-            .forEach(v -> assertThat(v.getConfig(), notNullValue()));
-    }
-
-    @Test
-    public void getSplitPercent_allValues_shouldReturnNotNullDouble()
-    {
-        Arrays
-            .stream(MethodConfiguration.values())
-            .forEach(v -> assertThat(v.getSplitPercent(), notNullValue()));
-    }
-
-    @Test
-    public void getClazz_allValues_shouldReturnNotNullClass()
-    {
-        Arrays
-            .stream(MethodConfiguration.values())
-            .forEach(v -> assertThat(v.getClazz(), notNullValue()));
-    }
-
-    @Test
     public void buildClassifierFor_invalidMethodConfiguration_shouldReturnNullClassifier()
     {
         assertThat(MethodConfiguration.buildClassifierFor((MethodConfiguration) null), nullValue());
@@ -99,5 +58,46 @@ public class MethodConfigurationTest
                 assertThat(classifier, instanceOf(v.getClazz()));
                 assertThat(classifier.getOptions(), notNullValue());
             });
+    }
+
+    @Test
+    public void enum_MethodConfiguration_shouldReturnTwentyOneValues()
+    {
+        assertThat(MethodConfiguration.values().length, equalTo(21));
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
+    }
+
+    @Test
+    public void getClazz_allValues_shouldReturnNotNullClass()
+    {
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getClazz(), notNullValue()));
+    }
+
+    @Test
+    public void getConfig_allValues_shouldReturnNotNullString()
+    {
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getConfig(), notNullValue()));
+    }
+
+    @Test
+    public void getName_allValues_shouldReturnNotNullString()
+    {
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getName(), notNullValue()));
+    }
+
+    @Test
+    public void getSplitPercent_allValues_shouldReturnNotNullDouble()
+    {
+        Arrays
+            .stream(MethodConfiguration.values())
+            .forEach(v -> assertThat(v.getSplitPercent(), notNullValue()));
     }
 }

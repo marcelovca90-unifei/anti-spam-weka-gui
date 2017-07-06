@@ -23,13 +23,16 @@ package io.github.marcelovca90.common;
 
 public class DataSetMetadata
 {
-    private String folder;
     private int emptyHamCount;
     private int emptySpamCount;
+    private String folder;
 
-    public String getFolder()
+    public DataSetMetadata(String folder, int emptyHamCount, int emptySpamCount)
     {
-        return folder;
+        super();
+        this.folder = folder;
+        this.emptyHamCount = emptyHamCount;
+        this.emptySpamCount = emptySpamCount;
     }
 
     public int getEmptyHamCount()
@@ -42,12 +45,9 @@ public class DataSetMetadata
         return emptySpamCount;
     }
 
-    public DataSetMetadata(String folder, int emptyHamCount, int emptySpamCount)
+    public String getFolder()
     {
-        super();
-        this.folder = folder;
-        this.emptyHamCount = emptyHamCount;
-        this.emptySpamCount = emptySpamCount;
+        return folder;
     }
 
     @Override

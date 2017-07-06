@@ -61,4 +61,9 @@ public class MetaHelper
         experimentHelper = null;
         inputOutputHelper = null;
     }
+
+    // used to suppress the default public constructor
+    private MetaHelper()
+    {
+    }
 }

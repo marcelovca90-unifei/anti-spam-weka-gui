@@ -51,6 +51,14 @@ import weka.core.Instances;
 @RunWith(MockitoJUnitRunner.class)
 public class RunnerTest
 {
+    private String[] args;
+    private String metadataFilename;
+    private String hamDataFilename;
+    private String spamDataFilename;
+    private Instances dataSet;
+    private Set<DataSetMetadata> metadata;
+    private List<MethodConfiguration> methods;
+
     @Mock
     private CommandLineHelper commandLineHelper;
 
@@ -59,14 +67,6 @@ public class RunnerTest
 
     @Mock
     private InputOutputHelper inputOutputHelper;
-
-    private String[] args;
-    private String metadataFilename;
-    private String hamDataFilename;
-    private String spamDataFilename;
-    private Instances dataSet;
-    private Set<DataSetMetadata> metadata;
-    private List<MethodConfiguration> methods;
 
     @Before
     public void setUp() throws IOException

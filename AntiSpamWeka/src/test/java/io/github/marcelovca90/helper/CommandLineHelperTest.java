@@ -36,12 +36,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CommandLineHelperTest
 {
+    private final CommandLineHelper cliHelper = MetaHelper.getCommandLineHelper();
+
     private String[] emptyArgs;
+    private String[] fullArgs;
     private String[] notEmptyArgsWithWrongMetadata;
     private String[] notEmptyArgsWithWrongMethod;
-    private String[] fullArgs;
-
-    private final CommandLineHelper cliHelper = MetaHelper.getCommandLineHelper();
 
     @Before
     public void setUp()
@@ -53,16 +53,20 @@ public class CommandLineHelperTest
         fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Method", "RT", "-Runs", "1" };
     }
 
-    @Test(expected = ParseException.class)
-    public void initialize_emptyArgs_shouldThrowException() throws ParseException
+    @Test
+    public void balanceClasse_shouldReturnNotNullBoolean() throws ParseException
     {
-        cliHelper.initialize(emptyArgs);
+        cliHelper.initialize(fullArgs);
+
+        assertThat(cliHelper.balanceClasses(), notNullValue());
     }
 
     @Test
-    public void initialize_notEmptyArgs_shouldNotThrowException() throws ParseException
+    public void getDataSetsMetadata_correctArgs_shouldReturnSuccess() throws ParseException, IOException
     {
         cliHelper.initialize(fullArgs);
+
+        assertThat(cliHelper.getDataSetsMetadata(), notNullValue());
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -80,11 +84,11 @@ public class CommandLineHelperTest
     }
 
     @Test
-    public void getDataSetsMetadata_correctArgs_shouldReturnSuccess() throws ParseException, IOException
+    public void getMethods_correctArgs_shouldReturnNotNullMethodsList() throws ParseException
     {
         cliHelper.initialize(fullArgs);
 
-        assertThat(cliHelper.getDataSetsMetadata(), notNullValue());
+        assertThat(cliHelper.getMethods(), notNullValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -102,14 +106,6 @@ public class CommandLineHelperTest
     }
 
     @Test
-    public void getMethods_correctArgs_shouldReturnNotNullMethodsList() throws ParseException
-    {
-        cliHelper.initialize(fullArgs);
-
-        assertThat(cliHelper.getMethods(), notNullValue());
-    }
-
-    @Test
     public void getNumberOfRuns_shouldReturnNotNullInteger() throws ParseException
     {
         cliHelper.initialize(fullArgs);
@@ -118,27 +114,30 @@ public class CommandLineHelperTest
     }
 
     @Test
-    public void skipTrain_shouldReturnNotNullBoolean() throws ParseException
-    {
-        cliHelper.initialize(fullArgs);
-
-        assertThat(cliHelper.skipTrain(), notNullValue());
-    }
-
-    @Test
-    public void skipTest_shouldReturnNotNullBoolean() throws ParseException
-    {
-        cliHelper.initialize(fullArgs);
-
-        assertThat(cliHelper.skipTest(), notNullValue());
-    }
-
-    @Test
     public void includeEmptyInstances_shouldReturnNotNullBoolean() throws ParseException
     {
         cliHelper.initialize(fullArgs);
 
         assertThat(cliHelper.includeEmptyInstances(), notNullValue());
+    }
+
+    @Test(expected = ParseException.class)
+    public void initialize_emptyArgs_shouldThrowException() throws ParseException
+    {
+        cliHelper.initialize(emptyArgs);
+    }
+
+    @Test
+    public void initialize_notEmptyArgs_shouldNotThrowException() throws ParseException
+    {
+        cliHelper.initialize(fullArgs);
+    }
+
+    @Test
+    public void printConfiguration_shouldReturnSuccess() throws ParseException, IOException
+    {
+        cliHelper.initialize(fullArgs);
+        cliHelper.printConfiguration();
     }
 
     @Test
@@ -166,17 +165,18 @@ public class CommandLineHelperTest
     }
 
     @Test
-    public void balanceClasse_shouldReturnNotNullBoolean() throws ParseException
+    public void skipTest_shouldReturnNotNullBoolean() throws ParseException
     {
         cliHelper.initialize(fullArgs);
 
-        assertThat(cliHelper.balanceClasses(), notNullValue());
+        assertThat(cliHelper.skipTest(), notNullValue());
     }
 
     @Test
-    public void printConfiguration_shouldReturnSuccess() throws ParseException, IOException
+    public void skipTrain_shouldReturnNotNullBoolean() throws ParseException
     {
         cliHelper.initialize(fullArgs);
-        cliHelper.printConfiguration();
+
+        assertThat(cliHelper.skipTrain(), notNullValue());
     }
 }

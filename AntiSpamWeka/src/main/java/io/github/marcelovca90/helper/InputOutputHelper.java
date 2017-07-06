@@ -47,9 +47,79 @@ import weka.core.Instances;
 
 public class InputOutputHelper
 {
+    public static final String TAG_CLASS = "class";
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
-    public static final String TAG_CLASS = "class";
+
+    public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(folder + File.separator);
+        sb.append(method.getClazz().getSimpleName());
+        sb.append("_TRAIN=" + (int) (100 * splitPercent));
+        sb.append("_TEST=" + (int) (100 * (1.0 - splitPercent)));
+        sb.append("_SEED=" + seed);
+        sb.append(".model");
+
+        return sb.toString();
+    }
+
+    public Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
+    {
+        // declare ham instance to be reused
+        Instance hamInstance;
+
+        // create ham attributes
+        ArrayList<Attribute> hamAttributes = createAttributes(featureAmount);
+
+        // create ham data set
+        Instances hamDataSet = new Instances(TAG_HAM, hamAttributes, emptyHamCount);
+        hamDataSet.setClassIndex(hamAttributes.size() - 1);
+
+        // read ham data and insert in data set
+        for (int i = 0; i < emptyHamCount; i++)
+        {
+            hamInstance = new DenseInstance(featureAmount + 1);
+            hamInstance.setDataset(hamDataSet);
+            for (int j = 0; j < featureAmount; j++)
+                hamInstance.setValue(j, 0.0);
+            hamInstance.setClassValue(TAG_HAM);
+            hamDataSet.add(hamInstance);
+        }
+
+        // declare spam instance to be reused
+        Instance spamInstance;
+
+        // create spam attributes
+        ArrayList<Attribute> spamAttributes = createAttributes(featureAmount);
+
+        // create spam data set
+        Instances spamDataSet = new Instances(TAG_SPAM, spamAttributes, emptySpamCount);
+        spamDataSet.setClassIndex(spamAttributes.size() - 1);
+
+        // read spam data and insert in data set
+        for (int i = 0; i < emptySpamCount; i++)
+        {
+            spamInstance = new DenseInstance(featureAmount + 1);
+            spamInstance.setDataset(spamDataSet);
+            for (int j = 0; j < featureAmount; j++)
+                spamInstance.setValue(j, 0.0);
+            spamInstance.setClassValue(TAG_SPAM);
+            spamDataSet.add(spamInstance);
+        }
+
+        // create merged data set attributes
+        ArrayList<Attribute> dataSetAttributes = createAttributes(featureAmount);
+
+        // create and fill merged data set
+        Instances dataSet = new Instances("AntiSpamEmpty", dataSetAttributes, hamDataSet.size() + spamDataSet.size());
+        dataSet.addAll(hamDataSet);
+        dataSet.addAll(spamDataSet);
+        dataSet.setClassIndex(dataSet.numAttributes() - 1);
+
+        return dataSet;
+    }
 
     public Set<DataSetMetadata> loadDataSetsMetadataFromFile(String filename) throws IOException
     {
@@ -151,6 +221,11 @@ public class InputOutputHelper
         return dataSet;
     }
 
+    public Classifier loadModelFromFile(String filename) throws Exception
+    {
+        return (Classifier) weka.core.SerializationHelper.read(filename);
+    }
+
     public File saveInstancesToFile(Instances instances, String filename) throws IOException
     {
         // create output file's buffered writer
@@ -181,76 +256,6 @@ public class InputOutputHelper
         return file;
     }
 
-    public Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
-    {
-        // declare ham instance to be reused
-        Instance hamInstance;
-
-        // create ham attributes
-        ArrayList<Attribute> hamAttributes = createAttributes(featureAmount);
-
-        // create ham data set
-        Instances hamDataSet = new Instances(TAG_HAM, hamAttributes, emptyHamCount);
-        hamDataSet.setClassIndex(hamAttributes.size() - 1);
-
-        // read ham data and insert in data set
-        for (int i = 0; i < emptyHamCount; i++)
-        {
-            hamInstance = new DenseInstance(featureAmount + 1);
-            hamInstance.setDataset(hamDataSet);
-            for (int j = 0; j < featureAmount; j++)
-                hamInstance.setValue(j, 0.0);
-            hamInstance.setClassValue(TAG_HAM);
-            hamDataSet.add(hamInstance);
-        }
-
-        // declare spam instance to be reused
-        Instance spamInstance;
-
-        // create spam attributes
-        ArrayList<Attribute> spamAttributes = createAttributes(featureAmount);
-
-        // create spam data set
-        Instances spamDataSet = new Instances(TAG_SPAM, spamAttributes, emptySpamCount);
-        spamDataSet.setClassIndex(spamAttributes.size() - 1);
-
-        // read spam data and insert in data set
-        for (int i = 0; i < emptySpamCount; i++)
-        {
-            spamInstance = new DenseInstance(featureAmount + 1);
-            spamInstance.setDataset(spamDataSet);
-            for (int j = 0; j < featureAmount; j++)
-                spamInstance.setValue(j, 0.0);
-            spamInstance.setClassValue(TAG_SPAM);
-            spamDataSet.add(spamInstance);
-        }
-
-        // create merged data set attributes
-        ArrayList<Attribute> dataSetAttributes = createAttributes(featureAmount);
-
-        // create and fill merged data set
-        Instances dataSet = new Instances("AntiSpamEmpty", dataSetAttributes, hamDataSet.size() + spamDataSet.size());
-        dataSet.addAll(hamDataSet);
-        dataSet.addAll(spamDataSet);
-        dataSet.setClassIndex(dataSet.numAttributes() - 1);
-
-        return dataSet;
-    }
-
-    public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(folder + File.separator);
-        sb.append(method.getClazz().getSimpleName());
-        sb.append("_TRAIN=" + (int) (100 * splitPercent));
-        sb.append("_TEST=" + (int) (100 * (1.0 - splitPercent)));
-        sb.append("_SEED=" + seed);
-        sb.append(".model");
-
-        return sb.toString();
-    }
-
     public File saveModelToFile(String filename, Classifier classifier) throws Exception
     {
         weka.core.SerializationHelper.write(filename, classifier);
@@ -258,9 +263,13 @@ public class InputOutputHelper
         return new File(filename);
     }
 
-    public Classifier loadModelFromFile(String filename) throws Exception
+    private ArrayList<Attribute> createAttributes(int featureAmount)
     {
-        return (Classifier) weka.core.SerializationHelper.read(filename);
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        for (int i = 0; i < featureAmount; i++)
+            attributes.add(new Attribute("x" + i));
+        attributes.add(new Attribute(TAG_CLASS, Arrays.asList(TAG_HAM, TAG_SPAM)));
+        return attributes;
     }
 
     private ByteBuffer readBytesFromFile(String filename) throws IOException
@@ -278,14 +287,5 @@ public class InputOutputHelper
         buffer.flip();
 
         return buffer;
-    }
-
-    private ArrayList<Attribute> createAttributes(int featureAmount)
-    {
-        ArrayList<Attribute> attributes = new ArrayList<>();
-        for (int i = 0; i < featureAmount; i++)
-            attributes.add(new Attribute("x" + i));
-        attributes.add(new Attribute(TAG_CLASS, Arrays.asList(TAG_HAM, TAG_SPAM)));
-        return attributes;
     }
 }

@@ -32,97 +32,17 @@ import weka.core.Instances;
 public class MethodEvaluation
 {
     private Classifier classifier;
+    private String dataSetName;
     private Evaluation evaluation;
     private String folder;
-    private String dataSetName;
-    private String statMethod;
-    private int numberOfTotalFeatures;
-    private int numberOfActualFeatures;
     private MethodConfiguration methodConfiguration;
-    private long trainStart;
-    private long trainEnd;
-    private long testStart;
+    private int numberOfActualFeatures;
+    private int numberOfTotalFeatures;
+    private String statMethod;
     private long testEnd;
-
-    public Classifier getClassifier()
-    {
-        return classifier;
-    }
-
-    public void setClassifier(Classifier classifier)
-    {
-        this.classifier = classifier;
-    }
-
-    public Evaluation getEvaluation()
-    {
-        return evaluation;
-    }
-
-    public void setEvaluation(Evaluation evaluation)
-    {
-        this.evaluation = evaluation;
-    }
-
-    public String getFolder()
-    {
-        return folder;
-    }
-
-    public String getDataSetName()
-    {
-        return dataSetName;
-    }
-
-    public String getStatMethod()
-    {
-        return statMethod;
-    }
-
-    public int getNumberOfTotalFeatures()
-    {
-        return numberOfTotalFeatures;
-    }
-
-    public void setNumberOfTotalFeatures(int numberOfTotalFeatures)
-    {
-        this.numberOfTotalFeatures = numberOfTotalFeatures;
-    }
-
-    public int getNumberOfActualFeatures()
-    {
-        return numberOfActualFeatures;
-    }
-
-    public void setNumberOfActualFeatures(int numberOfActualFeatures)
-    {
-        this.numberOfActualFeatures = numberOfActualFeatures;
-    }
-
-    public MethodConfiguration getMethodConfiguration()
-    {
-        return methodConfiguration;
-    }
-
-    public long getTrainStart()
-    {
-        return trainStart;
-    }
-
-    public long getTrainEnd()
-    {
-        return trainEnd;
-    }
-
-    public long getTestStart()
-    {
-        return testStart;
-    }
-
-    public long getTestEnd()
-    {
-        return testEnd;
-    }
+    private long testStart;
+    private long trainEnd;
+    private long trainStart;
 
     public MethodEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
@@ -137,19 +57,84 @@ public class MethodEvaluation
         this.methodConfiguration = methodConfiguration;
     }
 
-    // train the classifier with the given data set
-    public void train(Instances trainSet)
+    public Classifier getClassifier()
     {
-        try
-        {
-            trainStart = System.currentTimeMillis();
-            classifier.buildClassifier(trainSet);
-            trainEnd = System.currentTimeMillis();
-        }
-        catch (Exception e)
-        {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
-        }
+        return classifier;
+    }
+
+    public String getDataSetName()
+    {
+        return dataSetName;
+    }
+
+    public Evaluation getEvaluation()
+    {
+        return evaluation;
+    }
+
+    public String getFolder()
+    {
+        return folder;
+    }
+
+    public MethodConfiguration getMethodConfiguration()
+    {
+        return methodConfiguration;
+    }
+
+    public int getNumberOfActualFeatures()
+    {
+        return numberOfActualFeatures;
+    }
+
+    public int getNumberOfTotalFeatures()
+    {
+        return numberOfTotalFeatures;
+    }
+
+    public String getStatMethod()
+    {
+        return statMethod;
+    }
+
+    public long getTestEnd()
+    {
+        return testEnd;
+    }
+
+    public long getTestStart()
+    {
+        return testStart;
+    }
+
+    public long getTrainEnd()
+    {
+        return trainEnd;
+    }
+
+    public long getTrainStart()
+    {
+        return trainStart;
+    }
+
+    public void setClassifier(Classifier classifier)
+    {
+        this.classifier = classifier;
+    }
+
+    public void setEvaluation(Evaluation evaluation)
+    {
+        this.evaluation = evaluation;
+    }
+
+    public void setNumberOfActualFeatures(int numberOfActualFeatures)
+    {
+        this.numberOfActualFeatures = numberOfActualFeatures;
+    }
+
+    public void setNumberOfTotalFeatures(int numberOfTotalFeatures)
+    {
+        this.numberOfTotalFeatures = numberOfTotalFeatures;
     }
 
     // test the classifier agains the given data set
@@ -160,6 +145,21 @@ public class MethodEvaluation
             testStart = System.currentTimeMillis();
             evaluation.evaluateModel(classifier, testSet);
             testEnd = System.currentTimeMillis();
+        }
+        catch (Exception e)
+        {
+            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+        }
+    }
+
+    // train the classifier with the given data set
+    public void train(Instances trainSet)
+    {
+        try
+        {
+            trainStart = System.currentTimeMillis();
+            classifier.buildClassifier(trainSet);
+            trainEnd = System.currentTimeMillis();
         }
         catch (Exception e)
         {

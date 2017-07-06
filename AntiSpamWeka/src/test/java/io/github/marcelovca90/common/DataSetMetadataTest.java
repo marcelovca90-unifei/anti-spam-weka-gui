@@ -31,14 +31,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.common.DataSetMetadata;
-
 @RunWith(MockitoJUnitRunner.class)
 public class DataSetMetadataTest
 {
-    private final String folder = "/some/folder/";
     private final int emptyHamCount = 256;
     private final int emptySpamCount = 512;
+    private final String folder = "/some/folder/";
 
     private DataSetMetadata dataSetMetadata;
 
@@ -55,12 +53,6 @@ public class DataSetMetadataTest
     }
 
     @Test
-    public void getFolder_shouldReturnValueSetInConstructor()
-    {
-        assertThat(dataSetMetadata.getFolder(), equalTo(folder));
-    }
-
-    @Test
     public void getEmptyHamCount_shouldReturnValueSetInConstructor()
     {
         assertThat(dataSetMetadata.getEmptyHamCount(), equalTo(emptyHamCount));
@@ -70,6 +62,12 @@ public class DataSetMetadataTest
     public void getEmptySpamCount_shouldReturnValueSetInConstructor()
     {
         assertThat(dataSetMetadata.getEmptySpamCount(), equalTo(emptySpamCount));
+    }
+
+    @Test
+    public void getFolder_shouldReturnValueSetInConstructor()
+    {
+        assertThat(dataSetMetadata.getFolder(), equalTo(folder));
     }
 
     @Test

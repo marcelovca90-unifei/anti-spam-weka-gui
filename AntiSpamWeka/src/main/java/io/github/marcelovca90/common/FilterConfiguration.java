@@ -59,14 +59,6 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
-    // used to suppress the default public constructor
-    private FilterConfiguration()
-    {
-    }
-
-    private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
-    private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
-
     public enum AttributeFilter
     {
         // Correlation-based Feature Subset Selection
@@ -107,6 +99,11 @@ public class FilterConfiguration
             this.searchConfig = searchConfig;
         }
 
+        public String getDescription()
+        {
+            return String.format("AttributeFilter [evalClass=%s, searchClass=%s]", evalClazz.getSimpleName(), searchClazz.getSimpleName());
+        }
+
         public Class<? extends ASEvaluation> getEvalClazz()
         {
             return evalClazz;
@@ -126,11 +123,61 @@ public class FilterConfiguration
         {
             return searchConfig;
         }
+    }
+
+    public enum InstanceFilter
+    {
+        ClassBalancer(ClassBalancer.class, "-num-intervals 10"),
+        Resample(Resample.class, "-B 0.0 -S 1 -Z 100.0"),
+        SpreadSubsample(SpreadSubsample.class, "-M 0.0 -X 0.0 -S 1"),
+        StratifiedRemoveFolds(StratifiedRemoveFolds.class, "-S 0 -N 10 -F 1");
+
+        private final Class<? extends Filter> clazz;
+
+        private final String config;
+        private InstanceFilter(Class<? extends Filter> clazz, String config)
+        {
+            this.clazz = clazz;
+            this.config = config;
+        }
+
+        public Class<? extends Filter> getClazz()
+        {
+            return clazz;
+        }
+
+        public String getConfig()
+        {
+            return config;
+        }
 
         public String getDescription()
         {
-            return String.format("AttributeFilter [evalClass=%s, searchClass=%s]", evalClazz.getSimpleName(), searchClazz.getSimpleName());
+            return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
         }
+    }
+    private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
+
+    private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
+
+    public static Instances buildAndApply(Instances dataSet, AttributeFilter filter)
+    {
+        try
+        {
+            Logger.debug("Applying {} to the data set (numAttributes: {}). This may take a while.", filter.getDescription(), dataSet.numAttributes());
+            return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
+        }
+        catch (Exception e)
+        {
+            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+            return null;
+        }
+    }
+
+    public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
+    {
+        Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
+        return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }
 
     // remove less relevant attributes from the given data set
@@ -150,52 +197,6 @@ public class FilterConfiguration
         return filter;
     }
 
-    public static Instances buildAndApply(Instances dataSet, AttributeFilter filter)
-    {
-        try
-        {
-            Logger.debug("Applying {} to the data set (numAttributes: {}). This may take a while.", filter.getDescription(), dataSet.numAttributes());
-            return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
-        }
-        catch (Exception e)
-        {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
-            return null;
-        }
-    }
-
-    public enum InstanceFilter
-    {
-        ClassBalancer(ClassBalancer.class, "-num-intervals 10"),
-        Resample(Resample.class, "-B 0.0 -S 1 -Z 100.0"),
-        SpreadSubsample(SpreadSubsample.class, "-M 0.0 -X 0.0 -S 1"),
-        StratifiedRemoveFolds(StratifiedRemoveFolds.class, "-S 0 -N 10 -F 1");
-
-        private InstanceFilter(Class<? extends Filter> clazz, String config)
-        {
-            this.clazz = clazz;
-            this.config = config;
-        }
-
-        private final Class<? extends Filter> clazz;
-        private final String config;
-
-        public Class<? extends Filter> getClazz()
-        {
-            return clazz;
-        }
-
-        public String getConfig()
-        {
-            return config;
-        }
-
-        public String getDescription()
-        {
-            return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
-        }
-    }
-
     // remove less relevant instances from the given data set
     private static Filter buildInstanceFilterFor(InstanceFilter instanceFilter, Instances dataSet) throws Exception
     {
@@ -208,9 +209,8 @@ public class FilterConfiguration
         return filter;
     }
 
-    public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
+    // used to suppress the default public constructor
+    private FilterConfiguration()
     {
-        Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
-        return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }
 }

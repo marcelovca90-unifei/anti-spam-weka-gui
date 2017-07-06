@@ -45,9 +45,9 @@ import weka.core.Instances;
 @RunWith(MockitoJUnitRunner.class)
 public class FilterConfigurationTest
 {
+    private Instances dataSet;
     private String hamDataFilename;
     private String spamDataFilename;
-    private Instances dataSet;
 
     @Before
     public void setUp() throws IOException
@@ -57,15 +57,26 @@ public class FilterConfigurationTest
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
     }
 
-    @Test(expected = IllegalAccessException.class)
-    public void privateConstructor_shouldThrowException() throws Exception
+    @Test
+    public void buildAttributeFilterFor_actualDataSet_shouldReturnNullDataSet() throws IOException
     {
-        Constructor<FilterConfiguration> constructor = FilterConfiguration.class.getDeclaredConstructor();
-        assertThat(Modifier.isPrivate(constructor.getModifiers()), equalTo(true));
+        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
 
-        constructor.setAccessible(true);
-        constructor.newInstance();
-        FilterConfiguration.class.newInstance();
+        assertThat(FilterConfiguration.buildAndApply(dataSet, AttributeFilter.CfsSubsetEval_BestFirst), notNullValue());
+    }
+
+    @Test
+    public void buildAttributeFilterFor_dummyDataSet_shouldReturnNullDataSet()
+    {
+        assertThat(FilterConfiguration.buildAndApply(mock(Instances.class), AttributeFilter.CfsSubsetEval_BestFirst), nullValue());
+    }
+
+    @Test
+    public void buildInstanceFilterFor_dummyDataSet_shouldReturnNullDataSet() throws Exception
+    {
+        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+
+        assertThat(FilterConfiguration.buildAndApply(dataSet, InstanceFilter.ClassBalancer), notNullValue());
     }
 
     @Test
@@ -75,6 +86,15 @@ public class FilterConfigurationTest
         Arrays
             .stream(FilterConfiguration.AttributeFilter.values())
             .forEach(v -> assertThat(FilterConfiguration.AttributeFilter.valueOf(v.name()), notNullValue()));
+    }
+
+    @Test
+    public void enum_InstanceFilter_shouldReturnFourValues()
+    {
+        assertThat(FilterConfiguration.InstanceFilter.values().length, equalTo(4));
+        Arrays
+            .stream(FilterConfiguration.InstanceFilter.values())
+            .forEach(v -> assertThat(FilterConfiguration.InstanceFilter.valueOf(v.name()), notNullValue()));
     }
 
     @Test
@@ -93,29 +113,6 @@ public class FilterConfigurationTest
     }
 
     @Test
-    public void buildAttributeFilterFor_dummyDataSet_shouldReturnNullDataSet()
-    {
-        assertThat(FilterConfiguration.buildAndApply(mock(Instances.class), AttributeFilter.CfsSubsetEval_BestFirst), nullValue());
-    }
-
-    @Test
-    public void buildAttributeFilterFor_actualDataSet_shouldReturnNullDataSet() throws IOException
-    {
-        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
-
-        assertThat(FilterConfiguration.buildAndApply(dataSet, AttributeFilter.CfsSubsetEval_BestFirst), notNullValue());
-    }
-
-    @Test
-    public void enum_InstanceFilter_shouldReturnFourValues()
-    {
-        assertThat(FilterConfiguration.InstanceFilter.values().length, equalTo(4));
-        Arrays
-            .stream(FilterConfiguration.InstanceFilter.values())
-            .forEach(v -> assertThat(FilterConfiguration.InstanceFilter.valueOf(v.name()), notNullValue()));
-    }
-
-    @Test
     public void getters_forAllInstanceFilters_shouldReturnNotNullValues()
     {
         Arrays
@@ -128,11 +125,14 @@ public class FilterConfigurationTest
             });
     }
 
-    @Test
-    public void buildInstanceFilterFor_dummyDataSet_shouldReturnNullDataSet() throws Exception
+    @Test(expected = IllegalAccessException.class)
+    public void privateConstructor_shouldThrowException() throws Exception
     {
-        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        Constructor<FilterConfiguration> constructor = FilterConfiguration.class.getDeclaredConstructor();
+        assertThat(Modifier.isPrivate(constructor.getModifiers()), equalTo(true));
 
-        assertThat(FilterConfiguration.buildAndApply(dataSet, InstanceFilter.ClassBalancer), notNullValue());
+        constructor.setAccessible(true);
+        constructor.newInstance();
+        FilterConfiguration.class.newInstance();
     }
 }
