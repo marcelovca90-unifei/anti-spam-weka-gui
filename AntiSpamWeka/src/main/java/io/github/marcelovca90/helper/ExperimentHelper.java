@@ -43,15 +43,15 @@ import io.github.marcelovca90.common.MethodEvaluation;
 
 public class ExperimentHelper
 {
-    private Map<Metric, List<Double>> results = new EnumMap<>(Metric.class);
+    private Map<Metric, List<Double>> resultHistory = new EnumMap<>(Metric.class);
 
     // clears the data in result keeper
     public void clearResultHistory()
     {
-        results.clear();
+        resultHistory.clear();
     }
 
-    // compute and persist all metrics' results for a given MethodEvaluation
+    // compute and persist all metrics' resultHistory for a given MethodEvaluation
     public void computeSingleRunResults(MethodEvaluation methodEvaluation)
     {
         Double hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.HAM.ordinal());
@@ -102,7 +102,7 @@ public class ExperimentHelper
         Logger.info(header);
     }
 
-    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
     public void summarizeResults(Map<Metric, DescriptiveStatistics> results, MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
         MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
@@ -128,7 +128,7 @@ public class ExperimentHelper
             Logger.info(sb.toString());
     }
 
-    // displays the experiment's [last results] or [mean ± standard deviation] for every metric
+    // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
     public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
         summarizeResults(getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
@@ -136,8 +136,8 @@ public class ExperimentHelper
 
     private void addSingleRunResult(Metric key, Double value)
     {
-        results.putIfAbsent(key, new LinkedList<>());
-        results.get(key).add(value);
+        resultHistory.putIfAbsent(key, new LinkedList<>());
+        resultHistory.get(key).add(value);
     }
 
     private void buildResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
@@ -171,7 +171,7 @@ public class ExperimentHelper
         // detect outlier(s) for each metric
         for (Metric metric : Metric.values())
         {
-            DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(results.get(metric));
+            DescriptiveStatistics stats = doubleArrayToDescriptiveStatistics(resultHistory.get(metric));
 
             for (int i = 0; i < stats.getValues().length; i++)
             {
@@ -214,9 +214,26 @@ public class ExperimentHelper
     {
         Map<Metric, DescriptiveStatistics> statistics = new EnumMap<>(Metric.class);
 
-        results.forEach((k, v) -> statistics.put(k, doubleArrayToDescriptiveStatistics(v)));
+        resultHistory.forEach((k, v) -> statistics.put(k, doubleArrayToDescriptiveStatistics(v)));
 
         return statistics;
+    }
+
+    private boolean isOutlierByZScore(DescriptiveStatistics stats, double value)
+    {
+        double zScore = (value - stats.getMean()) / stats.getStandardDeviation();
+
+        return Math.abs(zScore) > 3;
+    }
+
+    private boolean isOutlierByModifiedZScore(DescriptiveStatistics stats, double value)
+    {
+        double median = stats.getPercentile(50);
+        double medianAbsoluteDeviation = new DescriptiveStatistics(
+            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+        double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
+
+        return Math.abs(modifiedZScore) > 3.5;
     }
 
     private boolean isOutlierByInterquartileRange(DescriptiveStatistics stats, double value)
@@ -230,23 +247,6 @@ public class ExperimentHelper
         return (value < lowerBound || value > upperBound);
     }
 
-    private boolean isOutlierByModifiedZScore(DescriptiveStatistics stats, double value)
-    {
-        double median = stats.getPercentile(50);
-        double medianAbsoluteDeviation = new DescriptiveStatistics(
-            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
-        double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
-
-        return Math.abs(modifiedZScore) > 3.5;
-    }
-
-    private boolean isOutlierByZScore(DescriptiveStatistics stats, double value)
-    {
-        double zScore = (value - stats.getMean()) / stats.getStandardDeviation();
-
-        return Math.abs(zScore) > 3;
-    }
-
     // removes and returns the number of outliers in the result keeper
     private int removeOutliers(Set<Integer> outlierIndices)
     {
@@ -254,15 +254,15 @@ public class ExperimentHelper
         if (!outlierIndices.isEmpty())
         {
             Map<Metric, List<Double>> filteredResults = new EnumMap<>(Metric.class);
-            for (Entry<Metric, List<Double>> entry : results.entrySet())
+            for (Entry<Metric, List<Double>> entry : resultHistory.entrySet())
             {
                 Metric key = entry.getKey();
                 filteredResults.put(key, new LinkedList<>());
-                for (int i = 0; i < results.get(key).size(); i++)
+                for (int i = 0; i < resultHistory.get(key).size(); i++)
                     if (!outlierIndices.contains(i))
-                        filteredResults.get(key).add(results.get(key).get(i));
+                        filteredResults.get(key).add(resultHistory.get(key).get(i));
             }
-            results = filteredResults;
+            resultHistory = filteredResults;
         }
 
         // returns the number of detected outliers (if any)
