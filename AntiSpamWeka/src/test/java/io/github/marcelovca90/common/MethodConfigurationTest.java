@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.common.MethodConfiguration;
 import weka.classifiers.AbstractClassifier;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,9 +60,9 @@ public class MethodConfigurationTest
     }
 
     @Test
-    public void enum_MethodConfiguration_shouldReturnTwentyOneValues()
+    public void enum_MethodConfiguration_shouldReturnTwentyTwoValues()
     {
-        assertThat(MethodConfiguration.values().length, equalTo(21));
+        assertThat(MethodConfiguration.values().length, equalTo(22));
         Arrays
             .stream(MethodConfiguration.values())
             .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));

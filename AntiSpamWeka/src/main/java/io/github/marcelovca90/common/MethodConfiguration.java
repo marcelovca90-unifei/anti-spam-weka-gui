@@ -34,6 +34,7 @@ import weka.classifiers.functions.RBFNetwork;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SPegasos;
+import weka.classifiers.lazy.IBk;
 import weka.classifiers.misc.HyperPipes;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.FURIA;
@@ -66,6 +67,9 @@ public enum MethodConfiguration
 
     // http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html
     HP("HyperPipe classifier", "", HyperPipes.class),
+
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/lazy/IBk.html
+    IBK("K-nearest neighbours classifier", "-K 1 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\"", IBk.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html
     J48("C4.5 decision tree", "-C 0.25 -M 2 -Q 1", J48.class),
@@ -107,7 +111,7 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm","-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
@@ -130,6 +134,7 @@ public enum MethodConfiguration
 
         return classifier;
     }
+
     private final Class<? extends AbstractClassifier> clazz;
     private final String config;
     private final String name;

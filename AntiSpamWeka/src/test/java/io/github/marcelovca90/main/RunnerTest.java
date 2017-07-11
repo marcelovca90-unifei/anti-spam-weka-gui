@@ -80,7 +80,7 @@ public class RunnerTest
 
         dataSet = new InputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
         metadata = new InputOutputHelper().loadDataSetsMetadataFromFile(metadataFilename);
-        methods = Arrays.asList(MethodConfiguration.RT);
+        methods = Arrays.asList(MethodConfiguration.SPEGASOS);
     }
 
     @After
@@ -106,7 +106,7 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 10, false, false, true, true, true, true, true);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 1000, false, false, true, true, true, true, true);
 
         doNothing().when(experimentHelper).printHeader();
 
