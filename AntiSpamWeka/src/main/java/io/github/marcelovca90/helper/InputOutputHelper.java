@@ -36,6 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pmw.tinylog.Logger;
 
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
@@ -153,6 +154,8 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
+        Logger.debug("Reading {} data from file {}. This may take a while.", "ham", hamDataFilename);
+
         // read ham amounts
         ByteBuffer hamBuffer = readBytesFromFile(hamDataFilename);
         int hamInstanceAmount = 0;
@@ -180,6 +183,8 @@ public class InputOutputHelper
             hamInstance.setClassValue(TAG_HAM);
             hamDataSet.add(hamInstance);
         }
+
+        Logger.debug("Reading {} data from file {}. This may take a while.", "spam", spamDataFilename);
 
         // read spam amounts
         ByteBuffer spamBuffer = readBytesFromFile(spamDataFilename);
