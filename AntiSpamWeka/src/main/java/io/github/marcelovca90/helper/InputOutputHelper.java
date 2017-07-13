@@ -24,24 +24,25 @@ package io.github.marcelovca90.helper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel.MapMode;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Logger;
 
 import com.arturmkrtchyan.sizeof4j.SizeOf;
-import com.indeed.util.mmap.DirectMemory;
-import com.indeed.util.mmap.MMapBuffer;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
 import weka.classifiers.Classifier;
@@ -52,12 +53,8 @@ import weka.core.Instances;
 
 public class InputOutputHelper
 {
-    public static final String TAG_CLASS = "class";
-    public static final String TAG_HAM = "ham";
-    public static final String TAG_SPAM = "spam";
-
-    private static final long SIZE_INT = SizeOf.intSize();
-    private static final long SIZE_DOUBLE = SizeOf.doubleSize();
+    private static final int SIZE_INT = SizeOf.intSize();
+    private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 
     public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
     {
@@ -84,7 +81,7 @@ public class InputOutputHelper
         ArrayList<Attribute> hamAttributes = createAttributes(featureAmount);
 
         // create ham data set
-        Instances hamDataSet = new Instances(TAG_HAM, hamAttributes, emptyHamCount);
+        Instances hamDataSet = new Instances(MessageType.HAM.name(), hamAttributes, emptyHamCount);
         hamDataSet.setClassIndex(hamAttributes.size() - 1);
 
         // read ham data and insert in data set
@@ -94,7 +91,7 @@ public class InputOutputHelper
             hamInstance.setDataset(hamDataSet);
             for (int j = 0; j < featureAmount; j++)
                 hamInstance.setValue(j, 0.0);
-            hamInstance.setClassValue(TAG_HAM);
+            hamInstance.setClassValue(MessageType.HAM.name());
             hamDataSet.add(hamInstance);
         }
 
@@ -107,7 +104,7 @@ public class InputOutputHelper
         ArrayList<Attribute> spamAttributes = createAttributes(featureAmount);
 
         // create spam data set
-        Instances spamDataSet = new Instances(TAG_SPAM, spamAttributes, emptySpamCount);
+        Instances spamDataSet = new Instances(MessageType.SPAM.name(), spamAttributes, emptySpamCount);
         spamDataSet.setClassIndex(spamAttributes.size() - 1);
 
         // read spam data and insert in data set
@@ -117,7 +114,7 @@ public class InputOutputHelper
             spamInstance.setDataset(spamDataSet);
             for (int j = 0; j < featureAmount; j++)
                 spamInstance.setValue(j, 0.0);
-            spamInstance.setClassValue(TAG_SPAM);
+            spamInstance.setClassValue(MessageType.SPAM.name());
             spamDataSet.add(spamInstance);
         }
 
@@ -125,7 +122,7 @@ public class InputOutputHelper
         ArrayList<Attribute> dataSetAttributes = createAttributes(featureAmount);
 
         // create and fill merged data set
-        Instances dataSet = new Instances("AntiSpamEmpty", dataSetAttributes, hamDataSet.size() + spamDataSet.size());
+        Instances dataSet = new Instances(UUID.randomUUID().toString(), dataSetAttributes, hamDataSet.size() + spamDataSet.size());
         dataSet.addAll(hamDataSet);
         dataSet.addAll(spamDataSet);
         dataSet.setClassIndex(dataSet.numAttributes() - 1);
@@ -165,76 +162,17 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
-        Logger.trace("Reading [{}] data from file [{}].", "ham", hamDataFilename);
+        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "ham", hamDataFilename);
+        Instances hamDataSet = loadInstancesFromFile(hamDataFilename, MessageType.HAM);
 
-        // ham auxiliary variables / objects
-        List<Double> hamBuffer = getValuesFromFile(hamDataFilename);
-        int hamOffset = 0;
-        int hamInstanceAmount = 0;
-        int hamFeatureAmount = 0;
-        Instances hamDataSet;
-
-        // read ham amounts
-        hamInstanceAmount = hamBuffer.get(hamOffset++).intValue();
-        hamFeatureAmount = hamBuffer.get(hamOffset++).intValue();
-
-        Instance hamInstance;
-
-        // create ham attributes
-        ArrayList<Attribute> hamAttributes = createAttributes(hamFeatureAmount);
-
-        // create ham data set
-        hamDataSet = new Instances(TAG_HAM, hamAttributes, hamInstanceAmount);
-        hamDataSet.setClassIndex(hamAttributes.size() - 1);
-
-        // read ham data and insert in data set
-        for (int i = 0; i < hamInstanceAmount; i++)
-        {
-            hamInstance = new DenseInstance(hamFeatureAmount + 1);
-            hamInstance.setDataset(hamDataSet);
-            for (int j = 0; j < hamFeatureAmount; j++)
-                hamInstance.setValue(j, hamBuffer.get(hamOffset++));
-            hamInstance.setClassValue(TAG_HAM);
-            hamDataSet.add(hamInstance);
-        }
-
-        Logger.trace("Reading [{}] data from file [{}].", "spam", spamDataFilename);
-
-        // spam auxiliary variables / objects
-        List<Double> spamBuffer = getValuesFromFile(spamDataFilename);
-        int spamOffset = 0;
-        int spamInstanceAmount = 0;
-        int spamFeatureAmount = 0;
-        Instances spamDataSet = null;
-
-        // read spam amounts
-        spamInstanceAmount = spamBuffer.get(spamOffset++).intValue();
-        spamFeatureAmount = spamBuffer.get(spamOffset++).intValue();
-        Instance spamInstance;
-
-        // create spam attributes
-        ArrayList<Attribute> spamAttributes = createAttributes(spamFeatureAmount);
-
-        // create spam data set
-        spamDataSet = new Instances(TAG_SPAM, spamAttributes, spamInstanceAmount);
-        spamDataSet.setClassIndex(spamAttributes.size() - 1);
-
-        // read spam data and insert in data set
-        for (int i = 0; i < spamInstanceAmount; i++)
-        {
-            spamInstance = new DenseInstance(spamFeatureAmount + 1);
-            spamInstance.setDataset(spamDataSet);
-            for (int j = 0; j < spamFeatureAmount; j++)
-                spamInstance.setValue(j, spamBuffer.get(spamOffset++));
-            spamInstance.setClassValue(TAG_SPAM);
-            spamDataSet.add(spamInstance);
-        }
+        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "spam", spamDataFilename);
+        Instances spamDataSet = loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
 
         // create merged data set attributes
-        ArrayList<Attribute> dataSetAttributes = createAttributes(spamFeatureAmount);
+        ArrayList<Attribute> dataSetAttributes = createAttributes(hamDataSet.numAttributes() - 1);
 
         // create and fill merged data set
-        Instances dataSet = new Instances("AntiSpamNotEmpty", dataSetAttributes, hamDataSet.size() + spamDataSet.size());
+        Instances dataSet = new Instances(UUID.randomUUID().toString(), dataSetAttributes, hamDataSet.size() + spamDataSet.size());
         dataSet.addAll(hamDataSet);
         dataSet.addAll(spamDataSet);
         dataSet.setClassIndex(dataSet.numAttributes() - 1);
@@ -261,7 +199,7 @@ public class InputOutputHelper
         {
             if (attrIndex > 0)
                 bufferedWriter.write(",");
-            bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : TAG_CLASS);
+            bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : "class");
         }
         bufferedWriter.write(System.lineSeparator());
 
@@ -288,46 +226,59 @@ public class InputOutputHelper
         return new File(filename);
     }
 
-    private ArrayList<Attribute> createAttributes(int featureAmount)
+    private ArrayList<Attribute> createAttributes(long featureAmount)
     {
         ArrayList<Attribute> attributes = new ArrayList<>();
-        for (int i = 0; i < featureAmount; i++)
+        for (long i = 0; i < featureAmount; i++)
             attributes.add(new Attribute("x" + i));
-        attributes.add(new Attribute(TAG_CLASS, Arrays.asList(TAG_HAM, TAG_SPAM)));
+        attributes.add(new Attribute("class", Arrays.asList(MessageType.HAM.name(), MessageType.SPAM.name())));
         return attributes;
     }
 
-    private List<Double> getValuesFromFile(String filename) throws IOException
+    private Instances loadInstancesFromFile(String filename, MessageType messageType) throws IOException
     {
-        File file = new File(filename);
+        InputStream inputStream = new FileInputStream(filename);
 
-        MMapBuffer buffer = new MMapBuffer(file, MapMode.READ_ONLY, ByteOrder.BIG_ENDIAN);
+        byte[] byteBufferA = new byte[SIZE_INT];
+        inputStream.read(byteBufferA);
+        int numberOfInstances = ByteBuffer.wrap(byteBufferA).getInt();
 
-        DirectMemory memory = buffer.memory();
+        byte[] byteBufferB = new byte[SIZE_INT];
+        inputStream.read(byteBufferB);
+        int numberOfAttributes = ByteBuffer.wrap(byteBufferB).getInt();
 
-        List<Double> values = new ArrayList<>();
+        // create attributes
+        ArrayList<Attribute> attributes = createAttributes(numberOfAttributes);
 
-        long offset = 0L;
+        // create data set
+        Instances dataSet = new Instances(UUID.randomUUID().toString(), attributes, numberOfInstances);
+        dataSet.setClassIndex(attributes.size() - 1);
 
-        int numberOfInstances = memory.getInt(offset);
-        offset += SIZE_INT;
-        values.add((double) numberOfInstances);
+        // create instance placeholder
+        Instance instance = new DenseInstance(numberOfAttributes + 1);
+        instance.setDataset(dataSet);
+        instance.setClassValue(messageType.name());
 
-        int numberOfFeatures = memory.getInt(offset);
-        offset += SIZE_INT;
-        values.add((double) numberOfFeatures);
+        byte[] byteBufferC = new byte[SIZE_DOUBLE];
+        DoubleBuffer doubleBuffer = DoubleBuffer.allocate(numberOfAttributes);
 
-        for (int i = 0; i < numberOfInstances; i++)
+        while (inputStream.read(byteBufferC) != -1)
         {
-            for (int j = 0; j < numberOfFeatures; j++)
+            doubleBuffer.put(ByteBuffer.wrap(byteBufferC).getDouble());
+
+            if (!doubleBuffer.hasRemaining())
             {
-                values.add(memory.getDouble(offset));
-                offset += SIZE_DOUBLE;
+                double[] values = doubleBuffer.array();
+                for (int j = 0; j < numberOfAttributes; j++)
+                    instance.setValue(j, values[j]);
+                dataSet.add(instance);
+
+                doubleBuffer.clear();
             }
         }
 
-        buffer.close();
+        inputStream.close();
 
-        return values;
+        return dataSet;
     }
 }

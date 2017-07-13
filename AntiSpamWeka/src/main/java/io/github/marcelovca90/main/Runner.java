@@ -29,11 +29,11 @@ import java.util.logging.LogManager;
 
 import org.apache.commons.math3.primes.Primes;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.FilterConfiguration;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
-import io.github.marcelovca90.helper.InputOutputHelper;
 import io.github.marcelovca90.helper.MetaHelper;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -73,8 +73,8 @@ public class Runner
             for (DataSetMetadata metadata : MetaHelper.getCommandLineHelper().getDataSetsMetadata())
             {
                 // import data set
-                String hamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_HAM;
-                String spamFilePath = metadata.getFolder() + File.separator + InputOutputHelper.TAG_SPAM;
+                String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
+                String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
                 dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamFilePath, spamFilePath);
 
                 // apply attribute and instance filters to the data set, if specified

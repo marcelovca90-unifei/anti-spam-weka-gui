@@ -177,7 +177,7 @@ public class ExperimentHelper
             {
                 double value = stats.getValues()[i];
 
-                // if the current value extrapoles any of the three thresholds, then it is considered an outlier
+                // if the current value extrapolates any of the three thresholds, then it is considered an outlier
                 if (isOutlierByZScore(stats, value))
                 {
                     Logger.trace("Outlier detected by Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
