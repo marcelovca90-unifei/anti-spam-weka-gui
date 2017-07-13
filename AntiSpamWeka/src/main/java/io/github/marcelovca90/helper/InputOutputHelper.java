@@ -28,7 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +163,7 @@ public class InputOutputHelper
         Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "ham", hamDataFilename);
 
         // read ham amounts
-        ByteBuffer hamBuffer = readBytesFromFile(hamDataFilename);
+        ByteBuffer hamBuffer = readBytesFromFileBlocking(hamDataFilename);
         int hamInstanceAmount = 0;
         int hamFeatureAmount = 0;
         Instances hamDataSet;
@@ -191,7 +193,7 @@ public class InputOutputHelper
         Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "spam", spamDataFilename);
 
         // read spam amounts
-        ByteBuffer spamBuffer = readBytesFromFile(spamDataFilename);
+        ByteBuffer spamBuffer = readBytesFromFileBlocking(spamDataFilename);
         int spamInstanceAmount = 0;
         int spamFeatureAmount = 0;
         Instances spamDataSet = null;
@@ -285,7 +287,7 @@ public class InputOutputHelper
         return attributes;
     }
 
-    private ByteBuffer readBytesFromFile(String filename) throws IOException
+    private ByteBuffer readBytesFromFileBlocking(String filename) throws IOException
     {
         File file = new File(filename);
         FileChannel channel = null;
@@ -299,6 +301,25 @@ public class InputOutputHelper
         stream.close();
         buffer.flip();
 
+        return buffer;
+    }
+
+    @SuppressWarnings("unused")
+    private ByteBuffer readBytesFromFileNonBlocking(String filename) throws IOException
+    {
+        // instantiate file, channel and buffer objects
+        RandomAccessFile file = new RandomAccessFile(filename, "r");
+        FileChannel channel = file.getChannel();
+        MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+
+        // load the buffer's content into physical memory
+        buffer.load();
+
+        // close the channel, file stream and release system resources
+        channel.close();
+        file.close();
+
+        // return the bytes read from the file
         return buffer;
     }
 }
