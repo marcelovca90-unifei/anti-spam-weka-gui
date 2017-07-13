@@ -114,6 +114,16 @@
             <artifactId>tinylog</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.indeed</groupId>
+            <artifactId>util-mmap</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.arturmkrtchyan.sizeof4j</groupId>
+            <artifactId>sizeof4j</artifactId>
+            <version>0.1.0</version>
+        </dependency>
 
         <!-- FILTER EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
         <dependency>

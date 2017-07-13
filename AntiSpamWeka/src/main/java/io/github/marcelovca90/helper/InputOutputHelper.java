@@ -30,15 +30,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Logger;
+
+import com.arturmkrtchyan.sizeof4j.SizeOf;
+import com.indeed.util.mmap.DirectMemory;
+import com.indeed.util.mmap.MMapBuffer;
 
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
@@ -53,6 +60,9 @@ public class InputOutputHelper
     public static final String TAG_CLASS = "class";
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
+
+    private static final int SIZE_INT = SizeOf.intSize();
+    private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 
     public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
     {
@@ -162,14 +172,17 @@ public class InputOutputHelper
     {
         Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "ham", hamDataFilename);
 
-        // read ham amounts
-        ByteBuffer hamBuffer = readBytesFromFileBlocking(hamDataFilename);
+        // ham auxiliary variables / objects
+        List<Double> hamBuffer = getValuesFromFile(hamDataFilename);
+        int hamOffset = 0;
         int hamInstanceAmount = 0;
         int hamFeatureAmount = 0;
         Instances hamDataSet;
 
-        hamInstanceAmount = hamBuffer.getInt();
-        hamFeatureAmount = hamBuffer.getInt();
+        // read ham amounts
+        hamInstanceAmount = hamBuffer.get(hamOffset++).intValue();
+        hamFeatureAmount = hamBuffer.get(hamOffset++).intValue();
+
         Instance hamInstance;
 
         // create ham attributes
@@ -185,21 +198,23 @@ public class InputOutputHelper
             hamInstance = new DenseInstance(hamFeatureAmount + 1);
             hamInstance.setDataset(hamDataSet);
             for (int j = 0; j < hamFeatureAmount; j++)
-                hamInstance.setValue(j, hamBuffer.getDouble());
+                hamInstance.setValue(j, hamBuffer.get(hamOffset++));
             hamInstance.setClassValue(TAG_HAM);
             hamDataSet.add(hamInstance);
         }
 
         Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "spam", spamDataFilename);
 
-        // read spam amounts
-        ByteBuffer spamBuffer = readBytesFromFileBlocking(spamDataFilename);
+        // spam auxiliary variables / objects
+        List<Double> spamBuffer = getValuesFromFile(spamDataFilename);
+        int spamOffset = 0;
         int spamInstanceAmount = 0;
         int spamFeatureAmount = 0;
         Instances spamDataSet = null;
 
-        spamInstanceAmount = spamBuffer.getInt();
-        spamFeatureAmount = spamBuffer.getInt();
+        // read spam amounts
+        spamInstanceAmount = spamBuffer.get(spamOffset++).intValue();
+        spamFeatureAmount = spamBuffer.get(spamOffset++).intValue();
         Instance spamInstance;
 
         // create spam attributes
@@ -215,7 +230,7 @@ public class InputOutputHelper
             spamInstance = new DenseInstance(spamFeatureAmount + 1);
             spamInstance.setDataset(spamDataSet);
             for (int j = 0; j < spamFeatureAmount; j++)
-                spamInstance.setValue(j, spamBuffer.getDouble());
+                spamInstance.setValue(j, spamBuffer.get(spamOffset++));
             spamInstance.setClassValue(TAG_SPAM);
             spamDataSet.add(spamInstance);
         }
@@ -287,6 +302,7 @@ public class InputOutputHelper
         return attributes;
     }
 
+    @SuppressWarnings("unused")
     private ByteBuffer readBytesFromFileBlocking(String filename) throws IOException
     {
         File file = new File(filename);
@@ -321,5 +337,36 @@ public class InputOutputHelper
 
         // return the bytes read from the file
         return buffer;
+    }
+
+    private List<Double> getValuesFromFile(String filename) throws IOException
+    {
+        File file = new File(filename);
+
+        MMapBuffer buffer = new MMapBuffer(file, MapMode.READ_ONLY, ByteOrder.BIG_ENDIAN);
+
+        DirectMemory memory = buffer.memory();
+
+        List<Double> values = new ArrayList<>();
+
+        int offset = 0;
+
+        int numberOfInstances = memory.getInt(offset);
+        offset += SIZE_INT;
+        values.add((double) numberOfInstances);
+
+        int numberOfFeatures = memory.getInt(offset);
+        offset += SIZE_INT;
+        values.add((double) numberOfFeatures);
+
+        for (int i = 0; i < numberOfInstances * numberOfFeatures; i++)
+        {
+            values.add(memory.getDouble(offset));
+            offset += SIZE_DOUBLE;
+        }
+
+        buffer.close();
+
+        return values;
     }
 }
