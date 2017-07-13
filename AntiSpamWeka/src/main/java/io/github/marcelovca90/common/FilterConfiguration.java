@@ -135,6 +135,7 @@ public class FilterConfiguration
         private final Class<? extends Filter> clazz;
 
         private final String config;
+
         private InstanceFilter(Class<? extends Filter> clazz, String config)
         {
             this.clazz = clazz;
@@ -156,6 +157,7 @@ public class FilterConfiguration
             return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
         }
     }
+
     private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
 
     private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
@@ -164,7 +166,7 @@ public class FilterConfiguration
     {
         try
         {
-            Logger.debug("Applying {} to the data set (numAttributes: {}). This may take a while.", filter.getDescription(), dataSet.numAttributes());
+            Logger.debug("Applying {} to the data set (numAttributes: {}).", filter.getDescription(), dataSet.numAttributes());
             return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
         }
         catch (Exception e)
@@ -176,7 +178,7 @@ public class FilterConfiguration
 
     public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
     {
-        Logger.debug("Applying {} to the data set (size: {}). This may take a while.", filter.getDescription(), dataSet.size());
+        Logger.debug("Applying {} to the data set (size: {}).", filter.getDescription(), dataSet.size());
         return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }
 

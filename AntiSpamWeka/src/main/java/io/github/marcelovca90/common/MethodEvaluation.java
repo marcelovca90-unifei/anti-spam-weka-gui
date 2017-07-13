@@ -142,11 +142,11 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.debug("Model evaluation started. This may take a while.");
+            Logger.trace("Model evaluation started.");
             testStart = System.currentTimeMillis();
             evaluation.evaluateModel(classifier, testSet);
             testEnd = System.currentTimeMillis();
-            Logger.debug("Model evaluation finished.");
+            Logger.trace("Model evaluation finished.");
         }
         catch (Exception e)
         {
@@ -159,11 +159,11 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.debug("Classifier building started. This may take a while.");
+            Logger.trace("Classifier building started.");
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
-            Logger.debug("Classifier building finished.");
+            Logger.trace("Classifier building finished.");
         }
         catch (Exception e)
         {
