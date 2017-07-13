@@ -56,8 +56,8 @@ public class InputOutputHelper
     public static final String TAG_HAM = "ham";
     public static final String TAG_SPAM = "spam";
 
-    private static final int SIZE_INT = SizeOf.intSize();
-    private static final int SIZE_DOUBLE = SizeOf.doubleSize();
+    private static final long SIZE_INT = SizeOf.intSize();
+    private static final long SIZE_DOUBLE = SizeOf.doubleSize();
 
     public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
     {
@@ -307,7 +307,7 @@ public class InputOutputHelper
 
         List<Double> values = new ArrayList<>();
 
-        int offset = 0;
+        long offset = 0L;
 
         int numberOfInstances = memory.getInt(offset);
         offset += SIZE_INT;
