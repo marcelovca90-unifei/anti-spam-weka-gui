@@ -68,6 +68,8 @@ public class InputOutputHelper
 
     public Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
     {
+        Logger.debug("Creating empty [{}] data set with [{}] features and [{}] instances. This may take a while.", "ham", featureAmount, emptyHamCount);
+
         // declare ham instance to be reused
         Instance hamInstance;
 
@@ -88,6 +90,8 @@ public class InputOutputHelper
             hamInstance.setClassValue(TAG_HAM);
             hamDataSet.add(hamInstance);
         }
+
+        Logger.debug("Creating empty [{}] data set with [{}] features and [{}] instances. This may take a while.", "spam", featureAmount, emptySpamCount);
 
         // declare spam instance to be reused
         Instance spamInstance;
@@ -154,7 +158,7 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
     {
-        Logger.debug("Reading {} data from file {}. This may take a while.", "ham", hamDataFilename);
+        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "ham", hamDataFilename);
 
         // read ham amounts
         ByteBuffer hamBuffer = readBytesFromFile(hamDataFilename);
@@ -184,7 +188,7 @@ public class InputOutputHelper
             hamDataSet.add(hamInstance);
         }
 
-        Logger.debug("Reading {} data from file {}. This may take a while.", "spam", spamDataFilename);
+        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "spam", spamDataFilename);
 
         // read spam amounts
         ByteBuffer spamBuffer = readBytesFromFile(spamDataFilename);
@@ -233,6 +237,8 @@ public class InputOutputHelper
 
     public File saveInstancesToFile(Instances instances, String filename) throws IOException
     {
+        Logger.debug("Saving data set to file [{}]. This may take a while.", filename);
+
         // create output file's buffered writer
         File file = new File(filename);
 
@@ -263,6 +269,8 @@ public class InputOutputHelper
 
     public File saveModelToFile(String filename, Classifier classifier) throws Exception
     {
+        Logger.debug("Saving model to file [{}]. This may take a while.", filename);
+
         weka.core.SerializationHelper.write(filename, classifier);
 
         return new File(filename);
