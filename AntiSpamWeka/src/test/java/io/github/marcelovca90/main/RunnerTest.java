@@ -22,19 +22,20 @@
 package io.github.marcelovca90.main;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -46,57 +47,51 @@ import io.github.marcelovca90.helper.CommandLineHelper;
 import io.github.marcelovca90.helper.ExperimentHelper;
 import io.github.marcelovca90.helper.InputOutputHelper;
 import io.github.marcelovca90.helper.MetaHelper;
-import weka.core.Instances;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunnerTest
 {
-    private String[] args;
-    private String metadataFilename;
-    private String hamDataFilename;
-    private String spamDataFilename;
-    private Instances dataSet;
-    private Set<DataSetMetadata> metadata;
-    private List<MethodConfiguration> methods;
+    private static String[] args;
+    private static Set<DataSetMetadata> metadata;
+    private static List<MethodConfiguration> methods;
 
     @Mock
     private CommandLineHelper commandLineHelper;
 
-    @Mock
-    private ExperimentHelper experimentHelper;
+    private ExperimentHelper experimentHelper = new ExperimentHelper();
 
-    @Mock
-    private InputOutputHelper inputOutputHelper;
+    private InputOutputHelper inputOutputHelper = new InputOutputHelper();
 
-    @Before
-    public void setUp() throws IOException
+    @BeforeClass
+    public static void setUp() throws IOException
     {
         args = new String[0];
 
-        ClassLoader classLoader = getClass().getClassLoader();
-        metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
-        hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
-        spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
+        DataSetMetadata metadataMock = mock(DataSetMetadata.class);
+        when(metadataMock.getEmptyHamCount()).thenReturn(6563);
+        when(metadataMock.getEmptySpamCount()).thenReturn(1407);
+        when(metadataMock.getFolder()).thenReturn("src/test/resources/data-sets-bin/10");
 
-        dataSet = new InputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
-        metadata = new InputOutputHelper().loadDataSetsMetadataFromFile(metadataFilename);
-        methods = Arrays.asList(MethodConfiguration.RT);
+        metadata = new HashSet<>();
+        metadata.add(metadataMock);
+
+        methods = Arrays.asList(MethodConfiguration.SPEGASOS);
     }
 
-    @After
-    public void tearDown()
+    @AfterClass
+    public static void tearDown()
     {
         MetaHelper.reset();
+
+        File folder = Paths.get("src/test/resources/data-sets-bin/10").toFile();
+
+        Arrays.stream(folder.listFiles((f, p) -> p.endsWith(".csv") || p.endsWith(".model"))).forEach(File::delete);
     }
 
     @Test
     public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 2, true, true, false, false, false, false, false);
-
-        doNothing().when(experimentHelper).printHeader();
-
-        when(inputOutputHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 3, true, true, false, false, false, false, false);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
 
@@ -106,12 +101,7 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 10, false, false, true, true, true, true, true);
-
-        doNothing().when(experimentHelper).printHeader();
-
-        when(inputOutputHelper.loadInstancesFromFile(anyString(), anyString())).thenReturn(dataSet);
-        when(inputOutputHelper.createEmptyInstances(anyInt(), anyInt(), anyInt())).thenReturn(dataSet);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 15, false, false, true, true, true, true, true);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
 

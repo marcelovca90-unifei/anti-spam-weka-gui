@@ -21,6 +21,9 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.pmw.tinylog.Logger;
 
 import weka.attributeSelection.ASEvaluation;
@@ -171,7 +174,11 @@ public class FilterConfiguration
         }
         catch (Exception e)
         {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+            Logger.error(
+                Constants.UNEXPECTED_EXCEPTION_MASK,
+                FilterConfiguration.class.getCanonicalName(),
+                "buildAndApply(Instances dataSet, AttributeFilter filter)",
+                Arrays.stream(e.getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\n")));
             return null;
         }
     }

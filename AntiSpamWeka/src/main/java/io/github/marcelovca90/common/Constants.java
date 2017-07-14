@@ -57,5 +57,5 @@ public class Constants
         TEST_TIME
     }
 
-    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception: {}";
+    public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception at {} :: {}\n{}";
 }

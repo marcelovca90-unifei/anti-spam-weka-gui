@@ -30,6 +30,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -57,10 +58,9 @@ public class InputOutputHelperTest
     @Before
     public void setUp() throws IOException
     {
-        ClassLoader classLoader = getClass().getClassLoader();
-        metadataFilename = classLoader.getResource("data-sets-bin/metadata.txt").getFile();
-        hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
-        spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
+        metadataFilename = Paths.get("src/test/resources/data-sets-bin/metadata.txt").toString();
+        hamDataFilename = Paths.get("src/test/resources/data-sets-bin/10/ham").toString();
+        spamDataFilename = Paths.get("src/test/resources/data-sets-bin/10/spam").toString();
     }
 
     @Test

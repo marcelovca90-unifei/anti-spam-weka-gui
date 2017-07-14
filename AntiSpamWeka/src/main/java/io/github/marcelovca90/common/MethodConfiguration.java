@@ -21,6 +21,9 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.pmw.tinylog.Logger;
 
 import weka.classifiers.AbstractClassifier;
@@ -111,7 +114,8 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm",
+            "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
@@ -129,7 +133,11 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            Logger.error(Constants.UNEXPECTED_EXCEPTION_MASK, e);
+            Logger.error(
+                Constants.UNEXPECTED_EXCEPTION_MASK,
+                MethodConfiguration.class.getCanonicalName(),
+                "buildClassifierFor(MethodConfiguration methodConfiguration)",
+                Arrays.stream(e.getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\n")));
         }
 
         return classifier;

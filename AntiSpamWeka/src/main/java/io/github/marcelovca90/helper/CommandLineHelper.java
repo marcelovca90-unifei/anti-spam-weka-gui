@@ -22,11 +22,11 @@
 package io.github.marcelovca90.helper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -63,11 +63,10 @@ public class CommandLineHelper
 
     public List<MethodConfiguration> getMethods()
     {
-        List<MethodConfiguration> methods = new ArrayList<>();
-        Arrays
+        return Arrays
             .stream(getOptionValue(CLIOption.METHOD).split(","))
-            .forEach(m -> methods.add(MethodConfiguration.valueOf(m)));
-        return methods;
+            .map(m -> MethodConfiguration.valueOf(m))
+            .collect(Collectors.toList());
     }
 
     public int getNumberOfRuns()

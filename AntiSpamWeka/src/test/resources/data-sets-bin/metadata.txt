@@ -1,4 +1,4 @@
-resources/data-sets-bin/10,0,18
-~/resources/data-sets-bin/10,20,0,17
-#resources/data-sets-bin/10,30,0,3
+resources/data-sets-bin/10,6563,1407
+~/resources/data-sets-bin/10,6563,1407
+#resources/data-sets-bin/10,6563,1407
 
