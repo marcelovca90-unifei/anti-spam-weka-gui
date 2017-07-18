@@ -21,11 +21,6 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import org.pmw.tinylog.Logger;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
@@ -136,11 +131,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            Logger.error(
-                Constants.UNEXPECTED_EXCEPTION_MASK,
-                MethodConfiguration.class.getCanonicalName(),
-                "buildClassifierFor(MethodConfiguration methodConfiguration)",
-                Arrays.stream(e.getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\n")));
+            e.printStackTrace();
         }
 
         return classifier;

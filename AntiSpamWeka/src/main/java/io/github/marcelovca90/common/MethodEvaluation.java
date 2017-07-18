@@ -22,8 +22,6 @@
 package io.github.marcelovca90.common;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import org.pmw.tinylog.Logger;
 
@@ -152,11 +150,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error(
-                Constants.UNEXPECTED_EXCEPTION_MASK,
-                MethodEvaluation.class.getCanonicalName(),
-                "test(Instances testSet)",
-                Arrays.stream(e.getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\n")));
+            e.printStackTrace();
         }
     }
 
@@ -173,11 +167,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error(
-                Constants.UNEXPECTED_EXCEPTION_MASK,
-                MethodEvaluation.class.getCanonicalName(),
-                "train(Instances trainSet)",
-                Arrays.stream(e.getStackTrace()).map(st -> st.toString()).collect(Collectors.joining("\n")));
+            e.printStackTrace();
         }
     }
 }
