@@ -75,7 +75,7 @@ public class RunnerTest
         metadata = new HashSet<>();
         metadata.add(metadataMock);
 
-        methods = Arrays.asList(MethodConfiguration.PEGASOS);
+        methods = Arrays.asList(MethodConfiguration.SPEGASOS);
     }
 
     @AfterClass

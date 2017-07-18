@@ -104,9 +104,6 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
 
-    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
-    PEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
-
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html
     RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
 
@@ -121,7 +118,10 @@ public enum MethodConfiguration
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
     SMO("Sequential minimal optimization algorithm",
-            "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class);
+            "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+
+    // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
+    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
 
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)
