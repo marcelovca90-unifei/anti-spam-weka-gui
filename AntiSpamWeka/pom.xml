@@ -159,13 +159,13 @@
 
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>tabuAndScatterSearch</artifactId>
+            <artifactId>SVMAttributeEval</artifactId>
             <version>1.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>SVMAttributeEval</artifactId>
+            <artifactId>tabuAndScatterSearch</artifactId>
             <version>1.0.1</version>
         </dependency>
 
@@ -247,6 +247,12 @@
             <groupId>weka-packages</groupId>
             <artifactId>RBFNetwork</artifactId>
             <version>1.0.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>weka-packages</groupId>
+            <artifactId>simpleCART</artifactId>
+            <version>1.0.3</version>
         </dependency>
 
         <dependency>
