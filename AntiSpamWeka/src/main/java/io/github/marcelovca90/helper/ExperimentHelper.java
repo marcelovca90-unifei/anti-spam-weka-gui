@@ -183,11 +183,11 @@ public class ExperimentHelper
                     Logger.trace("Outlier detected by Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
                     outlierIndices.add(i);
                 }
-//                else if (isOutlierByModifiedZScore(stats, value))
-//                {
-//                    Logger.trace("Outlier detected by Modified Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
-//                    outlierIndices.add(i);
-//                }
+                else if (isOutlierByModifiedZScore(stats, value))
+                {
+                    Logger.trace("Outlier detected by Modified Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    outlierIndices.add(i);
+                }
                 else if (isOutlierByInterquartileRange(stats, value))
                 {
                     Logger.trace("Outlier detected by Interquartile Range\tMetric={}\tIndex={}\tValue={}", metric, i, value);

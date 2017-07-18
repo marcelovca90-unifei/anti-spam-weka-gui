@@ -257,12 +257,6 @@
 
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>simpleEducationalLearningSchemes</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>weka-packages</groupId>
             <artifactId>SPegasos</artifactId>
             <version>1.0.1</version>
         </dependency>

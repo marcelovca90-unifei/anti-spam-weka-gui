@@ -21,10 +21,10 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -60,9 +60,9 @@ public class MethodConfigurationTest
     }
 
     @Test
-    public void enum_MethodConfiguration_shouldReturnAllClassifiers()
+    public void enum_MethodConfiguration_shouldReturnTwentyThreeValues()
     {
-        assertThat(MethodConfiguration.values().length, greaterThan(0));
+        assertThat(MethodConfiguration.values().length, equalTo(23));
         Arrays
             .stream(MethodConfiguration.values())
             .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
