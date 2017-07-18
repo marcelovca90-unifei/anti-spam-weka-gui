@@ -28,6 +28,7 @@ import org.pmw.tinylog.Logger;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.bayes.NaiveBayesSimple;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A2DE;
 import weka.classifiers.functions.LibLINEAR;
@@ -37,12 +38,15 @@ import weka.classifiers.functions.RBFNetwork;
 import weka.classifiers.functions.SGD;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SPegasos;
+import weka.classifiers.lazy.IB1;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.misc.HyperPipes;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.FURIA;
 import weka.classifiers.rules.JRip;
+import weka.classifiers.rules.Prism;
 import weka.classifiers.trees.BFTree;
+import weka.classifiers.trees.Id3;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.J48Consolidated;
 import weka.classifiers.trees.J48graft;
@@ -74,8 +78,14 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html
     HP("HyperPipe classifier", "", HyperPipes.class),
 
+    // http://weka.sourceforge.net/doc.packages/simpleEducationalLearningSchemes/weka/classifiers/lazy/IB1.html
+    IB1("Instance-based nearest-neighbour classifier", "", IB1.class),
+
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/lazy/IBk.html
     IBK("K-nearest neighbours classifier", "-K 1 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\"", IBk.class),
+
+    // http://weka.sourceforge.net/doc.packages/simpleEducationalLearningSchemes/weka/classifiers/trees/Id3.html
+    ID3("Unpruned decision tree based on the ID3 algorithm", "", Id3.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html
     J48("C4.5 decision tree", "-C 0.25 -M 2 -Q 1", J48.class),
@@ -101,8 +111,14 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html
     NB("Naive Bayes", "", NaiveBayes.class),
 
+    // http://weka.sourceforge.net/doc.packages/simpleEducationalLearningSchemes/weka/classifiers/bayes/NaiveBayesSimple.html
+    NBS("Simple Naive Bayes classifier", "", NaiveBayesSimple.class),
+
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html
     NBTREE("Decision tree with naive Bayes classifiers at the leaves", "", NBTree.class),
+
+    // http://weka.sourceforge.net/doc.packages/simpleEducationalLearningSchemes/weka/classifiers/rules/Prism.html
+    PRISM("PRISM: An algorithm for inducing modular rules", "", Prism.class),
 
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html
     RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
