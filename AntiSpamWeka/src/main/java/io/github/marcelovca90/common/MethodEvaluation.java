@@ -21,8 +21,6 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
-import java.io.File;
-
 import org.pmw.tinylog.Logger;
 
 import weka.classifiers.Classifier;
@@ -48,7 +46,7 @@ public class MethodEvaluation
     {
         this.folder = folder;
 
-        String[] parts = folder.split("\\" + File.separator);
+        String[] parts = folder.split("[\\/]");
         this.dataSetName = parts[parts.length - 3];
         this.statMethod = parts[parts.length - 2];
         this.numberOfTotalFeatures = Integer.parseInt(parts[parts.length - 1]);
