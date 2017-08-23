@@ -150,7 +150,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 
@@ -167,7 +167,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 }

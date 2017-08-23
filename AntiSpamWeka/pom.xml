@@ -53,6 +53,15 @@
 
     <dependencies>
 
+        <!-- SYSTEM DEPENDENCIES -->
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8.0</version>
+            <scope>system</scope>
+            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
+        </dependency>
+
         <!-- MAVEN CENTRAL DEPENDENCIES -->
         <dependency>
             <groupId>commons-cli</groupId>
@@ -126,135 +135,113 @@
             <artifactId>attributeSelectionSearchMethods</artifactId>
             <version>1.0.7</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>EvolutionarySearch</artifactId>
             <version>1.0.2</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>fastCorrBasedFS</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>MultiObjectiveEvolutionarySearch</artifactId>
             <version>1.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>probabilisticSignificanceAE</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>PSOSearch</artifactId>
             <version>1.2.0</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>SVMAttributeEval</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>tabuAndScatterSearch</artifactId>
             <version>1.0.1</version>
         </dependency>
 
-        <!-- CLASSIFICATION EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES 
-            FOLDER) -->
+        <!-- CLASSIFICATION EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>AnDE</artifactId>
             <version>1.2.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>bestFirstTree</artifactId>
             <version>1.0.4</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>DTNB</artifactId>
             <version>1.0.4</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>fuzzyUnorderedRuleInduction</artifactId>
             <version>1.0.2</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>hyperPipes</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>J48Consolidated</artifactId>
             <version>3.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>J48graft</artifactId>
             <version>1.0.4</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibLINEAR</artifactId>
             <version>1.9.8</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibLINEAR-CJLin</artifactId>
             <version>1.96-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibSVM</artifactId>
             <version>1.0.10</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibSVM-CJLin</artifactId>
             <version>3.21</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>naiveBayesTree</artifactId>
             <version>1.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>RBFNetwork</artifactId>
             <version>1.0.8</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>simpleCART</artifactId>
             <version>1.0.3</version>
         </dependency>
-
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>SPegasos</artifactId>

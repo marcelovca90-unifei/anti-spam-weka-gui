@@ -90,7 +90,8 @@ public class ExperimentHelper
 
     public void printHeader()
     {
-        String[] fullMetricNames = new String[] {
+        String[] fullMetricNames = new String[]
+        {
                 "Timestamp", "Data Set", "Statistics Method", "Number of Features",
                 "Ham Precision", "Spam Precision", "Ham Recall", "Spam Recall",
                 "Ham Area Under PRC", "Spam Area Under PRC", "Ham Area Under ROC", "Spam Area Under ROC",
@@ -230,7 +231,7 @@ public class ExperimentHelper
     {
         double median = stats.getPercentile(50);
         double medianAbsoluteDeviation = new DescriptiveStatistics(
-            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+                Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
         double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
 
         return Math.abs(modifiedZScore) > 3.5;

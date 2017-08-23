@@ -65,7 +65,7 @@ public class CommandLineHelper
     {
         return Arrays
             .stream(getOptionValue(CLIOption.METHOD).split(","))
-            .map(m -> MethodConfiguration.valueOf(m))
+            .map(MethodConfiguration::valueOf)
             .collect(Collectors.toList());
     }
 

@@ -169,7 +169,7 @@ public class InputOutputHelper
         Instances spamDataSet = loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
 
         // create merged data set attributes
-        ArrayList<Attribute> dataSetAttributes = createAttributes(hamDataSet.numAttributes() - 1);
+        ArrayList<Attribute> dataSetAttributes = createAttributes(hamDataSet.numAttributes() - 1L);
 
         // create and fill merged data set
         Instances dataSet = new Instances(UUID.randomUUID().toString(), dataSetAttributes, hamDataSet.size() + spamDataSet.size());
@@ -240,12 +240,14 @@ public class InputOutputHelper
         InputStream inputStream = new FileInputStream(filename);
 
         byte[] byteBufferA = new byte[SIZE_INT];
-        inputStream.read(byteBufferA);
+        int bytesReadA = inputStream.read(byteBufferA);
         int numberOfInstances = ByteBuffer.wrap(byteBufferA).getInt();
+        Logger.trace("{} bytes read for {}", bytesReadA, messageType);
 
         byte[] byteBufferB = new byte[SIZE_INT];
-        inputStream.read(byteBufferB);
+        int bytesReadB = inputStream.read(byteBufferB);
         int numberOfAttributes = ByteBuffer.wrap(byteBufferB).getInt();
+        Logger.trace("{} bytes read for {}", bytesReadB, messageType);
 
         // create attributes
         ArrayList<Attribute> attributes = createAttributes(numberOfAttributes);
