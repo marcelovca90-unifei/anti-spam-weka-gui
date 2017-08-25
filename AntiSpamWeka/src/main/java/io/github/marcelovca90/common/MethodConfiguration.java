@@ -69,6 +69,9 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/packageMetaData/fuzzyUnorderedRuleInduction/index.html
     FURIA("Fuzzy Unordered Rule Induction Algorithm", "-F 3 -N 2.0 -O 2 -S 1 -p 0 -s 0", FURIA.class),
 
+    // https://github.com/fracpete/fastrandomforest-weka-package
+    FRF("Fast random forests", "-I 100 -K 0 -S 1", FastRandomForest.class),
+    
     // http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html
     HP("HyperPipe classifier", "", HyperPipes.class),
 
@@ -105,9 +108,6 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html
     RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
 
-    // https://github.com/fracpete/fastrandomforest-weka-package
-    FRF("Fast random forests", "-I 100 -K 0 -S 1", FastRandomForest.class),
-
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html
     RT("Random tree", "-K 0 -M 1.0 -V 0.001 -S 1", RandomTree.class),
 
@@ -121,7 +121,7 @@ public enum MethodConfiguration
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
-    WRF("Weka random forests", "-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
+    WRF("Weka random forests", "-P 100 -I 100 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
 
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)

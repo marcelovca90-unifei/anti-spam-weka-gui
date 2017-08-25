@@ -60,9 +60,9 @@ public class MethodConfigurationTest
     }
 
     @Test
-    public void enum_MethodConfiguration_shouldReturnTwentyThreeValues()
+    public void enum_MethodConfiguration_shouldReturnTwentyFourValues()
     {
-        assertThat(MethodConfiguration.values().length, equalTo(23));
+        assertThat(MethodConfiguration.values().length, equalTo(24));
         Arrays
             .stream(MethodConfiguration.values())
             .forEach(v -> assertThat(MethodConfiguration.valueOf(v.name()), notNullValue()));
