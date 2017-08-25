@@ -240,14 +240,12 @@ public class InputOutputHelper
         InputStream inputStream = new FileInputStream(filename);
 
         byte[] byteBufferA = new byte[SIZE_INT];
-        int bytesReadA = inputStream.read(byteBufferA);
+        inputStream.read(byteBufferA);
         int numberOfInstances = ByteBuffer.wrap(byteBufferA).getInt();
-        Logger.trace("{} bytes read for {}", bytesReadA, messageType);
 
         byte[] byteBufferB = new byte[SIZE_INT];
-        int bytesReadB = inputStream.read(byteBufferB);
+        inputStream.read(byteBufferB);
         int numberOfAttributes = ByteBuffer.wrap(byteBufferB).getInt();
-        Logger.trace("{} bytes read for {}", bytesReadB, messageType);
 
         // create attributes
         ArrayList<Attribute> attributes = createAttributes(numberOfAttributes);

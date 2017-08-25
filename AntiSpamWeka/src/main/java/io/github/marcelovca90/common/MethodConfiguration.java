@@ -23,6 +23,7 @@ package io.github.marcelovca90.common;
 
 import org.pmw.tinylog.Logger;
 
+import hr.irb.fastRandomForest.FastRandomForest;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.AveragedNDependenceEstimators.A1DE;
@@ -104,8 +105,8 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html
     RBF("Radial basis function network", "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1", RBFNetwork.class),
 
-    // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
-    RF("Random forests", "-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class),
+    // https://github.com/fracpete/fastrandomforest-weka-package
+    FRF("Fast random forests", "-I 100 -K 0 -S 1", FastRandomForest.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html
     RT("Random tree", "-K 0 -M 1.0 -V 0.001 -S 1", RandomTree.class),
@@ -117,7 +118,10 @@ public enum MethodConfiguration
     SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
-    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class);
+    SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
+
+    // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
+    WRF("Weka random forests", "-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
 
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)

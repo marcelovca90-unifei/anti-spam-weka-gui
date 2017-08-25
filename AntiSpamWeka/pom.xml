@@ -53,15 +53,6 @@
 
     <dependencies>
 
-        <!-- SYSTEM DEPENDENCIES -->
-        <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.8.0</version>
-            <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
-        </dependency>
-
         <!-- MAVEN CENTRAL DEPENDENCIES -->
         <dependency>
             <groupId>commons-cli</groupId>
@@ -129,7 +120,7 @@
             <version>0.1.0</version>
         </dependency>
 
-        <!-- FILTER EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
+        <!-- FILTERING EXTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>attributeSelectionSearchMethods</artifactId>
@@ -171,7 +162,7 @@
             <version>1.0.1</version>
         </dependency>
 
-        <!-- CLASSIFICATION EXTERNAL DEPENDENCIES (COPIED FROM WEKA PACKAGES FOLDER) -->
+        <!-- CLASSIFICATION EXTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>AnDE</artifactId>
@@ -246,6 +237,18 @@
             <groupId>weka-packages</groupId>
             <artifactId>SPegasos</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fracpete</groupId>
+            <artifactId>fastrandomforest-weka-package</artifactId>
+            <version>2016.12.7</version>
+            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>nz.ac.waikato.cms.weka</groupId>
+                    <artifactId>weka-dev</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
