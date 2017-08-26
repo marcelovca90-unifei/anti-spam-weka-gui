@@ -23,11 +23,8 @@ package io.github.marcelovca90.main;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-
-import org.apache.commons.math3.primes.Primes;
 
 import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
@@ -73,10 +70,7 @@ public class Runner
             for (DataSetMetadata metadata : MetaHelper.getCommandLineHelper().getDataSetsMetadata())
             {
                 // initialize random number generator
-                Random random = new Random();
-
-                // reset random number generator seed
-                Integer randomSeed = 1;
+                MetaHelper.getRandomHelper().reset();
 
                 // import data sets for each class
                 String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
@@ -88,7 +82,7 @@ public class Runner
                 dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
 
                 // match class cardinalities so data set becomes balanced
-                MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet, random);
+                MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
 
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
@@ -114,10 +108,10 @@ public class Runner
                 for (int run = 0; run < MetaHelper.getCommandLineHelper().getNumberOfRuns(); run++)
                 {
                     // set random number generator's seed
-                    random.setSeed(randomSeed = Primes.nextPrime(++randomSeed));
+                    MetaHelper.getRandomHelper().update();
 
                     // randomize the data set to assure balance and avoid biasing
-                    dataSet.randomize(random);
+                    dataSet.randomize(MetaHelper.getRandomHelper().getRandom());
 
                     // build train and test sets
                     double splitPercent = method.getSplitPercent();
@@ -138,7 +132,7 @@ public class Runner
                     }
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
-                    String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(metadata.getFolder(), method, splitPercent, randomSeed);
+                    String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(metadata.getFolder(), method, splitPercent, MetaHelper.getRandomHelper().getSeed());
                     Classifier classifier = MetaHelper.getCommandLineHelper().skipTrain() ? MetaHelper.getInputOutputHelper().loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result

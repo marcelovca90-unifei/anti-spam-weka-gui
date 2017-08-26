@@ -224,10 +224,11 @@ public class InputOutputHelper
         return dataSet;
     }
 
-    public void matchCardinalities(Instances hamDataSet, Instances spamDataSet, Random random)
+    public void matchCardinalities(Instances hamDataSet, Instances spamDataSet)
     {
         int hamAmount = hamDataSet.size();
         int spamAmount = spamDataSet.size();
+        Random random = MetaHelper.getRandomHelper().getRandom();
 
         if (hamAmount < spamAmount)
         {

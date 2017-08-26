@@ -47,7 +47,7 @@ import weka.classifiers.Evaluation;
 public class ExperimentHelperTest
 {
     private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
-    private final ExperimentHelper formatHelper = MetaHelper.getExperimentHelper();
+    private final ExperimentHelper experimentHelper = MetaHelper.getExperimentHelper();
     private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
     private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
     private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
@@ -82,50 +82,50 @@ public class ExperimentHelperTest
     @Test
     public void computeSingleRunResults_shouldReturnSuccess()
     {
-        formatHelper.computeSingleRunResults(methodEvaluationMock);
+        experimentHelper.computeSingleRunResults(methodEvaluationMock);
     }
 
     @Test
     public void detectAndRemoveOutliers_shouldReturnPossibleOutliersCount()
     {
-        formatHelper.computeSingleRunResults(methodEvaluationMock);
+        experimentHelper.computeSingleRunResults(methodEvaluationMock);
 
-        assertThat(formatHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
+        assertThat(experimentHelper.detectAndRemoveOutliers(), greaterThanOrEqualTo(0));
     }
 
     @Test
     public void printHeader_shouldReturnSuccess()
     {
-        formatHelper.printHeader();
+        experimentHelper.printHeader();
     }
 
     @Test
     public void reset_shouldReturnSuccess()
     {
-        formatHelper.clearResultHistory();
+        experimentHelper.clearResultHistory();
     }
 
     @Test
     public void summarizeResults_doNotPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, false, true);
+        experimentHelper.summarizeResults(results, methodEvaluation, false, true);
     }
 
     @Test
     public void summarizeResults_doNotPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, false, false);
+        experimentHelper.summarizeResults(results, methodEvaluation, false, false);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, true, true);
+        experimentHelper.summarizeResults(results, methodEvaluation, true, true);
     }
 
     @Test
     public void summarizeResults_doPrintStatsDoNotFormatMillis_shouldReturnSuccess()
     {
-        formatHelper.summarizeResults(results, methodEvaluation, true, false);
+        experimentHelper.summarizeResults(results, methodEvaluation, true, false);
     }
 }

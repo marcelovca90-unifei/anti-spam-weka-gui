@@ -26,6 +26,7 @@ public class MetaHelper
     private static CommandLineHelper commandLineHelper;
     private static ExperimentHelper experimentHelper;
     private static InputOutputHelper inputOutputHelper;
+    private static RandomHelper randomHelper;
 
     public static CommandLineHelper getCommandLineHelper()
     {
@@ -48,11 +49,19 @@ public class MetaHelper
         return inputOutputHelper;
     }
 
-    public static void initialize(CommandLineHelper _commandLineHelper, ExperimentHelper _experimentHelper, InputOutputHelper _inputOutputHelper)
+    public static RandomHelper getRandomHelper()
+    {
+        if (randomHelper == null)
+            randomHelper = new RandomHelper();
+        return randomHelper;
+    }
+
+    public static void initialize(CommandLineHelper _commandLineHelper, ExperimentHelper _experimentHelper, InputOutputHelper _inputOutputHelper, RandomHelper _randomHelper)
     {
         commandLineHelper = _commandLineHelper;
         experimentHelper = _experimentHelper;
         inputOutputHelper = _inputOutputHelper;
+        randomHelper = _randomHelper;
     }
 
     public static void reset()
@@ -60,6 +69,7 @@ public class MetaHelper
         commandLineHelper = null;
         experimentHelper = null;
         inputOutputHelper = null;
+        randomHelper = null;
     }
 
     // used to suppress the default public constructor

@@ -47,8 +47,9 @@ import io.github.marcelovca90.helper.CommandLineHelper;
 import io.github.marcelovca90.helper.ExperimentHelper;
 import io.github.marcelovca90.helper.InputOutputHelper;
 import io.github.marcelovca90.helper.MetaHelper;
+import io.github.marcelovca90.helper.RandomHelper;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith (MockitoJUnitRunner.class)
 public class RunnerTest
 {
     private static String[] args;
@@ -61,6 +62,8 @@ public class RunnerTest
     private ExperimentHelper experimentHelper = new ExperimentHelper();
 
     private InputOutputHelper inputOutputHelper = new InputOutputHelper();
+
+    private RandomHelper randomHelper = new RandomHelper();
 
     @BeforeClass
     public static void setUp() throws IOException
@@ -93,7 +96,7 @@ public class RunnerTest
     {
         commandLineHelper = buildCLIHelper(args, metadata, methods, 3, true, true, false, false, false, false, false);
 
-        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
+        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
         Runner.main(args);
     }
@@ -101,15 +104,16 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 15, false, false, true, true, true, true, true);
+        commandLineHelper = buildCLIHelper(args, metadata, methods, 20, false, false, true, true, true, true, true);
 
-        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper);
+        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
         Runner.main(args);
     }
 
     private CommandLineHelper buildCLIHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
-            boolean includeEmptyInstances, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses) throws Exception
+                                             boolean includeEmptyInstances, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses)
+            throws Exception
     {
         CommandLineHelper helper = mock(CommandLineHelper.class);
 
