@@ -21,7 +21,8 @@
     <artifactId>AntiSpamWeka</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>AntiSpamWeka</name>
-    <description>AntiSpamWeka</description>
+    <url>https://github.com/marcelovca90/anti-spam-weka</url>
+    <description> Project of my master's degree in Computer Science (&quot;Study and Research in Anti-Spam Systems&quot;) - Weka approach.</description>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
@@ -118,6 +119,12 @@
             <groupId>com.arturmkrtchyan.sizeof4j</groupId>
             <artifactId>sizeof4j</artifactId>
             <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>tools</artifactId>
+                    <groupId>com.sun</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- FILTERING EXTERNAL DEPENDENCIES -->
