@@ -121,7 +121,7 @@ public enum MethodConfiguration
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
-    WRF("Weka random forests", "-P 100 -I 200 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
+    WRF("Weka random forests", "-P 100 -I 100 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
 
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)

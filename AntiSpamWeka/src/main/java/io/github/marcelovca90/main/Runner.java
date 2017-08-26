@@ -87,7 +87,7 @@ public class Runner
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 if (MetaHelper.getCommandLineHelper().shrinkFeatures())
-                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.CfsSubsetEval_GreedyStepwise);
+                    dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.CfsSubsetEval_MultiObjectiveEvolutionarySearch);
                 if (MetaHelper.getCommandLineHelper().balanceClasses())
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.ClassBalancer);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
