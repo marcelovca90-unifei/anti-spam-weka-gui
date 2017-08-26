@@ -70,7 +70,7 @@ public enum MethodConfiguration
     FURIA("Fuzzy Unordered Rule Induction Algorithm", "-F 3 -N 2.0 -O 2 -S 1 -p 0 -s 0", FURIA.class),
 
     // https://github.com/fracpete/fastrandomforest-weka-package
-    FRF("Fast random forests", "-I 200 -K 0 -S 1", FastRandomForest.class),
+    FRF("Fast random forests", "-I 100 -K 0 -S 1", FastRandomForest.class),
 
     // http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html
     HP("HyperPipe classifier", "", HyperPipes.class),
