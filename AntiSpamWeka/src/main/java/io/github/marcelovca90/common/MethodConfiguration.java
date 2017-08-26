@@ -70,8 +70,8 @@ public enum MethodConfiguration
     FURIA("Fuzzy Unordered Rule Induction Algorithm", "-F 3 -N 2.0 -O 2 -S 1 -p 0 -s 0", FURIA.class),
 
     // https://github.com/fracpete/fastrandomforest-weka-package
-    FRF("Fast random forests", "-I 100 -K 0 -S 1", FastRandomForest.class),
-    
+    FRF("Fast random forests", "-I 200 -K 0 -S 1", FastRandomForest.class),
+
     // http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html
     HP("HyperPipe classifier", "", HyperPipes.class),
 
@@ -115,13 +115,13 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 1.0E-3 -P 1.0E-12 -N 2 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 0\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
-    WRF("Weka random forests", "-P 100 -I 100 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
+    WRF("Weka random forests", "-P 100 -I 200 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
 
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)

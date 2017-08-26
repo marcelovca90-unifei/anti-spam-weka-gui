@@ -59,6 +59,10 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
+    private static final int NO_CORES = Runtime.getRuntime().availableProcessors();
+    private static final String CFS_SUBSET_EVAL_CONFIG = String.format("-Z -P %d -E %d", NO_CORES, NO_CORES);
+    private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
+
     public enum AttributeFilter
     {
         // Correlation-based Feature Subset Selection
@@ -156,9 +160,6 @@ public class FilterConfiguration
             return String.format("InstanceFilter [class=%s]", clazz.getSimpleName());
         }
     }
-
-    private static final String CFS_SUBSET_EVAL_CONFIG = "-P 1 -E 1";
-    private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
 
     public static Instances buildAndApply(Instances dataSet, AttributeFilter filter)
     {
