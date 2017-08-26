@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.FilterConfiguration.AttributeFilter;
 import io.github.marcelovca90.common.FilterConfiguration.InstanceFilter;
 import io.github.marcelovca90.helper.MetaHelper;
@@ -45,23 +46,26 @@ import weka.core.Instances;
 @RunWith(MockitoJUnitRunner.class)
 public class FilterConfigurationTest
 {
-    private Instances dataSet;
     private String hamDataFilename;
+    private Instances hamDataSet;
     private String spamDataFilename;
+    private Instances spamDataSet;
+    private Instances dataSet;
 
     @Before
     public void setUp() throws IOException
     {
         ClassLoader classLoader = getClass().getClassLoader();
         hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
+        hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, MessageType.HAM);
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
+        spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
+        dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
     }
 
     @Test
     public void buildAttributeFilterFor_actualDataSet_shouldReturnNullDataSet() throws IOException
     {
-        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
-
         assertThat(FilterConfiguration.buildAndApply(dataSet, AttributeFilter.CfsSubsetEval_BestFirst), notNullValue());
     }
 
@@ -74,8 +78,6 @@ public class FilterConfigurationTest
     @Test
     public void buildInstanceFilterFor_dummyDataSet_shouldReturnNullDataSet() throws Exception
     {
-        dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, spamDataFilename);
-
         assertThat(FilterConfiguration.buildAndApply(dataSet, InstanceFilter.ClassBalancer), notNullValue());
     }
 

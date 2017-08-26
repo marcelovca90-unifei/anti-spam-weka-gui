@@ -140,11 +140,11 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.trace("Model evaluation started.");
+            Logger.trace("Started evaluating [{}] classifier.", classifier.getClass().getName());
             testStart = System.currentTimeMillis();
             evaluation.evaluateModel(classifier, testSet);
             testEnd = System.currentTimeMillis();
-            Logger.trace("Model evaluation finished.");
+            Logger.trace("Finished evaluating [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {
@@ -157,11 +157,11 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.trace("Classifier building started.");
+            Logger.trace("Started building [{}] classifier.", classifier.getClass().getName());
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
-            Logger.trace("Classifier building finished.");
+            Logger.trace("Finished building [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {

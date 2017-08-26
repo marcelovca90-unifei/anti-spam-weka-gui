@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
 import weka.classifiers.AbstractClassifier;
@@ -50,10 +51,10 @@ public class InputOutputHelperTest
 {
     private final InputOutputHelper ioHelper = MetaHelper.getInputOutputHelper();
 
-    private Instances dataSet;
-    private String hamDataFilename;
     private String metadataFilename;
+    private String hamDataFilename;
     private String spamDataFilename;
+    private Instances dataSet;
 
     @Before
     public void setUp() throws IOException
@@ -117,7 +118,7 @@ public class InputOutputHelperTest
     @Test
     public void loadInstancesFromFile_shouldDeserializeInstances() throws IOException
     {
-        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, MessageType.HAM);
 
         assertThat(dataSet, notNullValue());
         assertThat(dataSet.size(), greaterThan(0));
@@ -145,7 +146,7 @@ public class InputOutputHelperTest
     @Test
     public void saveInstancesToFile_shouldProperlySerializeInstances() throws IOException
     {
-        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, spamDataFilename);
+        dataSet = ioHelper.loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
 
         File file = ioHelper.saveInstancesToFile(dataSet, "data-set.csv");
 

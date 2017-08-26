@@ -34,6 +34,7 @@ import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,7 +73,7 @@ public class InputOutputHelper
 
     public Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
     {
-        Logger.debug("Creating empty [{}] data set with [{}] features and [{}] instances.", "ham", featureAmount, emptyHamCount);
+        Logger.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "ham", featureAmount, emptyHamCount);
 
         // declare ham instance to be reused
         Instance hamInstance;
@@ -95,7 +96,7 @@ public class InputOutputHelper
             hamDataSet.add(hamInstance);
         }
 
-        Logger.debug("Creating empty [{}] data set with [{}] features and [{}] instances.", "spam", featureAmount, emptySpamCount);
+        Logger.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "spam", featureAmount, emptySpamCount);
 
         // declare spam instance to be reused
         Instance spamInstance;
@@ -160,83 +161,10 @@ public class InputOutputHelper
         return metadata;
     }
 
-    public Instances loadInstancesFromFile(String hamDataFilename, String spamDataFilename) throws IOException
+    public Instances loadInstancesFromFile(String filename, MessageType messageType) throws IOException
     {
-        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "ham", hamDataFilename);
-        Instances hamDataSet = loadInstancesFromFile(hamDataFilename, MessageType.HAM);
+        Logger.trace("Reading [{}] data from file [{}].", messageType, filename);
 
-        Logger.debug("Reading [{}] data from file [{}]. This may take a while.", "spam", spamDataFilename);
-        Instances spamDataSet = loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
-
-        // create merged data set attributes
-        ArrayList<Attribute> dataSetAttributes = createAttributes(hamDataSet.numAttributes() - 1L);
-
-        // create and fill merged data set
-        Instances dataSet = new Instances(UUID.randomUUID().toString(), dataSetAttributes, hamDataSet.size() + spamDataSet.size());
-        dataSet.addAll(hamDataSet);
-        dataSet.addAll(spamDataSet);
-        dataSet.setClassIndex(dataSet.numAttributes() - 1);
-
-        return dataSet;
-    }
-
-    public Classifier loadModelFromFile(String filename) throws Exception
-    {
-        return (Classifier) weka.core.SerializationHelper.read(filename);
-    }
-
-    public File saveInstancesToFile(Instances instances, String filename) throws IOException
-    {
-        Logger.debug("Saving data set to file [{}].", filename);
-
-        // create output file's buffered writer
-        File file = new File(filename);
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
-
-        // write attribute names
-        for (int attrIndex = 0; attrIndex < instances.numAttributes(); attrIndex++)
-        {
-            if (attrIndex > 0)
-                bufferedWriter.write(",");
-            bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : "class");
-        }
-        bufferedWriter.write(System.lineSeparator());
-
-        // write instances
-        for (int i = 0; i < instances.size(); i++)
-        {
-            bufferedWriter.write(instances.get(i).toStringNoWeight());
-            bufferedWriter.write(System.lineSeparator());
-        }
-
-        // flush and close the buffered writer
-        bufferedWriter.flush();
-        bufferedWriter.close();
-
-        return file;
-    }
-
-    public File saveModelToFile(String filename, Classifier classifier) throws Exception
-    {
-        Logger.debug("Saving model to file [{}].", filename);
-
-        weka.core.SerializationHelper.write(filename, classifier);
-
-        return new File(filename);
-    }
-
-    private ArrayList<Attribute> createAttributes(long featureAmount)
-    {
-        ArrayList<Attribute> attributes = new ArrayList<>();
-        for (long i = 0; i < featureAmount; i++)
-            attributes.add(new Attribute("x" + i));
-        attributes.add(new Attribute("class", Arrays.asList(MessageType.HAM.name(), MessageType.SPAM.name())));
-        return attributes;
-    }
-
-    private Instances loadInstancesFromFile(String filename, MessageType messageType) throws IOException
-    {
         InputStream inputStream = new FileInputStream(filename);
 
         byte[] byteBufferA = new byte[SIZE_INT];
@@ -280,5 +208,93 @@ public class InputOutputHelper
         inputStream.close();
 
         return dataSet;
+    }
+
+    public Instances mergeInstances(Instances hamDataSet, Instances spamDataSet)
+    {
+        // create merged data set attributes
+        ArrayList<Attribute> dataSetAttributes = createAttributes(hamDataSet.numAttributes() - 1L);
+
+        // create and fill merged data set
+        Instances dataSet = new Instances(UUID.randomUUID().toString(), dataSetAttributes, hamDataSet.size() + spamDataSet.size());
+        dataSet.addAll(hamDataSet);
+        dataSet.addAll(spamDataSet);
+        dataSet.setClassIndex(dataSet.numAttributes() - 1);
+
+        return dataSet;
+    }
+
+    public void matchCardinalities(Instances hamDataSet, Instances spamDataSet, Random random)
+    {
+        int hamAmount = hamDataSet.size();
+        int spamAmount = spamDataSet.size();
+
+        if (hamAmount < spamAmount)
+        {
+            Logger.trace("Replicating {} [{}] instances to match [{}] set cardinality.", spamAmount - hamAmount, "ham", "spam");
+            for (int i = hamAmount; i < spamAmount; i++)
+                hamDataSet.add(hamDataSet.get(random.nextInt(hamAmount)));
+        }
+        else
+        {
+            Logger.trace("Replicating {} [{}] instances to match [{}] set cardinality.", hamAmount - spamAmount, "spam", "ham");
+            for (int i = spamAmount; i < hamAmount; i++)
+                spamDataSet.add(spamDataSet.get(random.nextInt(spamAmount)));
+        }
+    }
+
+    public Classifier loadModelFromFile(String filename) throws Exception
+    {
+        return (Classifier) weka.core.SerializationHelper.read(filename);
+    }
+
+    public File saveInstancesToFile(Instances instances, String filename) throws IOException
+    {
+        Logger.trace("Saving data set to file [{}].", filename);
+
+        // create output file's buffered writer
+        File file = new File(filename);
+
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+
+        // write attribute names
+        for (int attrIndex = 0; attrIndex < instances.numAttributes(); attrIndex++)
+        {
+            if (attrIndex > 0)
+                bufferedWriter.write(",");
+            bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : "class");
+        }
+        bufferedWriter.write(System.lineSeparator());
+
+        // write instances
+        for (int i = 0; i < instances.size(); i++)
+        {
+            bufferedWriter.write(instances.get(i).toStringNoWeight());
+            bufferedWriter.write(System.lineSeparator());
+        }
+
+        // flush and close the buffered writer
+        bufferedWriter.flush();
+        bufferedWriter.close();
+
+        return file;
+    }
+
+    public File saveModelToFile(String filename, Classifier classifier) throws Exception
+    {
+        Logger.trace("Saving model to file [{}].", filename);
+
+        weka.core.SerializationHelper.write(filename, classifier);
+
+        return new File(filename);
+    }
+
+    private ArrayList<Attribute> createAttributes(long featureAmount)
+    {
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        for (long i = 0; i < featureAmount; i++)
+            attributes.add(new Attribute("x" + i));
+        attributes.add(new Attribute("class", Arrays.asList(MessageType.HAM.name(), MessageType.SPAM.name())));
+        return attributes;
     }
 }

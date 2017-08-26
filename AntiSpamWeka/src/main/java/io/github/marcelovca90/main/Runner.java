@@ -72,10 +72,23 @@ public class Runner
 
             for (DataSetMetadata metadata : MetaHelper.getCommandLineHelper().getDataSetsMetadata())
             {
-                // import data set
+                // initialize random number generator
+                Random random = new Random();
+
+                // reset random number generator seed
+                Integer randomSeed = 1;
+
+                // import data sets for each class
                 String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
+                Instances hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamFilePath, MessageType.HAM);
                 String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
-                dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamFilePath, spamFilePath);
+                Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(spamFilePath, MessageType.SPAM);
+
+                // merge ham and spam data sets
+                dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
+
+                // match class cardinalities so data set becomes balanced
+                MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet, random);
 
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
@@ -89,17 +102,11 @@ public class Runner
                 if (MetaHelper.getCommandLineHelper().includeEmptyInstances())
                     emptySet = MetaHelper.getInputOutputHelper().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
 
-                // initialize random number generator
-                Random random = new Random();
-
                 // build the classifier for the given configuration
                 Classifier baseClassifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
                 MethodEvaluation baseEvaluation = new MethodEvaluation(metadata.getFolder(), method);
-
-                // reset random number generator seed
-                Integer randomSeed = 1;
 
                 // reset run results keeper
                 MetaHelper.getExperimentHelper().clearResultHistory();

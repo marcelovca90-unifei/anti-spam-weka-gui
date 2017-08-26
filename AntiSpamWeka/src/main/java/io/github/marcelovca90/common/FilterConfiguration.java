@@ -164,7 +164,7 @@ public class FilterConfiguration
     {
         try
         {
-            Logger.debug("Applying {} to the data set (numAttributes: {}).", filter.getDescription(), dataSet.numAttributes());
+            Logger.trace("Applying {} to the data set (numAttributes: {}).", filter.getDescription(), dataSet.numAttributes());
             return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
         }
         catch (Exception e)
@@ -177,7 +177,7 @@ public class FilterConfiguration
 
     public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
     {
-        Logger.debug("Applying {} to the data set (size: {}).", filter.getDescription(), dataSet.size());
+        Logger.trace("Applying {} to the data set (size: {}).", filter.getDescription(), dataSet.size());
         return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }
 
