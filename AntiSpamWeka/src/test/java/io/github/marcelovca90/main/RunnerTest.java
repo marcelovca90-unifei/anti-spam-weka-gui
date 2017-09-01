@@ -30,10 +30,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.Sets;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +49,7 @@ import io.github.marcelovca90.helper.InputOutputHelper;
 import io.github.marcelovca90.helper.MetaHelper;
 import io.github.marcelovca90.helper.RandomHelper;
 
-@RunWith (MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RunnerTest
 {
     private static String[] args;
@@ -75,8 +75,7 @@ public class RunnerTest
         when(metadataMock.getEmptySpamCount()).thenReturn(1407);
         when(metadataMock.getFolder()).thenReturn("src/test/resources/data-sets-bin/10");
 
-        metadata = new HashSet<>();
-        metadata.add(metadataMock);
+        metadata = Sets.newHashSet(metadataMock);
 
         methods = Arrays.asList(MethodConfiguration.SPEGASOS);
     }
@@ -88,13 +87,15 @@ public class RunnerTest
 
         File folder = Paths.get("src/test/resources/data-sets-bin/10").toFile();
 
-        Arrays.stream(folder.listFiles((f, p) -> p.endsWith(".csv") || p.endsWith(".model"))).forEach(File::delete);
+        Arrays
+            .stream(folder.listFiles((f, p) -> p.endsWith(".arff") || p.endsWith(".csv") || p.endsWith(".model")))
+            .forEach(File::delete);
     }
 
     @Test
     public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 3, true, true, false, false, false, false, false);
+        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 3, true, true, false, true, false, false, false, false);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
@@ -104,15 +105,15 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCLIHelper(args, metadata, methods, 20, false, false, true, true, true, true, true);
+        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 25, false, false, true, false, true, true, true, true);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
         Runner.main(args);
     }
 
-    private CommandLineHelper buildCLIHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
-                                             boolean includeEmptyInstances, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses)
+    private CommandLineHelper buildCommandLineHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
+            boolean includeEmptyInstances, boolean saveArff, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses)
             throws Exception
     {
         CommandLineHelper helper = mock(CommandLineHelper.class);
@@ -124,6 +125,7 @@ public class RunnerTest
         when(helper.skipTrain()).thenReturn(skipTrain);
         when(helper.skipTest()).thenReturn(skipTest);
         when(helper.includeEmptyInstances()).thenReturn(includeEmptyInstances);
+        when(helper.saveArff()).thenReturn(saveArff);
         when(helper.saveModel()).thenReturn(saveModel);
         when(helper.saveSets()).thenReturn(saveSets);
         when(helper.shrinkFeatures()).thenReturn(shrinkFeatuers);

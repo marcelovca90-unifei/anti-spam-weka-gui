@@ -33,6 +33,7 @@ public class Constants
         SHRINK_FEATURES,
         BALANCE_CLASSES,
         TEST_EMPTY,
+        SAVE_ARFF,
         SAVE_MODEL,
         SAVE_SETS
     }

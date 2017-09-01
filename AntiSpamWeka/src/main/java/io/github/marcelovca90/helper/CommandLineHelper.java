@@ -90,11 +90,12 @@ public class CommandLineHelper
         addOption(CLIOption.RUNS, true, "number of repetitions to be performed (default: 1)");
         addOption(CLIOption.SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
         addOption(CLIOption.SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
-        addOption(CLIOption.TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
-        addOption(CLIOption.SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
-        addOption(CLIOption.SAVE_SETS, false, "save the training and testing data sets to a .csv file (default: false)");
         addOption(CLIOption.SHRINK_FEATURES, false, "reduce the feature space using an evolutionary search");
         addOption(CLIOption.BALANCE_CLASSES, false, "equalize the number of instances for each class");
+        addOption(CLIOption.TEST_EMPTY, false, "include empty patterns while testing the classifier (default: false)");
+        addOption(CLIOption.SAVE_ARFF, false, "save the whole data set to a .arff file (default: false)");
+        addOption(CLIOption.SAVE_MODEL, false, "save the classifier to a .model file (default: false)");
+        addOption(CLIOption.SAVE_SETS, false, "save the training and testing data sets to a .csv file (default: false)");
 
         // instantiates the cli based on the provided arguments
         try
@@ -124,12 +125,18 @@ public class CommandLineHelper
         Logger.debug(OPTION_VALUE_MASK, CLIOption.RUNS, getNumberOfRuns());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TRAIN, skipTrain());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TEST, skipTest());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.TEST_EMPTY, includeEmptyInstances());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_MODEL, saveModel());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_SETS, saveSets());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.SHRINK_FEATURES, shrinkFeatures());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.BALANCE_CLASSES, balanceClasses());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.TEST_EMPTY, includeEmptyInstances());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_ARFF, saveArff());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_MODEL, saveModel());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.SAVE_SETS, saveSets());
         Logger.debug("-----------------------");
+    }
+
+    public boolean saveArff()
+    {
+        return hasOption(CLIOption.SAVE_ARFF);
     }
 
     public boolean saveModel()

@@ -31,8 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.common.Constants;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ConstantsTest
 {
@@ -43,9 +41,9 @@ public class ConstantsTest
     }
 
     @Test
-    public void enum_CLIOption_shouldReturnTenValues()
+    public void enum_CLIOption_shouldReturnElevenValues()
     {
-        assertThat(Constants.CLIOption.values().length, equalTo(10));
+        assertThat(Constants.CLIOption.values().length, equalTo(11));
         Arrays
             .stream(Constants.CLIOption.values())
             .forEach(v -> assertThat(Constants.CLIOption.valueOf(v.name()), notNullValue()));

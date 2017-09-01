@@ -92,6 +92,10 @@ public class Runner
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.ClassBalancer);
                 int numberOfActualFeatures = dataSet.numAttributes() - 1;
 
+                // save whole set to .arff file, if specified
+                if (MetaHelper.getCommandLineHelper().saveArff())
+                    MetaHelper.getInputOutputHelper().saveInstancesToFile(dataSet, metadata.getFolder() + File.separator + "data.arff");
+
                 // build empty patterns set, if specified
                 if (MetaHelper.getCommandLineHelper().includeEmptyInstances())
                     emptySet = MetaHelper.getInputOutputHelper().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
@@ -124,7 +128,7 @@ public class Runner
                     if (MetaHelper.getCommandLineHelper().includeEmptyInstances())
                         testingSet.addAll(emptySet);
 
-                    // save the data sets to csv files, if specified
+                    // save the data sets to .csv files, if specified
                     if (MetaHelper.getCommandLineHelper().saveSets())
                     {
                         MetaHelper.getInputOutputHelper().saveInstancesToFile(trainingSet, metadata.getFolder() + File.separator + "training.csv");
