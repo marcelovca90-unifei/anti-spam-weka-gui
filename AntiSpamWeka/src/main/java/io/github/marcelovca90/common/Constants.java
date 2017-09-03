@@ -32,7 +32,8 @@ public class Constants
         SKIP_TEST,
         SHRINK_FEATURES,
         BALANCE_CLASSES,
-        TEST_EMPTY,
+        INCLUDE_EMPTY,
+        REMOVE_OUTLIERS,
         SAVE_ARFF,
         SAVE_MODEL,
         SAVE_SETS

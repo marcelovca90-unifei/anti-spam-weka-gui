@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
@@ -90,8 +91,7 @@ public class ExperimentHelper
 
     public void printHeader()
     {
-        String[] fullMetricNames = new String[]
-        {
+        String[] fullMetricNames = new String[] {
                 "Timestamp", "Data Set", "Statistics Method", "Number of Features",
                 "Ham Precision", "Spam Precision", "Ham Recall", "Spam Recall",
                 "Ham Area Under PRC", "Spam Area Under PRC", "Ham Area Under ROC", "Spam Area Under ROC",
@@ -144,6 +144,7 @@ public class ExperimentHelper
     private void buildResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
     {
         double[] values = results.get(metric).getValues();
+
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
             sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
         else
@@ -152,12 +153,23 @@ public class ExperimentHelper
 
     private void buildResultLineWithStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
     {
-        double mean = results.get(metric).getMean();
-        double standardDeviation = results.get(metric).getStandardDeviation();
+        DescriptiveStatistics statistics = results.get(metric);
+        double mean = statistics.getMean();
+        double confidenceInterval = computeConfidenceInterval(statistics, 0.05);
+
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-            sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(standardDeviation)));
+            sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(confidenceInterval)));
         else
-            sb.append(String.format("%.2f ± %.2f\t", mean, standardDeviation));
+            sb.append(String.format("%.2f ± %.2f\t", mean, confidenceInterval));
+    }
+
+    // computes the confidence interval width for the given statistics and significance
+    // https://stackoverflow.com/questions/5564621/using-apache-commons-math-to-determine-confidence-intervals
+    private double computeConfidenceInterval(DescriptiveStatistics statistics, double significance)
+    {
+        TDistribution tDist = new TDistribution(statistics.getN() - 1);
+        double a = tDist.inverseCumulativeProbability(1.0 - significance / 2);
+        return a * statistics.getStandardDeviation() / Math.sqrt(statistics.getN());
     }
 
     // detects and returns the indices of outliers in the result keeper, if any. references:
@@ -231,7 +243,7 @@ public class ExperimentHelper
     {
         double median = stats.getPercentile(50);
         double medianAbsoluteDeviation = new DescriptiveStatistics(
-                Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
         double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
 
         return Math.abs(modifiedZScore) > 3.5;

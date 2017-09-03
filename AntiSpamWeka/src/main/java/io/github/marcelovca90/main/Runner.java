@@ -22,6 +22,9 @@
 package io.github.marcelovca90.main;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -72,17 +75,25 @@ public class Runner
                 // initialize random number generator
                 MetaHelper.getRandomHelper().reset();
 
-                // import data sets for each class
-                String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
-                Instances hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamFilePath, MessageType.HAM);
-                String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
-                Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(spamFilePath, MessageType.SPAM);
+                String arffFilePath = metadata.getFolder() + File.separator + "data.arff";
+                if (Files.exists(Paths.get(arffFilePath), LinkOption.NOFOLLOW_LINKS))
+                {
+                    dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromArffFile(arffFilePath);
+                }
+                else
+                {
+                    // import data sets for each class
+                    String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
+                    Instances hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(hamFilePath, MessageType.HAM);
+                    String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
+                    Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(spamFilePath, MessageType.SPAM);
 
-                // merge ham and spam data sets
-                dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
+                    // merge ham and spam data sets
+                    dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
 
-                // match class cardinalities so data set becomes balanced
-                MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
+                    // match class cardinalities so data set becomes balanced
+                    MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
+                }
 
                 // apply attribute and instance filters to the data set, if specified
                 int numberOfTotalFeatures = dataSet.numAttributes() - 1;
@@ -94,10 +105,10 @@ public class Runner
 
                 // save whole set to .arff file, if specified
                 if (MetaHelper.getCommandLineHelper().saveArff())
-                    MetaHelper.getInputOutputHelper().saveInstancesToFile(dataSet, metadata.getFolder() + File.separator + "data.arff");
+                    MetaHelper.getInputOutputHelper().saveInstancesToArffFile(dataSet, metadata.getFolder() + File.separator + "data.arff");
 
                 // build empty patterns set, if specified
-                if (MetaHelper.getCommandLineHelper().includeEmptyInstances())
+                if (MetaHelper.getCommandLineHelper().includeEmpty())
                     emptySet = MetaHelper.getInputOutputHelper().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
 
                 // build the classifier for the given configuration
@@ -109,7 +120,8 @@ public class Runner
                 // reset run results keeper
                 MetaHelper.getExperimentHelper().clearResultHistory();
 
-                for (int run = 0; run < MetaHelper.getCommandLineHelper().getNumberOfRuns(); run++)
+                int numberOfRuns = MetaHelper.getCommandLineHelper().getNumberOfRuns();
+                for (int run = 0; run < numberOfRuns; run++)
                 {
                     // set random number generator's seed
                     MetaHelper.getRandomHelper().update();
@@ -125,14 +137,14 @@ public class Runner
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (MetaHelper.getCommandLineHelper().includeEmptyInstances())
+                    if (MetaHelper.getCommandLineHelper().includeEmpty())
                         testingSet.addAll(emptySet);
 
                     // save the data sets to .csv files, if specified
                     if (MetaHelper.getCommandLineHelper().saveSets())
                     {
-                        MetaHelper.getInputOutputHelper().saveInstancesToFile(trainingSet, metadata.getFolder() + File.separator + "training.csv");
-                        MetaHelper.getInputOutputHelper().saveInstancesToFile(testingSet, metadata.getFolder() + File.separator + "testing.csv");
+                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(trainingSet, metadata.getFolder() + File.separator + "training.arff");
+                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(testingSet, metadata.getFolder() + File.separator + "testing.arff");
                     }
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
@@ -162,8 +174,8 @@ public class Runner
                         MetaHelper.getExperimentHelper().computeSingleRunResults(baseEvaluation);
                         MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, false, true);
 
-                        // if at the end of last run, detect and remove outliers; this may lead to additional runs
-                        if (run == (MetaHelper.getCommandLineHelper().getNumberOfRuns() - 1))
+                        // if at the end of last run, detect and remove outliers (if specified); this may lead to additional runs
+                        if (MetaHelper.getCommandLineHelper().removeOutliers() && run == (numberOfRuns - 1))
                             run -= MetaHelper.getExperimentHelper().detectAndRemoveOutliers();
                     }
 

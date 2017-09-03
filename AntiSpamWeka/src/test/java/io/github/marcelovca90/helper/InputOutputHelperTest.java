@@ -118,7 +118,7 @@ public class InputOutputHelperTest
     @Test
     public void loadInstancesFromFile_shouldDeserializeInstances() throws IOException
     {
-        dataSet = ioHelper.loadInstancesFromFile(hamDataFilename, MessageType.HAM);
+        dataSet = ioHelper.loadInstancesFromRawFile(hamDataFilename, MessageType.HAM);
 
         assertThat(dataSet, notNullValue());
         assertThat(dataSet.size(), greaterThan(0));
@@ -146,9 +146,9 @@ public class InputOutputHelperTest
     @Test
     public void saveInstancesToFile_shouldProperlySerializeInstances() throws IOException
     {
-        dataSet = ioHelper.loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
+        dataSet = ioHelper.loadInstancesFromRawFile(spamDataFilename, MessageType.SPAM);
 
-        File file = ioHelper.saveInstancesToFile(dataSet, "data-set.csv");
+        File file = ioHelper.saveInstancesToArffFile(dataSet, "data-set.arff");
 
         assertThat(file.exists(), equalTo(Boolean.TRUE));
         assertThat(file.delete(), equalTo(Boolean.TRUE));

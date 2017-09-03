@@ -57,9 +57,9 @@ public class FilterConfigurationTest
     {
         ClassLoader classLoader = getClass().getClassLoader();
         hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
-        hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(hamDataFilename, MessageType.HAM);
+        hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(hamDataFilename, MessageType.HAM);
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
-        spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromFile(spamDataFilename, MessageType.SPAM);
+        spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(spamDataFilename, MessageType.SPAM);
         dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
     }
 

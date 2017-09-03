@@ -22,11 +22,9 @@
 package io.github.marcelovca90.helper;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -51,6 +49,8 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ArffLoader.ArffReader;
+import weka.core.converters.ArffSaver;
 
 public class InputOutputHelper
 {
@@ -161,7 +161,7 @@ public class InputOutputHelper
         return metadata;
     }
 
-    public Instances loadInstancesFromFile(String filename, MessageType messageType) throws IOException
+    public Instances loadInstancesFromRawFile(String filename, MessageType messageType) throws IOException
     {
         Logger.trace("Reading [{}] data from file [{}].", messageType, filename);
 
@@ -244,41 +244,27 @@ public class InputOutputHelper
         }
     }
 
+    public Instances loadInstancesFromArffFile(String filename) throws IOException
+    {
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        ArffReader arff = new ArffReader(reader);
+        Instances data = arff.getData();
+        data.setClassIndex(data.numAttributes() - 1);
+        return data;
+    }
+
+    public File saveInstancesToArffFile(Instances instances, String filename) throws IOException
+    {
+        ArffSaver saver = new ArffSaver();
+        saver.setInstances(instances);
+        saver.setFile(new File(filename));
+        saver.writeBatch();
+        return saver.retrieveFile();
+    }
+
     public Classifier loadModelFromFile(String filename) throws Exception
     {
         return (Classifier) weka.core.SerializationHelper.read(filename);
-    }
-
-    public File saveInstancesToFile(Instances instances, String filename) throws IOException
-    {
-        Logger.trace("Saving data set to file [{}].", filename);
-
-        // create output file's buffered writer
-        File file = new File(filename);
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
-
-        // write attribute names
-        for (int attrIndex = 0; attrIndex < instances.numAttributes(); attrIndex++)
-        {
-            if (attrIndex > 0)
-                bufferedWriter.write(",");
-            bufferedWriter.write(attrIndex != instances.classIndex() ? instances.attribute(attrIndex).name() : "class");
-        }
-        bufferedWriter.write(System.lineSeparator());
-
-        // write instances
-        for (int i = 0; i < instances.size(); i++)
-        {
-            bufferedWriter.write(instances.get(i).toStringNoWeight());
-            bufferedWriter.write(System.lineSeparator());
-        }
-
-        // flush and close the buffered writer
-        bufferedWriter.flush();
-        bufferedWriter.close();
-
-        return file;
     }
 
     public File saveModelToFile(String filename, Classifier classifier) throws Exception

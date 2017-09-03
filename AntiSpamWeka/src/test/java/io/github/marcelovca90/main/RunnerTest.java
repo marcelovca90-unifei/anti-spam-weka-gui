@@ -95,7 +95,7 @@ public class RunnerTest
     @Test
     public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 3, true, true, false, true, false, false, false, false);
+        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 3, true, true, false, false, false, false, true, false, false);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
@@ -105,7 +105,7 @@ public class RunnerTest
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 25, false, false, true, false, true, true, true, true);
+        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 25, false, false, true, true, true, true, false, true, true);
 
         MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
 
@@ -113,8 +113,7 @@ public class RunnerTest
     }
 
     private CommandLineHelper buildCommandLineHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
-            boolean includeEmptyInstances, boolean saveArff, boolean saveModel, boolean saveSets, boolean shrinkFeatuers, boolean balanceClasses)
-            throws Exception
+            boolean shrinkFeatures, boolean balanceClasses, boolean includeEmpty, boolean removeOutliers, boolean saveArff, boolean saveModel, boolean saveSets) throws Exception
     {
         CommandLineHelper helper = mock(CommandLineHelper.class);
 
@@ -124,12 +123,13 @@ public class RunnerTest
         when(helper.getNumberOfRuns()).thenReturn(numberOfRuns);
         when(helper.skipTrain()).thenReturn(skipTrain);
         when(helper.skipTest()).thenReturn(skipTest);
-        when(helper.includeEmptyInstances()).thenReturn(includeEmptyInstances);
+        when(helper.shrinkFeatures()).thenReturn(shrinkFeatures);
+        when(helper.balanceClasses()).thenReturn(balanceClasses);
+        when(helper.includeEmpty()).thenReturn(includeEmpty);
+        when(helper.removeOutliers()).thenReturn(removeOutliers);
         when(helper.saveArff()).thenReturn(saveArff);
         when(helper.saveModel()).thenReturn(saveModel);
         when(helper.saveSets()).thenReturn(saveSets);
-        when(helper.shrinkFeatures()).thenReturn(shrinkFeatuers);
-        when(helper.balanceClasses()).thenReturn(balanceClasses);
         doNothing().when(helper).printConfiguration();
 
         return helper;

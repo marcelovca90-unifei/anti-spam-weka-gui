@@ -41,9 +41,9 @@ public class ConstantsTest
     }
 
     @Test
-    public void enum_CLIOption_shouldReturnElevenValues()
+    public void enum_CLIOption_shouldReturnTwelveValues()
     {
-        assertThat(Constants.CLIOption.values().length, equalTo(11));
+        assertThat(Constants.CLIOption.values().length, equalTo(12));
         Arrays
             .stream(Constants.CLIOption.values())
             .forEach(v -> assertThat(Constants.CLIOption.valueOf(v.name()), notNullValue()));

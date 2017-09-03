@@ -118,7 +118,7 @@ public class CommandLineHelperTest
     {
         cliHelper.initialize(fullArgs);
 
-        assertThat(cliHelper.includeEmptyInstances(), notNullValue());
+        assertThat(cliHelper.includeEmpty(), notNullValue());
     }
 
     @Test(expected = ParseException.class)
