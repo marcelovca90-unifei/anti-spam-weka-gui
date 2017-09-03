@@ -70,9 +70,9 @@ public class InputOutputHelperTest
         String folder = "/some/folder";
         MethodConfiguration method = MethodConfiguration.RT;
         double splitPercent = RandomUtils.nextDouble();
-        int seed = RandomUtils.nextInt();
+        int seed = MetaHelper.getRandomHelper().getSeed();
 
-        String filename = ioHelper.buildClassifierFilename(folder, method, splitPercent, seed);
+        String filename = ioHelper.buildClassifierFilename(folder, method, splitPercent);
 
         assertThat(filename, notNullValue());
         assertThat(filename, containsString(folder));

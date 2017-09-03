@@ -57,7 +57,7 @@ public class InputOutputHelper
     private static final int SIZE_INT = SizeOf.intSize();
     private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 
-    public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent, int seed)
+    public String buildClassifierFilename(String folder, MethodConfiguration method, double splitPercent)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -65,7 +65,7 @@ public class InputOutputHelper
         sb.append(method.getClazz().getSimpleName());
         sb.append("_TRAIN=" + (int) (100 * splitPercent));
         sb.append("_TEST=" + (int) (100 * (1.0 - splitPercent)));
-        sb.append("_SEED=" + seed);
+        sb.append("_SEED=" + MetaHelper.getRandomHelper().getSeed());
         sb.append(".model");
 
         return sb.toString();
@@ -163,7 +163,7 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromRawFile(String filename, MessageType messageType) throws IOException
     {
-        Logger.trace("Reading [{}] data from file [{}].", messageType, filename);
+        Logger.trace("Reading [{}] data from RAW file [{}].", messageType, filename);
 
         InputStream inputStream = new FileInputStream(filename);
 
@@ -246,6 +246,8 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromArffFile(String filename) throws IOException
     {
+        Logger.trace("Loading data from ARFF file [{}].", filename);
+
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         ArffReader arff = new ArffReader(reader);
         Instances data = arff.getData();
@@ -255,6 +257,8 @@ public class InputOutputHelper
 
     public File saveInstancesToArffFile(Instances instances, String filename) throws IOException
     {
+        Logger.trace("Saving data to ARFF file [{}].", filename);
+
         ArffSaver saver = new ArffSaver();
         saver.setInstances(instances);
         saver.setFile(new File(filename));

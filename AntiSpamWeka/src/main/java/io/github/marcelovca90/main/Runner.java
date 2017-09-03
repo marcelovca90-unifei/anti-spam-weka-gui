@@ -148,8 +148,7 @@ public class Runner
                     }
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
-                    String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(metadata.getFolder(), method, splitPercent, MetaHelper.getRandomHelper().getSeed());
-                    Classifier classifier = MetaHelper.getCommandLineHelper().skipTrain() ? MetaHelper.getInputOutputHelper().loadModelFromFile(classifierFilename) : AbstractClassifier.makeCopy(baseClassifier);
+                    Classifier classifier = AbstractClassifier.makeCopy(baseClassifier);
 
                     // create the object that will hold the single evaluation result
                     Evaluation evaluation = new Evaluation(testingSet);
@@ -181,11 +180,14 @@ public class Runner
 
                     // persist the classifier, if specified in args
                     if (MetaHelper.getCommandLineHelper().saveModel())
+                    {
+                        String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(metadata.getFolder(), method, splitPercent);
                         MetaHelper.getInputOutputHelper().saveModelToFile(classifierFilename, classifier);
+                    }
                 }
 
                 // log the final results for this configuration
-                if (!MetaHelper.getCommandLineHelper().skipTest())
+                if (MetaHelper.getCommandLineHelper().getNumberOfRuns() > 0 && !MetaHelper.getCommandLineHelper().skipTest())
                     MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
             }
         }
