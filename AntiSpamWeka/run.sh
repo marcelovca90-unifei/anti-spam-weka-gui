@@ -34,7 +34,8 @@ SKIP_TRAIN="-SkipTrain"
 SKIP_TEST="-SkipTest"
 SHRINK_FEATURES="-ShrinkFeatures"
 BALANCE_CLASSES="-BalanceClasses"
-TEST_EMPTY="-TestEmpty"
+INCLUDE_EMPTY="-IncludeEmpty"
+REMOVE_OUTLIERS="-RemoveOutliers"
 SAVE_ARFF="-SaveArff"
 SAVE_MODEL="-SaveModel"
 SAVE_SETS="-SaveSets"
@@ -51,7 +52,7 @@ for METHOD in "${METHOD[@]}"; do
 
     # run the experiments
     VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:+UseG1GC"
-    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -Metadata ${METADATA} -Method ${METHOD} -Runs ${RUNS} ${SHRINK_FEATURES} ${BALANCE_CLASSES} ${TEST_EMPTY}"
+    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -Metadata ${METADATA} -Method ${METHOD} -Runs ${RUNS} ${SHRINK_FEATURES} ${BALANCE_CLASSES} ${INCLUDE_EMPTY}"
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] >> [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} >> ${LOG_FILENAME}
