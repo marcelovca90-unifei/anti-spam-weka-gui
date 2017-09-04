@@ -49,8 +49,8 @@ public class CommandLineHelperTest
         ClassLoader classLoader = getClass().getClassLoader();
         emptyArgs = new String[0];
         notEmptyArgsWithWrongMetadata = new String[] { "-Metadata", "SOME_METADATA" };
-        notEmptyArgsWithWrongMethod = new String[] { "-Method", "SOME_METHOD" };
-        fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Method", "RT", "-Runs", "1" };
+        notEmptyArgsWithWrongMethod = new String[] { "-Methods", "SOME_METHOD" };
+        fullArgs = new String[] { "-Metadata", classLoader.getResource("data-sets-bin/metadata.txt").getFile(), "-Methods", "RT", "-Runs", "1" };
     }
 
     @Test

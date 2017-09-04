@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -109,20 +110,24 @@ public class ExperimentHelper
 
     public void printHeader()
     {
-        String[] fullMetricNames = new String[]
+        Stream<String> metricsWithoutStats = Arrays.stream(new String[]
+        { "Data Set", "Statistics Method", "ML Method", "Number of Features (before)", "Number of Features (after)" });
+
+        String headerWithoutStats = metricsWithoutStats.collect(Collectors.joining("\t", "\t", ""));
+
+        Stream<String> metricsWithStats = Arrays.stream(new String[]
         {
-                "Timestamp", "Data Set", "Statistics Method", "Number of Features",
                 "Ham Precision", "Spam Precision", "Weighted Precision",
                 "Ham Recall", "Spam Recall", "Weighted Recall",
                 "Ham Area Under PRC", "Spam Area Under PRC", "Weighted Area Under PRC",
                 "Ham Area Under ROC", "Spam Area Under ROC", "Weighted Area Under ROC",
                 "Ham F-Measure", "Spam F-Measure", "Weighted F-Measure",
                 "Train Time", "Test Time"
-        };
+        });
 
-        String header = Arrays.stream(fullMetricNames).collect(Collectors.joining("\t"));
+        String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));
 
-        Logger.info(header);
+        Logger.info(headerWithoutStats + "\t" + headerWithStats);
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
@@ -132,10 +137,10 @@ public class ExperimentHelper
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("%s\t", methodEvaluation.getDataSetName()));
-        sb.append(String.format("%s\t", methodEvaluation.getStatMethod()));
-        sb.append(String.format("%d->%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
-        sb.append(String.format("%s\t", methodConfiguration.name()));
+        sb.append(String.format("\t%s", methodEvaluation.getDataSetName()));
+        sb.append(String.format("\t%s", methodEvaluation.getStatMethod()));
+        sb.append(String.format("\t%s", methodConfiguration.name()));
+        sb.append(String.format("\t%d\t%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
 
         for (Metric metric : Metric.values())
         {
@@ -168,7 +173,7 @@ public class ExperimentHelper
         double[] values = results.get(metric).getValues();
 
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-            sb.append(String.format("%s\t", formatMilliseconds(values[values.length - 1])));
+            sb.append(String.format("%s\t", formatMillis(values[values.length - 1])));
         else
             sb.append(String.format("%.2f\t", values[values.length - 1]));
     }
@@ -177,12 +182,13 @@ public class ExperimentHelper
     {
         DescriptiveStatistics statistics = results.get(metric);
         double mean = statistics.getMean();
+        double stdev = statistics.getStandardDeviation();
         double confidenceInterval = computeConfidenceInterval(statistics, 0.05);
 
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-            sb.append(String.format("%s ± %s\t", formatMilliseconds(mean), formatMilliseconds(confidenceInterval)));
+            sb.append(String.format("%s\t%s\t%s\t", formatMillis(mean), formatMillis(stdev), formatMillis(confidenceInterval)));
         else
-            sb.append(String.format("%.2f ± %.2f\t", mean, confidenceInterval));
+            sb.append(String.format("%.2f\t%.2f\t%.2f\t", mean, stdev, confidenceInterval));
     }
 
     // computes the confidence interval width for the given statistics and significance
@@ -239,7 +245,7 @@ public class ExperimentHelper
         return new DescriptiveStatistics(ArrayUtils.toPrimitive(values.toArray(new Double[0])));
     }
 
-    private String formatMilliseconds(double millis)
+    private String formatMillis(double millis)
     {
         return DurationFormatUtils.formatDurationHMS((Double.valueOf(Math.abs(millis))).longValue());
     }

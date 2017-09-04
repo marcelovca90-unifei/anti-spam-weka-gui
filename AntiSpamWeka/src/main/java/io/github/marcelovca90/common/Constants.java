@@ -26,7 +26,7 @@ public class Constants
     public enum CLIOption
     {
         METADATA,
-        METHOD,
+        METHODS,
         RUNS,
         SKIP_TRAIN,
         SKIP_TEST,

@@ -28,7 +28,7 @@ MAX_STACK_SIZE=8m
 # Anti Spam settings
 JAR_PATH="$(pwd)/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 METADATA="$(pwd)/../../anti-spam-weka-data/2017_BASE2/metadata.txt"
-METHOD=(A1DE A2DE BFTREE CART DTNB FURIA FRF HP IBK J48 J48C J48G JRIP LIBLINEAR LIBSVM MLP NB NBTREE RBF RT SGD SMO SPEGASOS WRF)
+METHODS=(A1DE A2DE BFTREE CART DTNB FURIA FRF HP IBK J48 J48C J48G JRIP LIBLINEAR LIBSVM MLP NB NBTREE RBF RT SGD SMO SPEGASOS WRF)
 RUNS=10
 SKIP_TRAIN="-SkipTrain"
 SKIP_TEST="-SkipTest"
@@ -48,6 +48,9 @@ OPTIONS='tls=yes'
 USERNAME='sender@server.com'
 PASSWORD='sender123password'
 
+# Log settings
+LOG_LEVELS=(ERROR WARN INFO DEBUG TRACE)
+
 for METHOD in "${METHOD[@]}"; do
 
     # run the experiments
@@ -56,10 +59,13 @@ for METHOD in "${METHOD[@]}"; do
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] >> [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} >> ${LOG_FILENAME}
+    for LEVEL in "${LOG_LEVELS[@]}"; do
+        cat ${LOG_FILENAME} | grep ${LEVEL} >> `echo ${LOG_FILENAME} | sed s/.log/_${LEVEL}.log/`
+    done
 
-    # zip the log file
+    # zip the log files
     LOG_FILENAME_ZIP="${LOG_FILENAME}.zip"
-    ZIP_COMMAND="zip --junk-paths ${LOG_FILENAME_ZIP} ${LOG_FILENAME}"
+    ZIP_COMMAND="zip --junk-paths ${LOG_FILENAME_ZIP} $(dirname ${LOG_FILENAME})/${METHOD}*.log"
     eval ${ZIP_COMMAND}
 
     # mail the zipped log file

@@ -56,7 +56,7 @@ public class CommandLineHelper
 
         // add the command line options
         addOption(CLIOption.METADATA, true, "path of the file containing data sets metadata (default: none)");
-        addOption(CLIOption.METHOD, true, "CSV list of methods. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
+        addOption(CLIOption.METHODS, true, "CSV list of methods. Available methods: " + Arrays.toString(MethodConfiguration.values()) + " (default: none)");
         addOption(CLIOption.RUNS, true, "number of repetitions to be performed (default: 1)");
         addOption(CLIOption.SKIP_TRAIN, false, "perform training (learning) of the classifier(s) (default: false)");
         addOption(CLIOption.SKIP_TEST, false, "perform testing (evaluation) of the classifier(s) (default: false)");
@@ -73,7 +73,7 @@ public class CommandLineHelper
         {
             commandLine = new DefaultParser().parse(options, args);
 
-            if (!hasOption(CLIOption.METADATA) || !hasOption(CLIOption.METHOD))
+            if (!hasOption(CLIOption.METADATA) || !hasOption(CLIOption.METHODS))
                 throw new ParseException("Missing mandatory arguments");
         }
         catch (ParseException e)
@@ -92,7 +92,7 @@ public class CommandLineHelper
     {
         Logger.debug("---- CONFIGURATION ----");
         Logger.debug(OPTION_VALUE_MASK, CLIOption.METADATA, getDataSetsMetadata());
-        Logger.debug(OPTION_VALUE_MASK, CLIOption.METHOD, getMethods());
+        Logger.debug(OPTION_VALUE_MASK, CLIOption.METHODS, getMethods());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.RUNS, getNumberOfRuns());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TRAIN, skipTrain());
         Logger.debug(OPTION_VALUE_MASK, CLIOption.SKIP_TEST, skipTest());
@@ -116,7 +116,7 @@ public class CommandLineHelper
     public List<MethodConfiguration> getMethods()
     {
         return Arrays
-            .stream(getOptionValue(CLIOption.METHOD).split(","))
+            .stream(getOptionValue(CLIOption.METHODS).split(","))
             .map(MethodConfiguration::valueOf)
             .collect(Collectors.toList());
     }
