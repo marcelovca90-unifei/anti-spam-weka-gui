@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith (MockitoJUnitRunner.class)
 public class ConstantsTest
 {
     @Test
@@ -59,9 +59,9 @@ public class ConstantsTest
     }
 
     @Test
-    public void enum_Metric_shouldReturnTenValues()
+    public void enum_Metric_shouldReturnSeventeenValues()
     {
-        assertThat(Constants.Metric.values().length, equalTo(10));
+        assertThat(Constants.Metric.values().length, equalTo(17));
         Arrays
             .stream(Constants.Metric.values())
             .forEach(v -> assertThat(Constants.Metric.valueOf(v.name()), notNullValue()));
