@@ -41,6 +41,7 @@ import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
+import weka.classifiers.Evaluation;
 
 public class ExperimentHelper
 {
@@ -55,17 +56,27 @@ public class ExperimentHelper
     // compute and persist all metrics' resultHistory for a given MethodEvaluation
     public void computeSingleRunResults(MethodEvaluation methodEvaluation)
     {
-        Double hamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.HAM.ordinal());
-        Double spamPrecision = 100.0 * methodEvaluation.getEvaluation().precision(MessageType.SPAM.ordinal());
+        Evaluation evaluation = methodEvaluation.getEvaluation();
 
-        Double hamRecall = 100.0 * methodEvaluation.getEvaluation().recall(MessageType.HAM.ordinal());
-        Double spamRecall = 100.0 * methodEvaluation.getEvaluation().recall(MessageType.SPAM.ordinal());
+        Double hamPrecision = 100.0 * evaluation.precision(MessageType.HAM.ordinal());
+        Double spamPrecision = 100.0 * evaluation.precision(MessageType.SPAM.ordinal());
+        Double weightedPrecision = 100.0 * evaluation.weightedPrecision();
 
-        Double hamAreaUnderPRC = 100.0 * methodEvaluation.getEvaluation().areaUnderPRC(MessageType.HAM.ordinal());
-        Double spamAreaUnderPRC = 100.0 * methodEvaluation.getEvaluation().areaUnderPRC(MessageType.SPAM.ordinal());
+        Double hamRecall = 100.0 * evaluation.recall(MessageType.HAM.ordinal());
+        Double spamRecall = 100.0 * evaluation.recall(MessageType.SPAM.ordinal());
+        Double weightedRecall = 100.0 * evaluation.weightedRecall();
 
-        Double hamAreaUnderROC = 100.0 * methodEvaluation.getEvaluation().areaUnderROC(MessageType.HAM.ordinal());
-        Double spamAreaUnderROC = 100.0 * methodEvaluation.getEvaluation().areaUnderROC(MessageType.SPAM.ordinal());
+        Double hamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(MessageType.HAM.ordinal());
+        Double spamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(MessageType.SPAM.ordinal());
+        Double weightedAreaUnderPRC = 100.0 * evaluation.weightedAreaUnderPRC();
+
+        Double hamAreaUnderROC = 100.0 * evaluation.areaUnderROC(MessageType.HAM.ordinal());
+        Double spamAreaUnderROC = 100.0 * evaluation.areaUnderROC(MessageType.SPAM.ordinal());
+        Double weightedAreaUnderROC = 100.0 * evaluation.weightedAreaUnderROC();
+
+        Double hamFMeasure = 100.0 * evaluation.fMeasure(MessageType.HAM.ordinal());
+        Double spamFMeasure = 100.0 * evaluation.fMeasure(MessageType.SPAM.ordinal());
+        Double weightedFMeasure = 100.0 * evaluation.weightedFMeasure();
 
         Double trainTime = (double) (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
 
@@ -73,12 +84,19 @@ public class ExperimentHelper
 
         addSingleRunResult(Metric.HAM_PRECISION, hamPrecision);
         addSingleRunResult(Metric.SPAM_PRECISION, spamPrecision);
+        addSingleRunResult(Metric.WEIGHTED_PRECISION, weightedPrecision);
         addSingleRunResult(Metric.HAM_RECALL, hamRecall);
         addSingleRunResult(Metric.SPAM_RECALL, spamRecall);
+        addSingleRunResult(Metric.WEIGHTED_RECALL, weightedRecall);
         addSingleRunResult(Metric.HAM_AREA_UNDER_PRC, hamAreaUnderPRC);
         addSingleRunResult(Metric.SPAM_AREA_UNDER_PRC, spamAreaUnderPRC);
+        addSingleRunResult(Metric.WEIGHTED_AREA_UNDER_PRC, weightedAreaUnderPRC);
         addSingleRunResult(Metric.HAM_AREA_UNDER_ROC, hamAreaUnderROC);
         addSingleRunResult(Metric.SPAM_AREA_UNDER_ROC, spamAreaUnderROC);
+        addSingleRunResult(Metric.WEIGHTED_AREA_UNDER_ROC, weightedAreaUnderROC);
+        addSingleRunResult(Metric.HAM_F_MEASURE, hamFMeasure);
+        addSingleRunResult(Metric.SPAM_F_MEASURE, spamFMeasure);
+        addSingleRunResult(Metric.WEIGHTED_F_MEASURE, weightedFMeasure);
         addSingleRunResult(Metric.TRAIN_TIME, trainTime);
         addSingleRunResult(Metric.TEST_TIME, testTime);
     }
@@ -91,10 +109,14 @@ public class ExperimentHelper
 
     public void printHeader()
     {
-        String[] fullMetricNames = new String[] {
+        String[] fullMetricNames = new String[]
+        {
                 "Timestamp", "Data Set", "Statistics Method", "Number of Features",
-                "Ham Precision", "Spam Precision", "Ham Recall", "Spam Recall",
-                "Ham Area Under PRC", "Spam Area Under PRC", "Ham Area Under ROC", "Spam Area Under ROC",
+                "Ham Precision", "Spam Precision", "Weighted Precision",
+                "Ham Recall", "Spam Recall", "Weighted Recall",
+                "Ham Area Under PRC", "Spam Area Under PRC", "Weighted Area Under PRC",
+                "Ham Area Under ROC", "Spam Area Under ROC", "Weighted Area Under ROC",
+                "Ham F-Measure", "Spam F-Measure", "Weighted F-Measure",
                 "Train Time", "Test Time"
         };
 
@@ -243,7 +265,7 @@ public class ExperimentHelper
     {
         double median = stats.getPercentile(50);
         double medianAbsoluteDeviation = new DescriptiveStatistics(
-            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+                Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
         double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
 
         return Math.abs(modifiedZScore) > 3.5;

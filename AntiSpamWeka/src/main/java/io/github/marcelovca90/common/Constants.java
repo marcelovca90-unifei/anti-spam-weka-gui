@@ -49,12 +49,19 @@ public class Constants
     {
         HAM_PRECISION,
         SPAM_PRECISION,
+        WEIGHTED_PRECISION,
         HAM_RECALL,
         SPAM_RECALL,
+        WEIGHTED_RECALL,
         HAM_AREA_UNDER_PRC,
         SPAM_AREA_UNDER_PRC,
+        WEIGHTED_AREA_UNDER_PRC,
         HAM_AREA_UNDER_ROC,
         SPAM_AREA_UNDER_ROC,
+        WEIGHTED_AREA_UNDER_ROC,
+        HAM_F_MEASURE,
+        SPAM_F_MEASURE,
+        WEIGHTED_F_MEASURE,
         TRAIN_TIME,
         TEST_TIME
     }
