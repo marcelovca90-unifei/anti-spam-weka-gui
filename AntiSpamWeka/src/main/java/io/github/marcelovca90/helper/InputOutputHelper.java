@@ -248,10 +248,15 @@ public class InputOutputHelper
     {
         Logger.trace("Loading data from ARFF file [{}].", filename);
 
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        ArffReader arff = new ArffReader(reader);
-        Instances data = arff.getData();
+        FileReader fileReader = new FileReader(filename);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        ArffReader arffReader = new ArffReader(bufferedReader);
+        Instances data = arffReader.getData();
         data.setClassIndex(data.numAttributes() - 1);
+
+        bufferedReader.close();
+        fileReader.close();
+
         return data;
     }
 
@@ -259,11 +264,19 @@ public class InputOutputHelper
     {
         Logger.trace("Saving data to ARFF file [{}].", filename);
 
-        ArffSaver saver = new ArffSaver();
-        saver.setInstances(instances);
-        saver.setFile(new File(filename));
-        saver.writeBatch();
-        return saver.retrieveFile();
+        File outputFile = new File(filename);
+        if (outputFile.exists())
+        {
+            outputFile.delete();
+            outputFile.createNewFile();
+        }
+
+        ArffSaver arffSaver = new ArffSaver();
+        arffSaver.setInstances(instances);
+        arffSaver.setFile(outputFile);
+        arffSaver.writeBatch();
+
+        return arffSaver.retrieveFile();
     }
 
     public Classifier loadModelFromFile(String filename) throws Exception

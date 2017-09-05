@@ -22,8 +22,6 @@
 package io.github.marcelovca90.main;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -72,20 +70,28 @@ public class Runner
 
             for (DataSetMetadata metadata : MetaHelper.getCommandLineHelper().getDataSetsMetadata())
             {
+                String folder = metadata.getFolder();
+                int numberOfTotalFeatures;
+                int numberOfActualFeatures;
+
                 // initialize random number generator
                 MetaHelper.getRandomHelper().reset();
 
-                String arffFilePath = metadata.getFolder() + File.separator + "data.arff";
-                if (Files.exists(Paths.get(arffFilePath), LinkOption.NOFOLLOW_LINKS))
+                String arffFilePath = folder + File.separator + "data.arff";
+                if (Paths.get(arffFilePath).toFile().exists())
                 {
+                    // count the number of total features by looking at the file name
                     dataSet = MetaHelper.getInputOutputHelper().loadInstancesFromArffFile(arffFilePath);
+
+                    // count the number of total features by looking at the data set
+                    numberOfTotalFeatures = Integer.valueOf(folder.substring(folder.lastIndexOf(folder.contains("\\") ? "\\" : "/") + 1));
                 }
                 else
                 {
                     // import data sets for each class
-                    String hamFilePath = metadata.getFolder() + File.separator + MessageType.HAM.name().toLowerCase();
+                    String hamFilePath = folder + File.separator + MessageType.HAM.name().toLowerCase();
                     Instances hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(hamFilePath, MessageType.HAM);
-                    String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
+                    String spamFilePath = folder + File.separator + MessageType.SPAM.name().toLowerCase();
                     Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(spamFilePath, MessageType.SPAM);
 
                     // match class cardinalities so data set becomes balanced
@@ -93,19 +99,23 @@ public class Runner
 
                     // merge ham and spam data sets
                     dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
+
+                    // count the number of total features by looking at the data set
+                    numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 }
 
                 // apply attribute and instance filters to the data set, if specified
-                int numberOfTotalFeatures = dataSet.numAttributes() - 1;
                 if (MetaHelper.getCommandLineHelper().shrinkFeatures())
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.CfsSubsetEval_MultiObjectiveEvolutionarySearch);
                 if (MetaHelper.getCommandLineHelper().balanceClasses())
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.ClassBalancer);
-                int numberOfActualFeatures = dataSet.numAttributes() - 1;
+
+                // count the number of actual features by looking at the data set
+                numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // save whole set to .arff file, if specified
                 if (MetaHelper.getCommandLineHelper().saveArff())
-                    MetaHelper.getInputOutputHelper().saveInstancesToArffFile(dataSet, metadata.getFolder() + File.separator + "data.arff");
+                    MetaHelper.getInputOutputHelper().saveInstancesToArffFile(dataSet, folder + File.separator + "data.arff");
 
                 // build empty patterns set, if specified
                 if (MetaHelper.getCommandLineHelper().includeEmpty())
@@ -115,7 +125,7 @@ public class Runner
                 Classifier baseClassifier = MethodConfiguration.buildClassifierFor(method);
 
                 // create the object that will hold the overall evaluations result
-                MethodEvaluation baseEvaluation = new MethodEvaluation(metadata.getFolder(), method);
+                MethodEvaluation baseEvaluation = new MethodEvaluation(folder, method);
 
                 // reset run results keeper
                 MetaHelper.getExperimentHelper().clearResultHistory();
@@ -143,8 +153,8 @@ public class Runner
                     // save the data sets to .csv files, if specified
                     if (MetaHelper.getCommandLineHelper().saveSets())
                     {
-                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(trainingSet, metadata.getFolder() + File.separator + "training.arff");
-                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(testingSet, metadata.getFolder() + File.separator + "testing.arff");
+                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(trainingSet, folder + File.separator + "training.arff");
+                        MetaHelper.getInputOutputHelper().saveInstancesToArffFile(testingSet, folder + File.separator + "testing.arff");
                     }
 
                     // if the training should be skipped, then read the classifier from the filesystem; else, clone and train the base classifier
@@ -181,7 +191,7 @@ public class Runner
                     // persist the classifier, if specified in args
                     if (MetaHelper.getCommandLineHelper().saveModel())
                     {
-                        String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(metadata.getFolder(), method, splitPercent);
+                        String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(folder, method, splitPercent);
                         MetaHelper.getInputOutputHelper().saveModelToFile(classifierFilename, classifier);
                     }
                 }
