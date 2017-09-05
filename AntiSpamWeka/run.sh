@@ -51,11 +51,11 @@ PASSWORD='sender123password'
 # Log settings
 LOG_LEVELS=(ERROR WARN INFO DEBUG TRACE)
 
-for METHOD in "${METHOD[@]}"; do
+for METHOD in "${METHODS[@]}"; do
 
     # run the experiments
     VM_OPTIONS="-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:+UseG1GC"
-    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -Metadata ${METADATA} -Method ${METHOD} -Runs ${RUNS} ${SHRINK_FEATURES} ${BALANCE_CLASSES} ${INCLUDE_EMPTY}"
+    RUN_COMMAND="java ${VM_OPTIONS} -jar \"${JAR_PATH}\" -Metadata ${METADATA} -Methods ${METHODS} -Runs ${RUNS} ${SHRINK_FEATURES} ${BALANCE_CLASSES} ${INCLUDE_EMPTY}"
     LOG_FILENAME="$(dirname ${JAR_PATH})/${METHOD}.log"
     echo "$(date) - Executing [${RUN_COMMAND}] >> [${LOG_FILENAME}] and sending results to [${RECIPIENT}]"
     eval ${RUN_COMMAND} >> ${LOG_FILENAME}
