@@ -88,11 +88,11 @@ public class Runner
                     String spamFilePath = metadata.getFolder() + File.separator + MessageType.SPAM.name().toLowerCase();
                     Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(spamFilePath, MessageType.SPAM);
 
-                    // merge ham and spam data sets
-                    dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
-
                     // match class cardinalities so data set becomes balanced
                     MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
+
+                    // merge ham and spam data sets
+                    dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);
                 }
 
                 // apply attribute and instance filters to the data set, if specified
