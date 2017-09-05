@@ -21,8 +21,14 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
+import static io.github.marcelovca90.common.Constants.MessageType.HAM;
+import static io.github.marcelovca90.common.Constants.MessageType.SPAM;
+
+import java.util.EnumMap;
+
 import org.pmw.tinylog.Logger;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
@@ -36,6 +42,8 @@ public class MethodEvaluation
     private MethodConfiguration methodConfiguration;
     private int numberOfActualFeatures;
     private int numberOfTotalFeatures;
+    private EnumMap<MessageType, Integer> trainingSetCounts;
+    private EnumMap<MessageType, Integer> testingSetCounts;
     private String statMethod;
     private long testEnd;
     private long testStart;
@@ -51,6 +59,9 @@ public class MethodEvaluation
         this.statMethod = parts[parts.length - 2];
         this.numberOfTotalFeatures = Integer.parseInt(parts[parts.length - 1]);
         this.numberOfActualFeatures = numberOfTotalFeatures;
+
+        this.trainingSetCounts = new EnumMap<>(MessageType.class);
+        this.testingSetCounts = new EnumMap<>(MessageType.class);
 
         this.methodConfiguration = methodConfiguration;
     }
@@ -115,6 +126,16 @@ public class MethodEvaluation
         return trainStart;
     }
 
+    public EnumMap<MessageType, Integer> getTrainingSetCounts()
+    {
+        return trainingSetCounts;
+    }
+
+    public EnumMap<MessageType, Integer> getTestingSetCounts()
+    {
+        return testingSetCounts;
+    }
+
     public void setClassifier(Classifier classifier)
     {
         this.classifier = classifier;
@@ -135,16 +156,28 @@ public class MethodEvaluation
         this.numberOfTotalFeatures = numberOfTotalFeatures;
     }
 
-    // test the classifier agains the given data set
-    public void test(Instances testSet)
+    // train the classifier with the given data set
+    public void train(Instances trainSet)
     {
         try
         {
-            Logger.trace("Started evaluating [{}] classifier.", classifier.getClass().getName());
-            testStart = System.currentTimeMillis();
-            evaluation.evaluateModel(classifier, testSet);
-            testEnd = System.currentTimeMillis();
-            Logger.trace("Finished evaluating [{}] classifier.", classifier.getClass().getName());
+            Logger.trace("Started counting instances for each class in training set.");
+            trainingSetCounts.put(HAM, 0);
+            trainingSetCounts.put(SPAM, 0);
+            trainSet.forEach(i ->
+            {
+                if (i.classValue() == HAM.ordinal())
+                    trainingSetCounts.put(HAM, trainingSetCounts.get(HAM) + 1);
+                else if (i.classValue() == SPAM.ordinal())
+                    trainingSetCounts.put(SPAM, trainingSetCounts.get(SPAM) + 1);
+            });
+            Logger.trace("Finished counting instances ({} HAM, {} SPAM)", trainingSetCounts.get(HAM), trainingSetCounts.get(SPAM));
+
+            Logger.trace("Started building [{}] classifier.", classifier.getClass().getName());
+            trainStart = System.currentTimeMillis();
+            classifier.buildClassifier(trainSet);
+            trainEnd = System.currentTimeMillis();
+            Logger.trace("Finished building [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {
@@ -152,16 +185,28 @@ public class MethodEvaluation
         }
     }
 
-    // train the classifier with the given data set
-    public void train(Instances trainSet)
+    // test the classifier agains the given data set
+    public void test(Instances testSet)
     {
         try
         {
-            Logger.trace("Started building [{}] classifier.", classifier.getClass().getName());
-            trainStart = System.currentTimeMillis();
-            classifier.buildClassifier(trainSet);
-            trainEnd = System.currentTimeMillis();
-            Logger.trace("Finished building [{}] classifier.", classifier.getClass().getName());
+            Logger.trace("Started counting instances for each class in testing set.");
+            testingSetCounts.put(HAM, 0);
+            testingSetCounts.put(SPAM, 0);
+            testSet.forEach(i ->
+            {
+                if (i.classValue() == HAM.ordinal())
+                    testingSetCounts.put(HAM, testingSetCounts.get(HAM) + 1);
+                else if (i.classValue() == SPAM.ordinal())
+                    testingSetCounts.put(SPAM, testingSetCounts.get(SPAM) + 1);
+            });
+            Logger.trace("Finished counting instances ({} HAM, {} SPAM)", testingSetCounts.get(HAM), testingSetCounts.get(SPAM));
+
+            Logger.trace("Started evaluating [{}] classifier.", classifier.getClass().getName());
+            testStart = System.currentTimeMillis();
+            evaluation.evaluateModel(classifier, testSet);
+            testEnd = System.currentTimeMillis();
+            Logger.trace("Finished evaluating [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {

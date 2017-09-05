@@ -63,7 +63,11 @@ public class Constants
         SPAM_F_MEASURE,
         WEIGHTED_F_MEASURE,
         TRAIN_TIME,
-        TEST_TIME
+        TEST_TIME,
+        WEIGHTED_ACCURACY_1,
+        WEIGHTED_ACCURACY_9,
+        WEIGHTED_ACCURACY_99,
+        WEIGHTED_ACCURACY_999
     }
 
     public static final String UNEXPECTED_EXCEPTION_MASK = "Unexpected exception at {} :: {}\n{}";

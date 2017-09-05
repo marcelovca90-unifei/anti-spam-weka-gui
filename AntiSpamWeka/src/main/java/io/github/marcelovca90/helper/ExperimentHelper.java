@@ -21,6 +21,9 @@
  ******************************************************************************/
 package io.github.marcelovca90.helper;
 
+import static io.github.marcelovca90.common.Constants.MessageType.HAM;
+import static io.github.marcelovca90.common.Constants.MessageType.SPAM;
+
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -38,7 +41,6 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.pmw.tinylog.Logger;
 
-import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
@@ -58,25 +60,37 @@ public class ExperimentHelper
     public void computeSingleRunResults(MethodEvaluation methodEvaluation)
     {
         Evaluation evaluation = methodEvaluation.getEvaluation();
+        int hamIndex = HAM.ordinal();
+        int spamIndex = SPAM.ordinal();
 
-        Double hamPrecision = 100.0 * evaluation.precision(MessageType.HAM.ordinal());
-        Double spamPrecision = 100.0 * evaluation.precision(MessageType.SPAM.ordinal());
+        Double hamPrecision = 100.0 * evaluation.precision(hamIndex);
+        Double spamPrecision = 100.0 * evaluation.precision(spamIndex);
         Double weightedPrecision = 100.0 * evaluation.weightedPrecision();
 
-        Double hamRecall = 100.0 * evaluation.recall(MessageType.HAM.ordinal());
-        Double spamRecall = 100.0 * evaluation.recall(MessageType.SPAM.ordinal());
+        // androutsopoulos2000evaluation
+        Double nll = evaluation.numTruePositives(hamIndex);
+        Double nss = evaluation.numTruePositives(spamIndex);
+        Double nl = methodEvaluation.getTestingSetCounts().get(HAM).doubleValue();
+        Double ns = methodEvaluation.getTestingSetCounts().get(SPAM).doubleValue();
+        Double wacc1 = 100.0 * ((1 * nll + nss) / (1 * nl + ns));
+        Double wacc9 = 100.0 * ((9 * nll + nss) / (9 * nl + ns));
+        Double wacc99 = 100.0 * ((99 * nll + nss) / (99 * nl + ns));
+        Double wacc999 = 100.0 * ((999 * nll + nss) / (999 * nl + ns));
+
+        Double hamRecall = 100.0 * evaluation.recall(hamIndex);
+        Double spamRecall = 100.0 * evaluation.recall(spamIndex);
         Double weightedRecall = 100.0 * evaluation.weightedRecall();
 
-        Double hamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(MessageType.HAM.ordinal());
-        Double spamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(MessageType.SPAM.ordinal());
+        Double hamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(hamIndex);
+        Double spamAreaUnderPRC = 100.0 * evaluation.areaUnderPRC(spamIndex);
         Double weightedAreaUnderPRC = 100.0 * evaluation.weightedAreaUnderPRC();
 
-        Double hamAreaUnderROC = 100.0 * evaluation.areaUnderROC(MessageType.HAM.ordinal());
-        Double spamAreaUnderROC = 100.0 * evaluation.areaUnderROC(MessageType.SPAM.ordinal());
+        Double hamAreaUnderROC = 100.0 * evaluation.areaUnderROC(hamIndex);
+        Double spamAreaUnderROC = 100.0 * evaluation.areaUnderROC(spamIndex);
         Double weightedAreaUnderROC = 100.0 * evaluation.weightedAreaUnderROC();
 
-        Double hamFMeasure = 100.0 * evaluation.fMeasure(MessageType.HAM.ordinal());
-        Double spamFMeasure = 100.0 * evaluation.fMeasure(MessageType.SPAM.ordinal());
+        Double hamFMeasure = 100.0 * evaluation.fMeasure(hamIndex);
+        Double spamFMeasure = 100.0 * evaluation.fMeasure(spamIndex);
         Double weightedFMeasure = 100.0 * evaluation.weightedFMeasure();
 
         Double trainTime = (double) (methodEvaluation.getTrainEnd() - methodEvaluation.getTrainStart());
@@ -100,6 +114,10 @@ public class ExperimentHelper
         addSingleRunResult(Metric.WEIGHTED_F_MEASURE, weightedFMeasure);
         addSingleRunResult(Metric.TRAIN_TIME, trainTime);
         addSingleRunResult(Metric.TEST_TIME, testTime);
+        addSingleRunResult(Metric.WEIGHTED_ACCURACY_1, wacc1);
+        addSingleRunResult(Metric.WEIGHTED_ACCURACY_9, wacc9);
+        addSingleRunResult(Metric.WEIGHTED_ACCURACY_99, wacc99);
+        addSingleRunResult(Metric.WEIGHTED_ACCURACY_999, wacc999);
     }
 
     // detects, removes and return the amount of outliers in the result keeper, if any
@@ -110,20 +128,20 @@ public class ExperimentHelper
 
     public void printHeader()
     {
-        Stream<String> metricsWithoutStats = Arrays.stream(new String[]
-        { "Data Set", "Statistics Method", "ML Method", "Number of Features (before)", "Number of Features (after)" });
+        Stream<String> metricsWithoutStats = Arrays.stream(new String[] { "Data Set", "Statistics Method", "ML Method", "Number of Features (before)", "Number of Features (after)" });
 
         String headerWithoutStats = metricsWithoutStats.collect(Collectors.joining("\t", "\t", ""));
 
-        Stream<String> metricsWithStats = Arrays.stream(new String[]
-        {
-                "Ham Precision", "Spam Precision", "Weighted Precision",
-                "Ham Recall", "Spam Recall", "Weighted Recall",
-                "Ham Area Under PRC", "Spam Area Under PRC", "Weighted Area Under PRC",
-                "Ham Area Under ROC", "Spam Area Under ROC", "Weighted Area Under ROC",
-                "Ham F-Measure", "Spam F-Measure", "Weighted F-Measure",
-                "Train Time", "Test Time"
-        });
+        Stream<String> metricsWithStats = Arrays.stream(
+            new String[] {
+                    "Ham Precision", "Spam Precision", "Weighted Precision",
+                    "Ham Recall", "Spam Recall", "Weighted Recall",
+                    "Ham Area Under PRC", "Spam Area Under PRC", "Weighted Area Under PRC",
+                    "Ham Area Under ROC", "Spam Area Under ROC", "Weighted Area Under ROC",
+                    "Ham F-Measure", "Spam F-Measure", "Weighted F-Measure",
+                    "Train Time", "Test Time",
+                    "WAcc1", "WAcc9", "WAcc99", "WAcc999"
+            });
 
         String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));
 
@@ -271,7 +289,7 @@ public class ExperimentHelper
     {
         double median = stats.getPercentile(50);
         double medianAbsoluteDeviation = new DescriptiveStatistics(
-                Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
+            Arrays.stream(stats.getValues()).map(v -> Math.abs(v - median)).toArray()).getPercentile(50);
         double modifiedZScore = 0.6745 * (value - median) / medianAbsoluteDeviation;
 
         return Math.abs(modifiedZScore) > 3.5;
