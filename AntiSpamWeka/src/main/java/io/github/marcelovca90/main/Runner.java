@@ -95,7 +95,7 @@ public class Runner
                     Instances spamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(spamFilePath, MessageType.SPAM);
 
                     // match class cardinalities so data set becomes balanced
-                    MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
+                    // MetaHelper.getInputOutputHelper().matchCardinalities(hamDataSet, spamDataSet);
 
                     // merge ham and spam data sets
                     dataSet = MetaHelper.getInputOutputHelper().mergeInstances(hamDataSet, spamDataSet);

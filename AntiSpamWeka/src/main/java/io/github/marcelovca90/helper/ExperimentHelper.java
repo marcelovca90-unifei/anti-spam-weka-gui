@@ -67,16 +67,6 @@ public class ExperimentHelper
         Double spamPrecision = 100.0 * evaluation.precision(spamIndex);
         Double weightedPrecision = 100.0 * evaluation.weightedPrecision();
 
-        // androutsopoulos2000evaluation
-        Double nll = evaluation.numTruePositives(hamIndex);
-        Double nss = evaluation.numTruePositives(spamIndex);
-        Double nl = methodEvaluation.getTestingSetCounts().get(HAM).doubleValue();
-        Double ns = methodEvaluation.getTestingSetCounts().get(SPAM).doubleValue();
-        Double wacc1 = 100.0 * ((1 * nll + nss) / (1 * nl + ns));
-        Double wacc9 = 100.0 * ((9 * nll + nss) / (9 * nl + ns));
-        Double wacc99 = 100.0 * ((99 * nll + nss) / (99 * nl + ns));
-        Double wacc999 = 100.0 * ((999 * nll + nss) / (999 * nl + ns));
-
         Double hamRecall = 100.0 * evaluation.recall(hamIndex);
         Double spamRecall = 100.0 * evaluation.recall(spamIndex);
         Double weightedRecall = 100.0 * evaluation.weightedRecall();
@@ -114,10 +104,6 @@ public class ExperimentHelper
         addSingleRunResult(Metric.WEIGHTED_F_MEASURE, weightedFMeasure);
         addSingleRunResult(Metric.TRAIN_TIME, trainTime);
         addSingleRunResult(Metric.TEST_TIME, testTime);
-        addSingleRunResult(Metric.WEIGHTED_ACCURACY_1, wacc1);
-        addSingleRunResult(Metric.WEIGHTED_ACCURACY_9, wacc9);
-        addSingleRunResult(Metric.WEIGHTED_ACCURACY_99, wacc99);
-        addSingleRunResult(Metric.WEIGHTED_ACCURACY_999, wacc999);
     }
 
     // detects, removes and return the amount of outliers in the result keeper, if any
@@ -139,8 +125,7 @@ public class ExperimentHelper
                     "Ham Area Under PRC", "Spam Area Under PRC", "Weighted Area Under PRC",
                     "Ham Area Under ROC", "Spam Area Under ROC", "Weighted Area Under ROC",
                     "Ham F-Measure", "Spam F-Measure", "Weighted F-Measure",
-                    "Train Time", "Test Time",
-                    "WAcc1", "WAcc9", "WAcc99", "WAcc999"
+                    "Train Time", "Test Time"
             });
 
         String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));

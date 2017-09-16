@@ -27,7 +27,7 @@ MAX_STACK_SIZE=8m
 
 # Anti Spam settings
 JAR_PATH="$(pwd)/target/AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
-METADATA="$(pwd)/../../anti-spam-weka-data/2017_BASE2/metadata.txt"
+METADATA="$(pwd)/../../anti-spam-weka-data/2017_BASE2/metadataUpTo1024.txt"
 METHODS=(A1DE A2DE BFTREE CART DTNB FURIA FRF HP IBK J48 J48C J48G JRIP LIBLINEAR LIBSVM MLP NB NBTREE RBF RT SGD SMO SPEGASOS WRF)
 RUNS=10
 SKIP_TRAIN="-SkipTrain"

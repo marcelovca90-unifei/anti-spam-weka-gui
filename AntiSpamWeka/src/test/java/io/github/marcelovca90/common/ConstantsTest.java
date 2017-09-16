@@ -59,9 +59,9 @@ public class ConstantsTest
     }
 
     @Test
-    public void enum_Metric_shouldReturnTwentyOneValues()
+    public void enum_Metric_shouldReturnSeventeenValues()
     {
-        assertThat(Constants.Metric.values().length, equalTo(21));
+        assertThat(Constants.Metric.values().length, equalTo(17));
         Arrays
             .stream(Constants.Metric.values())
             .forEach(v -> assertThat(Constants.Metric.valueOf(v.name()), notNullValue()));

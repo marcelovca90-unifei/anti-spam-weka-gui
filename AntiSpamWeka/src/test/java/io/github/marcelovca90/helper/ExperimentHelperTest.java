@@ -27,12 +27,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
@@ -80,11 +77,6 @@ public class ExperimentHelperTest
         when(methodEvaluationMock.getTrainEnd()).thenReturn(System.currentTimeMillis() - 750);
         when(methodEvaluationMock.getTestStart()).thenReturn(System.currentTimeMillis() - 500);
         when(methodEvaluationMock.getTestEnd()).thenReturn(System.currentTimeMillis() - 250);
-
-        EnumMap<MessageType, Integer> counts = new EnumMap<>(MessageType.class);
-        counts.put(MessageType.HAM, RandomUtils.nextInt(1, 1000));
-        counts.put(MessageType.SPAM, RandomUtils.nextInt(1, 1000));
-        when(methodEvaluationMock.getTestingSetCounts()).thenReturn(counts);
     }
 
     @Test
