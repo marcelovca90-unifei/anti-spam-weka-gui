@@ -12,12 +12,15 @@ package io.github.marcelovca90.gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -89,6 +92,15 @@ public class View extends JFrame
         panelAntiSpamSettings.add(txtJarPath);
 
         JButton btnChooseJarPath = new JButton("Choose...");
+        btnChooseJarPath.addActionListener(ae -> {
+            JFileChooser jFileChooser = new JFileChooser();
+            jFileChooser.showOpenDialog(null);
+            File selectedFile = jFileChooser.getSelectedFile();
+            if (selectedFile != null)
+            {
+                txtJarPath.setText(selectedFile.getAbsolutePath());
+            }
+        });
         btnChooseJarPath.setBounds(581, 20, 97, 25);
         panelAntiSpamSettings.add(btnChooseJarPath);
 
@@ -103,6 +115,15 @@ public class View extends JFrame
         panelAntiSpamSettings.add(txtMetadata);
 
         JButton btnChooseMetadata = new JButton("Choose...");
+        btnChooseMetadata.addActionListener(ae -> {
+            JFileChooser jFileChooser = new JFileChooser();
+            jFileChooser.showOpenDialog(null);
+            File selectedFile = jFileChooser.getSelectedFile();
+            if (selectedFile != null)
+            {
+                txtMetadata.setText(selectedFile.getAbsolutePath());
+            }
+        });
         btnChooseMetadata.setBounds(581, 55, 97, 25);
         panelAntiSpamSettings.add(btnChooseMetadata);
 
@@ -263,14 +284,23 @@ public class View extends JFrame
         panelOutput.add(scrollPaneOutput);
 
         JTextArea textAreaOutput = new JTextArea();
+        textAreaOutput.setLineWrap(true);
+        textAreaOutput.setFont(new Font("Consolas", Font.PLAIN, 13));
+        textAreaOutput.setTabSize(4);
         scrollPaneOutput.setViewportView(textAreaOutput);
         textAreaOutput.setEditable(false);
 
-        JButton btnStart = new JButton("Start");
-        btnStart.setBounds(12, 465, 123, 25);
-        panelOutput.add(btnStart);
+        JButton btnGenerate = new JButton("Generate Script");
+        btnGenerate.addActionListener(ae -> {
+            textAreaOutput.setText("#!/bin/bash");
+        });
+        btnGenerate.setBounds(12, 465, 123, 25);
+        panelOutput.add(btnGenerate);
 
         JButton btnClear = new JButton("Clear");
+        btnClear.addActionListener(ae -> {
+            textAreaOutput.setText("");
+        });
         btnClear.setBounds(142, 465, 123, 25);
         panelOutput.add(btnClear);
     }
