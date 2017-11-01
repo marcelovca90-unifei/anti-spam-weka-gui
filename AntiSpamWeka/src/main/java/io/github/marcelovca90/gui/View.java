@@ -17,6 +17,9 @@ import java.awt.GridLayout;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -41,15 +45,28 @@ public class View extends JFrame
 {
     private static final long serialVersionUID = 1L;
 
+    private JCheckBox chkBalanceClasses;
+    private JCheckBox chkIncludeEmpty;
+    private JCheckBox chkRemoveOutliers;
+    private JCheckBox chkSaveArff;
+    private JCheckBox chkSaveModel;
+    private JCheckBox chkSaveSets;
+    private JCheckBox chkShrinkFeatures;
+    private JCheckBox chkSkipTest;
+    private JCheckBox chkSkipTrain;
     private JPanel mycontentPane;
+    private JPasswordField fldPassword;
+    private JSlider sliderHeapSize;
+    private JSlider sliderStackSize;
     private JTextField txtJarPath;
     private JTextField txtMetadata;
-    private JTextField txtSender;
-    private JTextField txtRecipient;
-    private JTextField txtServer;
     private JTextField txtOptions;
+    private JTextField txtRecipient;
+    private JTextField txtRuns;
+    private JTextField txtSender;
+    private JTextField txtServer;
     private JTextField txtUsername;
-    private JPasswordField fldPassword;
+    private Set<String> selectedMethods;
 
     /**
      * Launch the application.
@@ -86,9 +103,10 @@ public class View extends JFrame
         panelAntiSpamSettings.add(lblJarPath);
 
         txtJarPath = new JTextField();
+        txtJarPath.setText("$git\\anti-spam-weka\\AntiSpamWeka\\target\\AntiSpamWeka-0.0.1-SNAPSHOT-jar-with-dependencies.jar");
         txtJarPath.setEditable(false);
         txtJarPath.setColumns(10);
-        txtJarPath.setBounds(80, 21, 489, 22);
+        txtJarPath.setBounds(80, 21, 378, 22);
         panelAntiSpamSettings.add(txtJarPath);
 
         JButton btnChooseJarPath = new JButton("Choose...");
@@ -101,7 +119,7 @@ public class View extends JFrame
                 txtJarPath.setText(selectedFile.getAbsolutePath());
             }
         });
-        btnChooseJarPath.setBounds(581, 20, 97, 25);
+        btnChooseJarPath.setBounds(470, 20, 97, 25);
         panelAntiSpamSettings.add(btnChooseJarPath);
 
         JLabel lblMetadata = new JLabel("Metadata");
@@ -109,9 +127,10 @@ public class View extends JFrame
         panelAntiSpamSettings.add(lblMetadata);
 
         txtMetadata = new JTextField();
+        txtMetadata.setText("$git\\anti-spam-weka-data\\2017_BASE2\\metadataUpTo1024.txt");
         txtMetadata.setEditable(false);
         txtMetadata.setColumns(10);
-        txtMetadata.setBounds(80, 56, 489, 22);
+        txtMetadata.setBounds(80, 56, 378, 22);
         panelAntiSpamSettings.add(txtMetadata);
 
         JButton btnChooseMetadata = new JButton("Choose...");
@@ -124,44 +143,78 @@ public class View extends JFrame
                 txtMetadata.setText(selectedFile.getAbsolutePath());
             }
         });
-        btnChooseMetadata.setBounds(581, 55, 97, 25);
+        btnChooseMetadata.setBounds(470, 55, 97, 25);
         panelAntiSpamSettings.add(btnChooseMetadata);
 
         JPanel panelMethods = new JPanel();
-        panelMethods.setBounds(12, 93, 666, 120);
+        panelMethods.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panelMethods.setBounds(12, 93, 392, 178);
         panelAntiSpamSettings.add(panelMethods);
         panelMethods.setLayout(new GridLayout(0, 4));
 
-        Arrays.stream(MethodConfiguration.values()).forEach(m -> panelMethods.add(new JCheckBox(m.toString())));
+        selectedMethods = new LinkedHashSet<>(Arrays.asList("A1DE", "NB", "J48", "FRF", "MLP", "RBF", "LIBSVM", "SPEGASOS")); // default methods
+
+        Arrays.stream(MethodConfiguration.values()).forEach(method -> {
+            JCheckBox checkBox = new JCheckBox(method.name());
+            if (selectedMethods.contains(method.name()))
+                checkBox.setSelected(true);
+            checkBox.addActionListener(ae -> {
+                JCheckBox source = (JCheckBox) ae.getSource();
+                if (source.isSelected())
+                    selectedMethods.add(source.getText());
+                else
+                    selectedMethods.remove(source.getText());
+            });
+            panelMethods.add(checkBox);
+        });
 
         JPanel panelOptions = new JPanel();
-        panelOptions.setBounds(12, 218, 666, 53);
+        panelOptions.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panelOptions.setBounds(416, 91, 262, 180);
         panelAntiSpamSettings.add(panelOptions);
-        panelOptions.setLayout(new GridLayout(0, 4));
+        panelOptions.setLayout(new GridLayout(0, 2));
 
-        JCheckBox chkSkipTrain = new JCheckBox("Skip Train");
+        chkSkipTrain = new JCheckBox("Skip Train");
         panelOptions.add(chkSkipTrain);
 
-        JCheckBox chkSkipTest = new JCheckBox("Skip Test");
+        chkSkipTest = new JCheckBox("Skip Test");
         panelOptions.add(chkSkipTest);
 
-        JCheckBox chkBalClass = new JCheckBox("Balance Classes");
-        panelOptions.add(chkBalClass);
+        chkShrinkFeatures = new JCheckBox("Shrink Features");
+        chkShrinkFeatures.setSelected(true);
+        panelOptions.add(chkShrinkFeatures);
 
-        JCheckBox chkIncEmpty = new JCheckBox("Include Empty Patterns");
-        panelOptions.add(chkIncEmpty);
+        chkBalanceClasses = new JCheckBox("Balance Classes");
+        chkBalanceClasses.setSelected(true);
+        panelOptions.add(chkBalanceClasses);
 
-        JCheckBox chkRemOutliers = new JCheckBox("Remove Outliers");
-        panelOptions.add(chkRemOutliers);
+        chkIncludeEmpty = new JCheckBox("Include Empty");
+        chkIncludeEmpty.setSelected(true);
+        panelOptions.add(chkIncludeEmpty);
 
-        JCheckBox chkSaveArff = new JCheckBox("Save ARFF");
+        chkRemoveOutliers = new JCheckBox("Remove Outliers");
+        panelOptions.add(chkRemoveOutliers);
+
+        chkSaveArff = new JCheckBox("Save ARFF");
         panelOptions.add(chkSaveArff);
 
-        JCheckBox chkSaveModel = new JCheckBox("Save Model");
+        chkSaveModel = new JCheckBox("Save Model");
         panelOptions.add(chkSaveModel);
 
-        JCheckBox chkSaveSets = new JCheckBox("Save Sets");
+        chkSaveSets = new JCheckBox("Save Sets");
         panelOptions.add(chkSaveSets);
+
+        txtRuns = new JTextField();
+        txtRuns.setHorizontalAlignment(SwingConstants.CENTER);
+        txtRuns.setText("10");
+        txtRuns.setColumns(10);
+        txtRuns.setBounds(579, 56, 99, 22);
+        panelAntiSpamSettings.add(txtRuns);
+
+        JLabel lblRuns = new JLabel("Runs");
+        lblRuns.setHorizontalAlignment(SwingConstants.CENTER);
+        lblRuns.setBounds(579, 24, 99, 16);
+        panelAntiSpamSettings.add(lblRuns);
 
         JPanel panelMailSettings = new JPanel();
         panelMailSettings.setBorder(new TitledBorder(null, "Mail settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -238,7 +291,7 @@ public class View extends JFrame
 
         long maxHeap = bean.getTotalPhysicalMemorySize() / 1024 / 1024;
 
-        JSlider sliderHeapSize = new JSlider();
+        sliderHeapSize = new JSlider();
         sliderHeapSize.setSnapToTicks(true);
         sliderHeapSize.setPaintTicks(true);
         sliderHeapSize.setPaintLabels(true);
@@ -256,7 +309,7 @@ public class View extends JFrame
 
         long maxStack = maxHeap / 1024;
 
-        JSlider sliderStackSize = new JSlider();
+        sliderStackSize = new JSlider();
         sliderStackSize.setValue(12211);
         sliderStackSize.setSnapToTicks(true);
         sliderStackSize.setPaintTicks(true);
@@ -284,24 +337,83 @@ public class View extends JFrame
         panelOutput.add(scrollPaneOutput);
 
         JTextArea textAreaOutput = new JTextArea();
-        textAreaOutput.setLineWrap(true);
-        textAreaOutput.setFont(new Font("Consolas", Font.PLAIN, 13));
+        textAreaOutput.setFont(new Font("Consolas", Font.PLAIN, 12));
         textAreaOutput.setTabSize(4);
         scrollPaneOutput.setViewportView(textAreaOutput);
         textAreaOutput.setEditable(false);
 
         JButton btnGenerate = new JButton("Generate Script");
         btnGenerate.addActionListener(ae -> {
-            textAreaOutput.setText("#!/bin/bash");
+            String script = buildScript();
+            textAreaOutput.setText(script);
         });
         btnGenerate.setBounds(12, 465, 123, 25);
         panelOutput.add(btnGenerate);
 
         JButton btnClear = new JButton("Clear");
-        btnClear.addActionListener(ae -> {
-            textAreaOutput.setText("");
-        });
+        btnClear.addActionListener(ae -> textAreaOutput.setText(""));
         btnClear.setBounds(142, 465, 123, 25);
         panelOutput.add(btnClear);
+    }
+
+    private String buildScript()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("#!/bin/bash\n\n");
+
+        sb.append("# Java Virtual Machine settings\n");
+        sb.append("MAX_HEAP_SIZE=" + sliderHeapSize.getValue() + "m\n");
+        sb.append("MAX_STACK_SIZE=" + sliderStackSize.getValue() + "m\n\n");
+
+        sb.append("# E-mail settings\n");
+        sb.append("SENDER='" + txtSender.getText() + "'\n");
+        sb.append("RECIPIENT='" + txtRecipient.getText() + "'\n");
+        sb.append("SERVER='" + txtServer.getText() + "'\n");
+        sb.append("OPTIONS='" + txtOptions.getText() + "'\n");
+        sb.append("USERNAME='" + txtUsername.getText() + "'\n");
+        sb.append("PASSWORD='" + new String(fldPassword.getPassword()) + "'\n\n");
+
+        sb.append("# Anti Spam settings\r\n");
+        sb.append("JAR_PATH=\"" + txtJarPath.getText() + "\"\n");
+        sb.append("METADATA=\"" + txtMetadata.getText() + "\"\n");
+        sb.append("METHODS=(" + selectedMethods.stream().collect(Collectors.joining(" ")) + ")\n");
+        sb.append("RUNS=" + txtRuns.getText() + "\n\n");
+
+        sb.append("for METHOD in \"${METHODS[@]}\"; do\n\n");
+
+        sb.append("    # run the experiments\n");
+        sb.append("    VM_OPTIONS=\"-Xmx${MAX_HEAP_SIZE} -Xss${MAX_STACK_SIZE} -XX:+UseG1GC\"\n");
+        sb.append("    RUN_COMMAND=\"java ${VM_OPTIONS} -jar \\\"${JAR_PATH}\\\"");
+        if (chkSkipTrain.isSelected()) sb.append(" -SkipTrain");
+        if (chkSkipTest.isSelected()) sb.append(" -SkipTest");
+        if (chkShrinkFeatures.isSelected()) sb.append(" -ShrinkFeatures");
+        if (chkBalanceClasses.isSelected()) sb.append(" -BalanceClasses");
+        if (chkIncludeEmpty.isSelected()) sb.append(" -IncludeEmpty");
+        if (chkRemoveOutliers.isSelected()) sb.append(" -RemoveOutliers");
+        if (chkSaveArff.isSelected()) sb.append(" -SaveArff");
+        if (chkSaveModel.isSelected()) sb.append(" -SaveModel");
+        if (chkSaveSets.isSelected()) sb.append(" -SaveSets");
+        sb.append("\n");
+        sb.append("    LOG_FILENAME=\"" + txtJarPath.getText().substring(0, txtJarPath.getText().lastIndexOf('\\') + 1) + "${METHOD}.log\n");
+        sb.append("    echo \"$(date) - Executing [${RUN_COMMAND}] >> [${LOG_FILENAME}] and sending results to [${RECIPIENT}]\"\n");
+        sb.append("    eval ${RUN_COMMAND} >> ${LOG_FILENAME}\n");
+        sb.append("    for LEVEL in \"${LOG_LEVELS[@]}\"; do\n");
+        sb.append("    cat ${LOG_FILENAME} | grep ${LEVEL} >> $(echo ${LOG_FILENAME} | sed s/.log/_${LEVEL}.log/)\n\n");
+
+        sb.append("    # zip the log files\n");
+        sb.append("    LOG_FILENAME_ZIP=\"${LOG_FILENAME}.zip\"\n");
+        sb.append("    ZIP_COMMAND=\"zip --junk-paths ${LOG_FILENAME_ZIP} $(dirname ${LOG_FILENAME})/${METHOD}*.log\"\n");
+        sb.append("    eval ${ZIP_COMMAND}\n\n");
+
+        sb.append("    # mail the zipped log file\n");
+        sb.append("    MAIL_SUBJECT=\"\\\"[ASW] $(date) - $(basename ${LOG_FILENAME})\\\"\n");
+        sb.append("    MAIL_BODY=\"\\\"$(du -h ${LOG_FILENAME} | cut -f1) $(file ${LOG_FILENAME})\"\"\\n");
+        sb.append("    MAIL_COMMAND=\"sendemail -f ${SENDER} -t ${RECIPIENT} -u ${MAIL_SUBJECT} -m ${MAIL_BODY} -a ${LOG_FILENAME_ZIP} -s ${SERVER} -o ${OPTIONS} -xu ${USERNAME} -xp ${PASSWORD}\"\n");
+        sb.append("    eval ${MAIL_COMMAND}\n\n");
+
+        sb.append("done\n");
+
+        return sb.toString();
     }
 }
