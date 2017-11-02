@@ -371,13 +371,6 @@ public class View extends JFrame
         panelOutput.add(btnClear);
     }
 
-    private void setClipboardContent(String script)
-    {
-        StringSelection selection = new StringSelection(script);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, selection);
-    }
-
     private String buildScript()
     {
         StringBuilder sb = new StringBuilder();
@@ -441,5 +434,12 @@ public class View extends JFrame
         sb.append("done\n");
 
         return sb.toString();
+    }
+
+    private void setClipboardContent(String content)
+    {
+        StringSelection selection = new StringSelection(content);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
     }
 }
