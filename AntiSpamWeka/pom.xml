@@ -41,7 +41,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>io.github.marcelovca90.gui.View</mainClass>
+                            <mainClass>io.github.marcelovca90.gui.UserInterface</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
