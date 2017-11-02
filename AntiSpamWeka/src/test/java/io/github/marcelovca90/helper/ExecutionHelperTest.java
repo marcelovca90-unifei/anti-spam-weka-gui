@@ -19,10 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.main;
+package io.github.marcelovca90.helper;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,26 +36,17 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.MethodConfiguration;
-import io.github.marcelovca90.helper.CommandLineHelper;
-import io.github.marcelovca90.helper.ExperimentHelper;
-import io.github.marcelovca90.helper.InputOutputHelper;
-import io.github.marcelovca90.helper.MetaHelper;
-import io.github.marcelovca90.helper.RandomHelper;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RunnerTest
+public class ExecutionHelperTest
 {
     private static String[] args;
     private static Set<DataSetMetadata> metadata;
     private static List<MethodConfiguration> methods;
-
-    @Mock
-    private CommandLineHelper commandLineHelper;
 
     private ExperimentHelper experimentHelper = new ExperimentHelper();
 
@@ -95,43 +84,37 @@ public class RunnerTest
     @Test
     public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 3, true, true, false, false, false, false, true, false, false);
+        setUpExecutionHelper(args, metadata, methods, 3, true, true, false, false, false, false, true, false, false);
 
-        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
+        MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        Runner.main(args);
+        ExecutionHelper.run();
     }
 
     @Test
     public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
-        commandLineHelper = buildCommandLineHelper(args, metadata, methods, 25, false, false, true, true, true, true, false, true, true);
+        setUpExecutionHelper(args, metadata, methods, 25, false, false, true, true, true, true, false, true, true);
 
-        MetaHelper.initialize(commandLineHelper, experimentHelper, inputOutputHelper, randomHelper);
+        MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        Runner.main(args);
+        ExecutionHelper.run();
     }
 
-    private CommandLineHelper buildCommandLineHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
+    private void setUpExecutionHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
             boolean shrinkFeatures, boolean balanceClasses, boolean includeEmpty, boolean removeOutliers, boolean saveArff, boolean saveModel, boolean saveSets) throws Exception
     {
-        CommandLineHelper helper = mock(CommandLineHelper.class);
-
-        doNothing().when(helper).initialize(any(String[].class));
-        when(helper.getDataSetsMetadata()).thenReturn(metadata);
-        when(helper.getMethods()).thenReturn(methods);
-        when(helper.getNumberOfRuns()).thenReturn(numberOfRuns);
-        when(helper.skipTrain()).thenReturn(skipTrain);
-        when(helper.skipTest()).thenReturn(skipTest);
-        when(helper.shrinkFeatures()).thenReturn(shrinkFeatures);
-        when(helper.balanceClasses()).thenReturn(balanceClasses);
-        when(helper.includeEmpty()).thenReturn(includeEmpty);
-        when(helper.removeOutliers()).thenReturn(removeOutliers);
-        when(helper.saveArff()).thenReturn(saveArff);
-        when(helper.saveModel()).thenReturn(saveModel);
-        when(helper.saveSets()).thenReturn(saveSets);
-        doNothing().when(helper).printConfiguration();
-
-        return helper;
+        ExecutionHelper.metadata = metadata;
+        ExecutionHelper.methods = methods;
+        ExecutionHelper.numberOfRuns = numberOfRuns;
+        ExecutionHelper.skipTrain = skipTrain;
+        ExecutionHelper.skipTest = skipTest;
+        ExecutionHelper.shrinkFeatures = shrinkFeatures;
+        ExecutionHelper.balanceClasses = balanceClasses;
+        ExecutionHelper.includeEmpty = includeEmpty;
+        ExecutionHelper.removeOutliers = removeOutliers;
+        ExecutionHelper.saveArff = saveArff;
+        ExecutionHelper.saveModel = saveModel;
+        ExecutionHelper.saveSets = saveSets;
     }
 }

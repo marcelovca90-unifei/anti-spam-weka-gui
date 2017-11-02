@@ -23,17 +23,9 @@ package io.github.marcelovca90.helper;
 
 public class MetaHelper
 {
-    private static CommandLineHelper commandLineHelper;
     private static ExperimentHelper experimentHelper;
     private static InputOutputHelper inputOutputHelper;
     private static RandomHelper randomHelper;
-
-    public static CommandLineHelper getCommandLineHelper()
-    {
-        if (commandLineHelper == null)
-            commandLineHelper = new CommandLineHelper();
-        return commandLineHelper;
-    }
 
     public static ExperimentHelper getExperimentHelper()
     {
@@ -56,9 +48,8 @@ public class MetaHelper
         return randomHelper;
     }
 
-    public static void initialize(CommandLineHelper _commandLineHelper, ExperimentHelper _experimentHelper, InputOutputHelper _inputOutputHelper, RandomHelper _randomHelper)
+    public static void initialize(ExperimentHelper _experimentHelper, InputOutputHelper _inputOutputHelper, RandomHelper _randomHelper)
     {
-        commandLineHelper = _commandLineHelper;
         experimentHelper = _experimentHelper;
         inputOutputHelper = _inputOutputHelper;
         randomHelper = _randomHelper;
@@ -66,7 +57,6 @@ public class MetaHelper
 
     public static void reset()
     {
-        commandLineHelper = null;
         experimentHelper = null;
         inputOutputHelper = null;
         randomHelper = null;

@@ -1,62 +1,56 @@
-/*******************************************************************************
- * Copyright (C) 2017 Marcelo Vinícius Cysneiros Aragão
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- ******************************************************************************/
-package io.github.marcelovca90.main;
+package io.github.marcelovca90.helper;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.stream.Collectors;
 
 import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.FilterConfiguration;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
-import io.github.marcelovca90.helper.MetaHelper;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
-public class Runner
+public class ExecutionHelper
 {
-    public static void main(String[] args) throws Exception
+    public static Set<DataSetMetadata> metadata;
+    public static List<MethodConfiguration> methods;
+    public static int numberOfRuns;
+    public static boolean skipTrain;
+    public static boolean skipTest;
+    public static boolean shrinkFeatures;
+    public static boolean balanceClasses;
+    public static boolean includeEmpty;
+    public static boolean removeOutliers;
+    public static boolean saveArff;
+    public static boolean saveModel;
+    public static boolean saveSets;
+
+    public static void setUpMetadata(String metadataPath) throws IOException
     {
-        new Runner().run(args);
+        metadata = MetaHelper.getInputOutputHelper().loadDataSetsMetadataFromFile(metadataPath);
     }
 
-    private void run(String[] args) throws Exception
+    public static void setUpMethods(Set<String> methodNames)
+    {
+        methods = methodNames.stream().map(name -> MethodConfiguration.valueOf(name)).collect(Collectors.toList());
+    }
+
+    public static void run() throws Exception
     {
         // change global setting for Logger instances to WARNING level
         Arrays
             .stream(LogManager.getLogManager().getLogger("").getHandlers())
             .forEach(h -> h.setLevel(Level.WARNING));
-
-        // initialize the CLI helper with the provided arguments
-        MetaHelper.getCommandLineHelper().initialize(args);
-
-        // print the parsed, args-provided parameters
-        MetaHelper.getCommandLineHelper().printConfiguration();
 
         // objects that will hold all kinds of data sets
         Instances dataSet = null;
@@ -64,11 +58,11 @@ public class Runner
         Instances testingSet = null;
         Instances emptySet = null;
 
-        for (MethodConfiguration method : MetaHelper.getCommandLineHelper().getMethods())
+        for (MethodConfiguration method : methods)
         {
             MetaHelper.getExperimentHelper().printHeader();
 
-            for (DataSetMetadata metadata : MetaHelper.getCommandLineHelper().getDataSetsMetadata())
+            for (DataSetMetadata metadata : metadata)
             {
                 String folder = metadata.getFolder();
                 int numberOfTotalFeatures;
@@ -105,20 +99,20 @@ public class Runner
                 }
 
                 // apply attribute and instance filters to the data set, if specified
-                if (MetaHelper.getCommandLineHelper().shrinkFeatures())
+                if (shrinkFeatures)
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.AttributeFilter.CfsSubsetEval_MultiObjectiveEvolutionarySearch);
-                if (MetaHelper.getCommandLineHelper().balanceClasses())
+                if (balanceClasses)
                     dataSet = FilterConfiguration.buildAndApply(dataSet, FilterConfiguration.InstanceFilter.ClassBalancer);
 
                 // count the number of actual features by looking at the data set
                 numberOfActualFeatures = dataSet.numAttributes() - 1;
 
                 // save whole set to .arff file, if specified
-                if (MetaHelper.getCommandLineHelper().saveArff())
+                if (saveArff)
                     MetaHelper.getInputOutputHelper().saveInstancesToArffFile(dataSet, folder + File.separator + "data.arff");
 
                 // build empty patterns set, if specified
-                if (MetaHelper.getCommandLineHelper().includeEmpty())
+                if (includeEmpty)
                     emptySet = MetaHelper.getInputOutputHelper().createEmptyInstances(dataSet.numAttributes() - 1, metadata.getEmptyHamCount(), metadata.getEmptySpamCount());
 
                 // build the classifier for the given configuration
@@ -130,7 +124,6 @@ public class Runner
                 // reset run results keeper
                 MetaHelper.getExperimentHelper().clearResultHistory();
 
-                int numberOfRuns = MetaHelper.getCommandLineHelper().getNumberOfRuns();
                 for (int run = 0; run < numberOfRuns; run++)
                 {
                     // set random number generator's seed
@@ -147,11 +140,11 @@ public class Runner
                     testingSet = new Instances(dataSet, trainingSetSize, testingSetSize);
 
                     // add empty patterns to test set
-                    if (MetaHelper.getCommandLineHelper().includeEmpty())
+                    if (includeEmpty)
                         testingSet.addAll(emptySet);
 
                     // save the data sets to .csv files, if specified
-                    if (MetaHelper.getCommandLineHelper().saveSets())
+                    if (saveSets)
                     {
                         MetaHelper.getInputOutputHelper().saveInstancesToArffFile(trainingSet, folder + File.separator + "training.arff");
                         MetaHelper.getInputOutputHelper().saveInstancesToArffFile(testingSet, folder + File.separator + "testing.arff");
@@ -170,11 +163,11 @@ public class Runner
                     baseEvaluation.setNumberOfActualFeatures(numberOfActualFeatures);
 
                     // if the classifier could not be loaded from the filesystem, then train it
-                    if (!MetaHelper.getCommandLineHelper().skipTrain())
+                    if (!skipTrain)
                         baseEvaluation.train(trainingSet);
 
                     // if the testing should not be skipped
-                    if (!MetaHelper.getCommandLineHelper().skipTest())
+                    if (!skipTest)
                     {
                         // evaluate the classifier
                         baseEvaluation.test(testingSet);
@@ -184,12 +177,12 @@ public class Runner
                         MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, false, true);
 
                         // if at the end of last run, detect and remove outliers (if specified); this may lead to additional runs
-                        if (MetaHelper.getCommandLineHelper().removeOutliers() && run == (numberOfRuns - 1))
+                        if (removeOutliers && run == (numberOfRuns - 1))
                             run -= MetaHelper.getExperimentHelper().detectAndRemoveOutliers();
                     }
 
                     // persist the classifier, if specified in args
-                    if (MetaHelper.getCommandLineHelper().saveModel())
+                    if (saveModel)
                     {
                         String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(folder, method, splitPercent);
                         MetaHelper.getInputOutputHelper().saveModelToFile(classifierFilename, classifier);
@@ -197,7 +190,7 @@ public class Runner
                 }
 
                 // log the final results for this configuration
-                if (MetaHelper.getCommandLineHelper().getNumberOfRuns() > 0 && !MetaHelper.getCommandLineHelper().skipTest())
+                if (numberOfRuns > 0 && !skipTest)
                     MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
             }
         }

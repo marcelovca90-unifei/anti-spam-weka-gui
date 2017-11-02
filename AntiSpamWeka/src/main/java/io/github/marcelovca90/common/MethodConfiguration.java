@@ -61,7 +61,7 @@ public enum MethodConfiguration
     BFTREE("Best-first tree", "-M 2 -N 5 -C 1.0 -P POSTPRUNED -S 1", BFTree.class),
 
     // http://weka.sourceforge.net/doc.packages/simpleCART/weka/classifiers/trees/SimpleCart.html
-    CART("", "-M 2.0 -N 5 -C 1.0 -S 1", weka.classifiers.trees.SimpleCart.class),
+    CART("Classification And Regression Tree", "-M 2.0 -N 5 -C 1.0 -S 1", weka.classifiers.trees.SimpleCart.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/DTNB.html
     DTNB("Decision Table/Naive Bayes hybrid classifier", "-X 1", DTNB.class),
@@ -115,7 +115,8 @@ public enum MethodConfiguration
     SGD("Stochastic gradient descent", "-F 0 -L 0.01 -R 1.0E-4 -E 500 -C 0.001 -S 1", SGD.class),
 
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html
-    SMO("Sequential minimal optimization algorithm", "-C 1.0 -L 1.0E-3 -P 1.0E-12 -N 2 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 0\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
+    SMO("Sequential minimal optimization algorithm",
+            "-C 1.0 -L 1.0E-3 -P 1.0E-12 -N 2 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 0\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"", SMO.class),
 
     // http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html
     SPEGASOS("Stochastic Primal Estimated sub-GrAdient SOlver for SVM", "-F 0 -L 1.0E-4 -E 500", SPegasos.class),
