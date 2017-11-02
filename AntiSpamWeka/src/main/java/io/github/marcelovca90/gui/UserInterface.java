@@ -10,9 +10,11 @@
 // **********************************************************************
 package io.github.marcelovca90.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.Arrays;
@@ -27,17 +29,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultCaret;
-
-import org.apache.commons.io.input.Tailer;
-import org.apache.commons.io.input.TailerListener;
 
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.helper.ExecutionHelper;
@@ -80,27 +76,33 @@ public class UserInterface extends JFrame
     {
         setTitle("AntiSpamWeka");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1024, 576);
+        setBounds(100, 100, 768, 576);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
-        contentPane.setLayout(null);
+
+        selectedMethods = new LinkedHashSet<>(Arrays.asList("A1DE", "NB", "J48", "FRF", "MLP", "RBF", "LIBSVM", "SPEGASOS"));
+        contentPane.setLayout(new BorderLayout(0, 0));
+
+        JPanel panelTop = new JPanel();
+        contentPane.add(panelTop, BorderLayout.CENTER);
+        panelTop.setLayout(null);
 
         JPanel panelAntiSpamSettings = new JPanel();
+        panelAntiSpamSettings.setBounds(6, 6, 746, 493);
+        panelTop.add(panelAntiSpamSettings);
         panelAntiSpamSettings.setBorder(new TitledBorder(null, "Anti Spam settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelAntiSpamSettings.setBounds(12, 13, 693, 244);
-        contentPane.add(panelAntiSpamSettings);
         panelAntiSpamSettings.setLayout(null);
 
         JLabel lblMetadata = new JLabel("Metadata");
-        lblMetadata.setBounds(12, 24, 60, 16);
+        lblMetadata.setBounds(12, 18, 60, 45);
         panelAntiSpamSettings.add(lblMetadata);
 
         txtMetadata = new JTextField();
-        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadataUpTo1024.txt".replaceAll("!", File.separator));
+        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadataUpTo16.txt".replaceAll("!", File.separator));
         txtMetadata.setEditable(false);
         txtMetadata.setColumns(10);
-        txtMetadata.setBounds(80, 21, 378, 22);
+        txtMetadata.setBounds(79, 18, 399, 45);
         panelAntiSpamSettings.add(txtMetadata);
 
         JButton btnChooseMetadata = new JButton("Choose...");
@@ -114,23 +116,25 @@ public class UserInterface extends JFrame
                 txtMetadata.setText(selectedFile.getAbsolutePath());
             }
         });
-        btnChooseMetadata.setBounds(455, 21, 97, 25);
+        btnChooseMetadata.setBounds(490, 19, 97, 45);
         panelAntiSpamSettings.add(btnChooseMetadata);
 
         JPanel panelMethods = new JPanel();
-        panelMethods.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelMethods.setBounds(12, 52, 376, 177);
+        panelMethods.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Methods", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelMethods.setBounds(12, 72, 412, 410);
         panelAntiSpamSettings.add(panelMethods);
         panelMethods.setLayout(new GridLayout(0, 4));
 
-        selectedMethods = new LinkedHashSet<>(Arrays.asList("A1DE", "NB", "J48", "FRF", "MLP", "RBF", "LIBSVM", "SPEGASOS")); // default methods
-
         Arrays.stream(MethodConfiguration.values()).forEach(method ->
         {
-            JCheckBox checkBox = new JCheckBox(method.name());
-            checkBox.setToolTipText(method.getName());
-            if (selectedMethods.contains(method.name()))
+            String methodName = method.name();
+
+            JCheckBox checkBox = new JCheckBox(methodName);
+            checkBox.setToolTipText(methodName);
+            if (selectedMethods.contains(methodName))
+            {
                 checkBox.setSelected(true);
+            }
             checkBox.addActionListener(ae ->
             {
                 JCheckBox source = (JCheckBox) ae.getSource();
@@ -139,69 +143,70 @@ public class UserInterface extends JFrame
                 else
                     selectedMethods.remove(source.getText());
             });
+
             panelMethods.add(checkBox);
         });
 
-        JPanel panelOptions = new JPanel();
-        panelOptions.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelOptions.setBounds(398, 52, 280, 177);
-        panelAntiSpamSettings.add(panelOptions);
-        panelOptions.setLayout(new GridLayout(0, 2));
+        JPanel panelRunSettings = new JPanel();
+        panelRunSettings.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Run settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelRunSettings.setBounds(432, 72, 304, 202);
+        panelAntiSpamSettings.add(panelRunSettings);
+        panelRunSettings.setLayout(new GridLayout(0, 2));
 
         chkSkipTrain = new JCheckBox("Skip Train");
         chkSkipTrain.setToolTipText("Do not train the classifier(s)");
-        panelOptions.add(chkSkipTrain);
+        panelRunSettings.add(chkSkipTrain);
 
         chkSkipTest = new JCheckBox("Skip Test");
         chkSkipTest.setToolTipText("Do not test the classifier(s)");
-        panelOptions.add(chkSkipTest);
+        panelRunSettings.add(chkSkipTest);
 
         chkShrinkFeatures = new JCheckBox("Shrink Features");
         chkShrinkFeatures.setToolTipText("Perform dimensionality reduction in the feature space");
         chkShrinkFeatures.setSelected(true);
-        panelOptions.add(chkShrinkFeatures);
+        panelRunSettings.add(chkShrinkFeatures);
 
         chkBalanceClasses = new JCheckBox("Balance Classes");
         chkBalanceClasses.setToolTipText("Equalize the number of instances for each class (i.e.ham and spam)");
         chkBalanceClasses.setSelected(true);
-        panelOptions.add(chkBalanceClasses);
+        panelRunSettings.add(chkBalanceClasses);
 
         chkIncludeEmpty = new JCheckBox("Include Empty");
         chkIncludeEmpty.setToolTipText("Include empty patterns while testing the classifier");
         chkIncludeEmpty.setSelected(true);
-        panelOptions.add(chkIncludeEmpty);
+        panelRunSettings.add(chkIncludeEmpty);
 
         chkRemoveOutliers = new JCheckBox("Remove Outliers");
         chkRemoveOutliers.setToolTipText("Rollback evaluations that contain outliers");
-        panelOptions.add(chkRemoveOutliers);
+        panelRunSettings.add(chkRemoveOutliers);
 
         chkSaveArff = new JCheckBox("Save ARFF");
         chkSaveArff.setToolTipText("Save the whole data set to a .arff file");
-        panelOptions.add(chkSaveArff);
+        panelRunSettings.add(chkSaveArff);
 
         chkSaveModel = new JCheckBox("Save Model");
         chkSaveModel.setToolTipText("Save the classifier to a .model file");
-        panelOptions.add(chkSaveModel);
+        panelRunSettings.add(chkSaveModel);
 
         chkSaveSets = new JCheckBox("Save Sets");
         chkSaveSets.setToolTipText("Save the training and testing data sets to a .csv file");
-        panelOptions.add(chkSaveSets);
+        panelRunSettings.add(chkSaveSets);
 
         txtRuns = new JTextField();
         txtRuns.setHorizontalAlignment(SwingConstants.CENTER);
         txtRuns.setText("10");
         txtRuns.setColumns(10);
-        txtRuns.setBounds(600, 21, 78, 22);
+        txtRuns.setBounds(658, 18, 78, 45);
         panelAntiSpamSettings.add(txtRuns);
 
-        JLabel lblRuns = new JLabel("Runs");
-        lblRuns.setBounds(564, 24, 38, 16);
+        JLabel lblRuns = new JLabel("No. Runs");
+        lblRuns.setBounds(599, 18, 57, 45);
         panelAntiSpamSettings.add(lblRuns);
 
         JPanel panelMailSettings = new JPanel();
+        panelMailSettings.setBounds(432, 280, 304, 202);
+        panelAntiSpamSettings.add(panelMailSettings);
         panelMailSettings.setBorder(new TitledBorder(null, "Mail settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelMailSettings.setBounds(711, 13, 307, 190);
-        contentPane.add(panelMailSettings);
         panelMailSettings.setLayout(new GridLayout(0, 2, 0, 0));
 
         JLabel lblSender = new JLabel("Sender");
@@ -251,32 +256,14 @@ public class UserInterface extends JFrame
         fldPassword.setText("sender123password");
         panelMailSettings.add(fldPassword);
 
-        JPanel panelOutput = new JPanel();
-        panelOutput.setBorder(new TitledBorder(null, "Output", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelOutput.setBounds(12, 260, 1006, 285);
-        contentPane.add(panelOutput);
-        panelOutput.setLayout(null);
+        JPanel panelBottom = new JPanel();
+        FlowLayout fl_panelBottom = (FlowLayout) panelBottom.getLayout();
+        fl_panelBottom.setAlignment(FlowLayout.TRAILING);
+        contentPane.add(panelBottom, BorderLayout.SOUTH);
 
-        JScrollPane scrollPaneOutput = new JScrollPane();
-        scrollPaneOutput.setBounds(12, 24, 988, 248);
-        panelOutput.add(scrollPaneOutput);
-
-        JTextArea textAreaOutput = new JTextArea();
-        textAreaOutput.setFont(new Font("Consolas", Font.PLAIN, 12));
-        textAreaOutput.setTabSize(4);
-        scrollPaneOutput.setViewportView(textAreaOutput);
-        textAreaOutput.setEditable(false);
-        DefaultCaret caret = (DefaultCaret) textAreaOutput.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-
-        JPanel panelExecution = new JPanel();
-        panelExecution.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Execution", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        panelExecution.setBounds(711, 204, 307, 53);
-        contentPane.add(panelExecution);
-        panelExecution.setLayout(new GridLayout(1, 2, 0, 0));
-
-        JButton btnStartStop = new JButton("Start");
-        btnStartStop.addActionListener(ae ->
+        JButton btnRun = new JButton("Run");
+        panelBottom.add(btnRun);
+        btnRun.addActionListener(ae ->
         {
             try
             {
@@ -293,19 +280,17 @@ public class UserInterface extends JFrame
                 ExecutionHelper.saveModel = chkSaveModel.isSelected();
                 ExecutionHelper.saveSets = chkSaveSets.isSelected();
 
-                if (!ExecutionHelper.isThreadRunning())
+                if (!ExecutionHelper.isRunning)
                 {
-                    ExecutionHelper.setUpExecutionThread();
-                    ExecutionHelper.startExecution();
-                    btnStartStop.setText("Stop");
+                    setPanelEnabled(contentPane, false);
+                    btnRun.setText("Exit");
+                    btnRun.setEnabled(true);
 
-                    TailerListener listener = new MyTailerListener(textAreaOutput);
-                    Tailer tailer = Tailer.create(new File("logs/A1DE.log"), listener, 2000);
+                    ExecutionHelper.run();
                 }
                 else
                 {
-                    ExecutionHelper.stopExecution();
-                    btnStartStop.setText("Start");
+                    System.exit(0);
                 }
             }
             catch (Exception e)
@@ -313,10 +298,16 @@ public class UserInterface extends JFrame
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         });
-        panelExecution.add(btnStartStop);
+    }
 
-        JButton btnClearOutput = new JButton("Clear output");
-        btnClearOutput.addActionListener(ae -> textAreaOutput.setText(""));
-        panelExecution.add(btnClearOutput);
+    private void setPanelEnabled(JPanel panel, Boolean isEnabled)
+    {
+        panel.setEnabled(isEnabled);
+        for (Component component : panel.getComponents())
+        {
+            if (component instanceof JPanel)
+                setPanelEnabled((JPanel) component, isEnabled);
+            component.setEnabled(isEnabled);
+        }
     }
 }
