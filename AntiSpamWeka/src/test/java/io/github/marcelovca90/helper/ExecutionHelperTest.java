@@ -88,7 +88,8 @@ public class ExecutionHelperTest
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.run();
+        ExecutionHelper.setUpExecutionThread();
+        ExecutionHelper.startExecution();
     }
 
     @Test
@@ -98,7 +99,8 @@ public class ExecutionHelperTest
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.run();
+        ExecutionHelper.setUpExecutionThread();
+        ExecutionHelper.startExecution();
     }
 
     private void setUpExecutionHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,

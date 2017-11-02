@@ -134,8 +134,10 @@ public class ExperimentHelper
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
-    public void summarizeResults(Map<Metric, DescriptiveStatistics> results, MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
+    public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
+        Map<Metric, DescriptiveStatistics> results = getMetricsToDescriptiveStatisticsMap();
+
         MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
 
         StringBuilder sb = new StringBuilder();
@@ -157,12 +159,6 @@ public class ExperimentHelper
             Logger.debug(sb.toString());
         else
             Logger.info(sb.toString());
-    }
-
-    // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
-    public void summarizeResults(MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
-    {
-        summarizeResults(getMetricsToDescriptiveStatisticsMap(), methodEvaluation, printStats, formatMillis);
     }
 
     private void addSingleRunResult(Metric key, Double value)

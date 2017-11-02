@@ -34,6 +34,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.DefaultCaret;
+
+import org.apache.commons.io.input.Tailer;
+import org.apache.commons.io.input.TailerListener;
 
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.helper.ExecutionHelper;
@@ -262,6 +266,8 @@ public class UserInterface extends JFrame
         textAreaOutput.setTabSize(4);
         scrollPaneOutput.setViewportView(textAreaOutput);
         textAreaOutput.setEditable(false);
+        DefaultCaret caret = (DefaultCaret) textAreaOutput.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         JPanel panelExecution = new JPanel();
         panelExecution.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Execution", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -269,8 +275,8 @@ public class UserInterface extends JFrame
         contentPane.add(panelExecution);
         panelExecution.setLayout(new GridLayout(1, 2, 0, 0));
 
-        JButton btnStart = new JButton("Start");
-        btnStart.addActionListener(ae ->
+        JButton btnStartStop = new JButton("Start");
+        btnStartStop.addActionListener(ae ->
         {
             try
             {
@@ -286,14 +292,28 @@ public class UserInterface extends JFrame
                 ExecutionHelper.saveArff = chkSaveArff.isSelected();
                 ExecutionHelper.saveModel = chkSaveModel.isSelected();
                 ExecutionHelper.saveSets = chkSaveSets.isSelected();
-                ExecutionHelper.run();
+
+                if (!ExecutionHelper.isThreadRunning())
+                {
+                    ExecutionHelper.setUpExecutionThread();
+                    ExecutionHelper.startExecution();
+                    btnStartStop.setText("Stop");
+
+                    TailerListener listener = new MyTailerListener(textAreaOutput);
+                    Tailer tailer = Tailer.create(new File("logs/A1DE.log"), listener, 2000);
+                }
+                else
+                {
+                    ExecutionHelper.stopExecution();
+                    btnStartStop.setText("Start");
+                }
             }
             catch (Exception e)
             {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         });
-        panelExecution.add(btnStart);
+        panelExecution.add(btnStartStop);
 
         JButton btnClearOutput = new JButton("Clear output");
         btnClearOutput.addActionListener(ae -> textAreaOutput.setText(""));
