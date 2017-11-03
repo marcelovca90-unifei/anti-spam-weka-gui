@@ -16,6 +16,7 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class UserInterface extends JFrame
     private static final String USER_HOME = System.getProperty("user.home");
 
     private JCheckBox chkBalanceClasses;
+    private JCheckBox chkEmailResults;
     private JCheckBox chkIncludeEmpty;
     private JCheckBox chkRemoveOutliers;
     private JCheckBox chkSaveArff;
@@ -65,6 +67,7 @@ public class UserInterface extends JFrame
     private JTextField txtSender;
     private JTextField txtServer;
     private JTextField txtUsername;
+    private JComboBox<CryptoProtocol> cbProtocol;
     private Set<String> selectedMethods;
 
     public static JProgressBar progressBar;
@@ -200,7 +203,7 @@ public class UserInterface extends JFrame
         chkSaveSets.setToolTipText("Save the training and testing data sets to a .csv file");
         panelRunSettings.add(chkSaveSets);
 
-        JCheckBox chkEmailResults = new JCheckBox("E-mail results");
+        chkEmailResults = new JCheckBox("E-mail results");
         chkEmailResults.setSelected(true);
         panelRunSettings.add(chkEmailResults);
 
@@ -248,7 +251,7 @@ public class UserInterface extends JFrame
         JLabel lblProtocol = new JLabel("Protocol");
         panelEmailSettings.add(lblProtocol);
 
-        JComboBox<CryptoProtocol> cbProtocol = new JComboBox<>();
+        cbProtocol = new JComboBox<>();
         Arrays.stream(CryptoProtocol.values()).forEach(v -> cbProtocol.addItem(v));
         cbProtocol.setSelectedItem(CryptoProtocol.TLS);
         panelEmailSettings.add(cbProtocol);
@@ -282,18 +285,7 @@ public class UserInterface extends JFrame
         {
             try
             {
-                ExecutionHelper.setUpMetadata(txtMetadata.getText());
-                ExecutionHelper.setUpMethods(selectedMethods);
-                ExecutionHelper.numberOfRuns = Integer.parseInt(txtRuns.getText());
-                ExecutionHelper.skipTrain = chkSkipTrain.isSelected();
-                ExecutionHelper.skipTest = chkSkipTest.isSelected();
-                ExecutionHelper.shrinkFeatures = chkShrinkFeatures.isSelected();
-                ExecutionHelper.balanceClasses = chkBalanceClasses.isSelected();
-                ExecutionHelper.includeEmpty = chkIncludeEmpty.isSelected();
-                ExecutionHelper.removeOutliers = chkRemoveOutliers.isSelected();
-                ExecutionHelper.saveArff = chkSaveArff.isSelected();
-                ExecutionHelper.saveModel = chkSaveModel.isSelected();
-                ExecutionHelper.saveSets = chkSaveSets.isSelected();
+                setUpExecutionHelper();
 
                 if (!ExecutionHelper.isRunning)
                 {
@@ -315,6 +307,34 @@ public class UserInterface extends JFrame
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         });
+    }
+
+    private void setUpExecutionHelper() throws IOException
+    {
+        // anti spam settings
+        ExecutionHelper.setUpMetadata(txtMetadata.getText());
+        ExecutionHelper.setUpMethods(selectedMethods);
+        ExecutionHelper.numberOfRuns = Integer.parseInt(txtRuns.getText());
+
+        // run settings
+        ExecutionHelper.skipTrain = chkSkipTrain.isSelected();
+        ExecutionHelper.skipTest = chkSkipTest.isSelected();
+        ExecutionHelper.shrinkFeatures = chkShrinkFeatures.isSelected();
+        ExecutionHelper.balanceClasses = chkBalanceClasses.isSelected();
+        ExecutionHelper.includeEmpty = chkIncludeEmpty.isSelected();
+        ExecutionHelper.removeOutliers = chkRemoveOutliers.isSelected();
+        ExecutionHelper.saveArff = chkSaveArff.isSelected();
+        ExecutionHelper.saveModel = chkSaveModel.isSelected();
+        ExecutionHelper.saveSets = chkSaveSets.isSelected();
+        ExecutionHelper.emailResults = chkEmailResults.isSelected();
+
+        // e-mail settings
+        ExecutionHelper.sender = txtSender.getText();
+        ExecutionHelper.recipient = txtRecipient.getText();
+        ExecutionHelper.server = txtServer.getText();
+        ExecutionHelper.protocol = (CryptoProtocol) cbProtocol.getSelectedItem();
+        ExecutionHelper.username = txtUsername.getText();
+        ExecutionHelper.password = new String(fldPassword.getPassword());
     }
 
     private void setPanelEnabled(JPanel panel, Boolean isEnabled)

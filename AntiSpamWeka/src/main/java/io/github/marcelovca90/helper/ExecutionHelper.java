@@ -2,7 +2,10 @@ package io.github.marcelovca90.helper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ import io.github.marcelovca90.common.FilterConfiguration;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
 import io.github.marcelovca90.gui.UserInterface;
+import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -28,9 +32,12 @@ import weka.core.Instances;
 
 public class ExecutionHelper
 {
+    // anti spam settings
     public static Set<DataSetMetadata> metadata;
     public static List<MethodConfiguration> methods;
     public static int numberOfRuns;
+
+    // run settings
     public static boolean skipTrain;
     public static boolean skipTest;
     public static boolean shrinkFeatures;
@@ -40,6 +47,16 @@ public class ExecutionHelper
     public static boolean saveArff;
     public static boolean saveModel;
     public static boolean saveSets;
+    public static boolean emailResults;
+
+    // e-mail settings
+    public static String sender;
+    public static String recipient;
+    public static String server;
+    public static CryptoProtocol protocol;
+    public static String username;
+    public static String password;
+
     public static boolean isRunning = false;
 
     // prepare the data sets and empty counts to be used in training/testing
@@ -73,11 +90,12 @@ public class ExecutionHelper
             Instances testingSet = null;
             Instances emptySet = null;
 
-            // configure basic loggers (console and file, i.e. logs/verbose.log)
+            // configure basic loggers (console and file, i.e. logs/trace.log)
+            String traceLogFilename = "logs" + File.separator + "trace.log";
             Configurator
                 .currentConfig()
                 .writer(new ConsoleWriter(), Level.DEBUG)
-                .addWriter(new FileWriter("logs" + File.separator + "verbose.log", true, true), Level.TRACE)
+                .addWriter(new FileWriter(traceLogFilename, true, true), Level.TRACE)
                 .writingThread(true)
                 .activate();
 
@@ -87,9 +105,10 @@ public class ExecutionHelper
             for (MethodConfiguration method : methods)
             {
                 // configure result loggers (i.e. logs/${METHOD}.log)
+                String debugLogFilename = "logs" + File.separator + method.name() + ".log";
                 Configurator
                     .currentConfig()
-                    .addWriter(new FileWriter("logs" + File.separator + method.name() + ".log", true, true), Level.DEBUG)
+                    .addWriter(new FileWriter(debugLogFilename, true, true), Level.DEBUG)
                     .activate();
 
                 MetaHelper.getExperimentHelper().printHeader();
@@ -227,6 +246,25 @@ public class ExecutionHelper
                     // log the final results for this configuration
                     if (numberOfRuns > 0 && !skipTest)
                         MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
+                }
+
+                if (emailResults)
+                {
+                    String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), debugLogFilename.substring(debugLogFilename.lastIndexOf(File.separator) + 1));
+
+                    BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(debugLogFilename), BasicFileAttributes.class);
+
+                    StringBuilder text = new StringBuilder();
+                    text.append("creationTime: " + fileAttributes.creationTime() + "\n");
+                    text.append("lastAccessTime: " + fileAttributes.lastAccessTime() + "\n");
+                    text.append("lastModifiedTime: " + fileAttributes.lastModifiedTime() + "\n");
+                    text.append("isDirectory: " + fileAttributes.isDirectory() + "\n");
+                    text.append("isOther: " + fileAttributes.isOther() + "\n");
+                    text.append("isRegularFile: " + fileAttributes.isRegularFile() + "\n");
+                    text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
+                    text.append("size: " + fileAttributes.size() + "\n");
+
+                    MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), debugLogFilename);
                 }
             }
         }
