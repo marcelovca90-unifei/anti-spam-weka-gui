@@ -54,12 +54,7 @@ public class ExecutionHelper
             .collect(Collectors.toList());
     }
 
-    public static void runAsynchronously()
-    {
-        new Thread(() -> runSynchronously()).start();
-    }
-
-    public static void runSynchronously()
+    public static void run()
     {
         try
         {

@@ -95,23 +95,23 @@ public class ExecutionHelperTest
     }
 
     @Test
-    public void main_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
+    public void run_notPragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
         setUpExecutionHelper(args, metadata, methods, 3, true, true, false, false, false, false, true, false, false);
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.runSynchronously();
+        ExecutionHelper.run();
     }
 
     @Test
-    public void main_pragmaticConfiguration_shouldReturnSucccess() throws Exception
+    public void run_pragmaticConfiguration_shouldReturnSucccess() throws Exception
     {
         setUpExecutionHelper(args, metadata, methods, 25, false, false, true, true, true, true, false, true, true);
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.runSynchronously();
+        ExecutionHelper.run();
     }
 
     private void setUpExecutionHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
