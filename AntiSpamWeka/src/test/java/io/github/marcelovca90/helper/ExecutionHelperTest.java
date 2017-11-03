@@ -21,11 +21,15 @@
  ******************************************************************************/
 package io.github.marcelovca90.helper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -49,9 +53,7 @@ public class ExecutionHelperTest
     private static List<MethodConfiguration> methods;
 
     private ExperimentHelper experimentHelper = new ExperimentHelper();
-
     private InputOutputHelper inputOutputHelper = new InputOutputHelper();
-
     private RandomHelper randomHelper = new RandomHelper();
 
     @BeforeClass
@@ -79,6 +81,17 @@ public class ExecutionHelperTest
         Arrays
             .stream(folder.listFiles((f, p) -> p.endsWith(".arff") || p.endsWith(".csv") || p.endsWith(".model")))
             .forEach(File::delete);
+    }
+
+    @Test(expected = IllegalAccessException.class)
+    public void privateConstructor_shouldThrowException() throws Exception
+    {
+        Constructor<ExecutionHelper> constructor = ExecutionHelper.class.getDeclaredConstructor();
+        assertThat(Modifier.isPrivate(constructor.getModifiers()), equalTo(true));
+
+        constructor.setAccessible(true);
+        constructor.newInstance();
+        ExecutionHelper.class.newInstance();
     }
 
     @Test

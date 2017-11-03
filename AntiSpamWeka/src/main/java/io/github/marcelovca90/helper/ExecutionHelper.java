@@ -226,4 +226,9 @@ public class ExecutionHelper
             Logger.error(e);
         }
     }
+
+    // used to suppress the default public constructor
+    private ExecutionHelper()
+    {
+    }
 }
