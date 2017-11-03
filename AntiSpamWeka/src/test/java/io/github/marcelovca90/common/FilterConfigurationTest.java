@@ -46,6 +46,8 @@ import weka.core.Instances;
 @RunWith(MockitoJUnitRunner.class)
 public class FilterConfigurationTest
 {
+    private final ClassLoader classLoader = getClass().getClassLoader();
+
     private String hamDataFilename;
     private Instances hamDataSet;
     private String spamDataFilename;
@@ -55,7 +57,6 @@ public class FilterConfigurationTest
     @Before
     public void setUp() throws IOException
     {
-        ClassLoader classLoader = getClass().getClassLoader();
         hamDataFilename = classLoader.getResource("data-sets-bin/10/ham").getFile();
         hamDataSet = MetaHelper.getInputOutputHelper().loadInstancesFromRawFile(hamDataFilename, MessageType.HAM);
         spamDataFilename = classLoader.getResource("data-sets-bin/10/spam").getFile();
