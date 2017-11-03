@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.Arrays;
@@ -23,20 +22,25 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.pmw.tinylog.Logger;
+
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.helper.ExecutionHelper;
+import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 
 public class UserInterface extends JFrame
 {
@@ -55,13 +59,14 @@ public class UserInterface extends JFrame
     private JPanel contentPane;
     private JPasswordField fldPassword;
     private JTextField txtMetadata;
-    private JTextField txtOptions;
     private JTextField txtRecipient;
     private JTextField txtRuns;
     private JTextField txtSender;
     private JTextField txtServer;
     private JTextField txtUsername;
     private Set<String> selectedMethods;
+
+    public static JProgressBar progressBar;
 
     public static void main(String[] args)
     {
@@ -89,7 +94,7 @@ public class UserInterface extends JFrame
         panelTop.setLayout(null);
 
         JPanel panelAntiSpamSettings = new JPanel();
-        panelAntiSpamSettings.setBounds(6, 6, 746, 493);
+        panelAntiSpamSettings.setBounds(6, 6, 746, 500);
         panelTop.add(panelAntiSpamSettings);
         panelAntiSpamSettings.setBorder(new TitledBorder(null, "Anti Spam settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         panelAntiSpamSettings.setLayout(null);
@@ -121,7 +126,7 @@ public class UserInterface extends JFrame
 
         JPanel panelMethods = new JPanel();
         panelMethods.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Methods", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        panelMethods.setBounds(12, 72, 412, 410);
+        panelMethods.setBounds(12, 72, 412, 416);
         panelAntiSpamSettings.add(panelMethods);
         panelMethods.setLayout(new GridLayout(0, 4));
 
@@ -149,7 +154,7 @@ public class UserInterface extends JFrame
 
         JPanel panelRunSettings = new JPanel();
         panelRunSettings.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Run settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        panelRunSettings.setBounds(432, 72, 304, 202);
+        panelRunSettings.setBounds(432, 72, 304, 205);
         panelAntiSpamSettings.add(panelRunSettings);
         panelRunSettings.setLayout(new GridLayout(0, 2));
 
@@ -192,6 +197,10 @@ public class UserInterface extends JFrame
         chkSaveSets.setToolTipText("Save the training and testing data sets to a .csv file");
         panelRunSettings.add(chkSaveSets);
 
+        JCheckBox chkEmailResults = new JCheckBox("E-mail results");
+        chkEmailResults.setSelected(true);
+        panelRunSettings.add(chkEmailResults);
+
         txtRuns = new JTextField();
         txtRuns.setHorizontalAlignment(SwingConstants.CENTER);
         txtRuns.setText("10");
@@ -203,66 +212,69 @@ public class UserInterface extends JFrame
         lblRuns.setBounds(599, 18, 57, 45);
         panelAntiSpamSettings.add(lblRuns);
 
-        JPanel panelMailSettings = new JPanel();
-        panelMailSettings.setBounds(432, 280, 304, 202);
-        panelAntiSpamSettings.add(panelMailSettings);
-        panelMailSettings.setBorder(new TitledBorder(null, "Mail settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panelMailSettings.setLayout(new GridLayout(0, 2, 0, 0));
+        JPanel panelEmailSettings = new JPanel();
+        panelEmailSettings.setBounds(432, 283, 304, 205);
+        panelAntiSpamSettings.add(panelEmailSettings);
+        panelEmailSettings.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "E-mail settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelEmailSettings.setLayout(new GridLayout(0, 2, 0, 0));
 
         JLabel lblSender = new JLabel("Sender");
-        panelMailSettings.add(lblSender);
+        panelEmailSettings.add(lblSender);
 
         txtSender = new JTextField();
         txtSender.setText("sender@server.com");
         txtSender.setColumns(10);
-        panelMailSettings.add(txtSender);
+        panelEmailSettings.add(txtSender);
 
         JLabel lblRecipient = new JLabel("Recipient");
-        panelMailSettings.add(lblRecipient);
+        panelEmailSettings.add(lblRecipient);
 
         txtRecipient = new JTextField();
         txtRecipient.setText("recipient@server.com");
         txtRecipient.setColumns(10);
-        panelMailSettings.add(txtRecipient);
+        panelEmailSettings.add(txtRecipient);
 
         JLabel lblServer = new JLabel("Server");
-        panelMailSettings.add(lblServer);
+        panelEmailSettings.add(lblServer);
 
         txtServer = new JTextField();
         txtServer.setText("mail.server.com:port");
         txtServer.setColumns(10);
-        panelMailSettings.add(txtServer);
+        panelEmailSettings.add(txtServer);
 
-        JLabel lblOptions = new JLabel("Options");
-        panelMailSettings.add(lblOptions);
+        JLabel lblProtocol = new JLabel("Protocol");
+        panelEmailSettings.add(lblProtocol);
 
-        txtOptions = new JTextField();
-        txtOptions.setText("tls=yes");
-        txtOptions.setColumns(10);
-        panelMailSettings.add(txtOptions);
+        JComboBox<CryptoProtocol> cbProtocol = new JComboBox<>();
+        Arrays.stream(CryptoProtocol.values()).forEach(v -> cbProtocol.addItem(v));
+        cbProtocol.setSelectedItem(CryptoProtocol.TLS);
+        panelEmailSettings.add(cbProtocol);
 
         JLabel lblUsername = new JLabel("Username");
-        panelMailSettings.add(lblUsername);
+        panelEmailSettings.add(lblUsername);
 
         txtUsername = new JTextField();
         txtUsername.setText("sender@server.com");
         txtUsername.setColumns(10);
-        panelMailSettings.add(txtUsername);
+        panelEmailSettings.add(txtUsername);
 
         JLabel lblPassword = new JLabel("Password");
-        panelMailSettings.add(lblPassword);
+        panelEmailSettings.add(lblPassword);
 
         fldPassword = new JPasswordField();
         fldPassword.setText("sender123password");
-        panelMailSettings.add(fldPassword);
+        panelEmailSettings.add(fldPassword);
 
         JPanel panelBottom = new JPanel();
-        FlowLayout fl_panelBottom = (FlowLayout) panelBottom.getLayout();
-        fl_panelBottom.setAlignment(FlowLayout.TRAILING);
         contentPane.add(panelBottom, BorderLayout.SOUTH);
+        panelBottom.setLayout(new BorderLayout(0, 0));
+
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+        panelBottom.add(progressBar, BorderLayout.CENTER);
 
         JButton btnRun = new JButton("Run");
-        panelBottom.add(btnRun);
+        panelBottom.add(btnRun, BorderLayout.EAST);
         btnRun.addActionListener(ae ->
         {
             try
@@ -285,6 +297,7 @@ public class UserInterface extends JFrame
                     setPanelEnabled(contentPane, false);
                     btnRun.setText("Exit");
                     btnRun.setEnabled(true);
+                    progressBar.setEnabled(true);
 
                     new Thread(() -> ExecutionHelper.run()).start();
                 }
@@ -295,6 +308,7 @@ public class UserInterface extends JFrame
             }
             catch (Exception e)
             {
+                Logger.error(e);
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         });

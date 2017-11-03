@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.swing.SwingUtilities;
+
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
@@ -18,6 +20,7 @@ import io.github.marcelovca90.common.DataSetMetadata;
 import io.github.marcelovca90.common.FilterConfiguration;
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.common.MethodEvaluation;
+import io.github.marcelovca90.gui.UserInterface;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -39,6 +42,7 @@ public class ExecutionHelper
     public static boolean saveSets;
     public static boolean isRunning = false;
 
+    // prepare the data sets and empty counts to be used in training/testing
     public static void setUpMetadata(String metadataPath) throws IOException
     {
         metadata = MetaHelper
@@ -46,6 +50,7 @@ public class ExecutionHelper
             .loadDataSetsMetadataFromFile(metadataPath);
     }
 
+    // prepare the machine learning methods to be trained/tested
     public static void setUpMethods(Set<String> methodNames)
     {
         methods = methodNames
@@ -54,6 +59,7 @@ public class ExecutionHelper
             .collect(Collectors.toList());
     }
 
+    // run training/classification for the configured methods, metadata and no. runs
     public static void run()
     {
         try
@@ -67,15 +73,20 @@ public class ExecutionHelper
             Instances testingSet = null;
             Instances emptySet = null;
 
+            // configure basic loggers (console and file, i.e. logs/verbose.log)
             Configurator
                 .currentConfig()
-                .writer(new ConsoleWriter(), Level.TRACE)
+                .writer(new ConsoleWriter(), Level.DEBUG)
                 .addWriter(new FileWriter("logs" + File.separator + "verbose.log", true, true), Level.TRACE)
                 .writingThread(true)
                 .activate();
 
+            // calculate and set the progress bar maximum value
+            setUpProgressBar();
+
             for (MethodConfiguration method : methods)
             {
+                // configure result loggers (i.e. logs/${METHOD}.log)
                 Configurator
                     .currentConfig()
                     .addWriter(new FileWriter("logs" + File.separator + method.name() + ".log", true, true), Level.DEBUG)
@@ -208,6 +219,9 @@ public class ExecutionHelper
                             String classifierFilename = MetaHelper.getInputOutputHelper().buildClassifierFilename(folder, method, splitPercent);
                             MetaHelper.getInputOutputHelper().saveModelToFile(classifierFilename, classifier);
                         }
+
+                        // increment the progress bar current value
+                        updateProgressBar();
                     }
 
                     // log the final results for this configuration
@@ -220,6 +234,25 @@ public class ExecutionHelper
         {
             Logger.error(e);
         }
+    }
+
+    // calculate and set the progress bar maximum value
+    private static void setUpProgressBar()
+    {
+        SwingUtilities.invokeLater(() ->
+        {
+            UserInterface.progressBar.setMinimum(0);
+            UserInterface.progressBar.setMaximum(methods.size() * metadata.size() * numberOfRuns);
+        });
+    }
+
+    // increment the progress bar current value
+    private static void updateProgressBar()
+    {
+        SwingUtilities.invokeLater(() ->
+        {
+            UserInterface.progressBar.setValue(UserInterface.progressBar.getValue() + 1);
+        });
     }
 
     // used to suppress the default public constructor
