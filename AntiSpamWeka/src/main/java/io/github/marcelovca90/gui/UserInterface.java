@@ -285,8 +285,7 @@ public class UserInterface extends JFrame
                     setPanelEnabled(contentPane, false);
                     btnRun.setText("Exit");
                     btnRun.setEnabled(true);
-
-                    ExecutionHelper.run();
+                    ExecutionHelper.runAsynchronously();
                 }
                 else
                 {

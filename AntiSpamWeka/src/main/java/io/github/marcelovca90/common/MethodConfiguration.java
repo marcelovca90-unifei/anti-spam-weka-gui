@@ -137,7 +137,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            Logger.error(e.getMessage());
+            Logger.error(e);
         }
 
         return classifier;

@@ -37,23 +37,33 @@ public class ExecutionHelper
     public static boolean saveArff;
     public static boolean saveModel;
     public static boolean saveSets;
-    public static Thread thread;
     public static boolean isRunning = false;
 
     public static void setUpMetadata(String metadataPath) throws IOException
     {
-        metadata = MetaHelper.getInputOutputHelper().loadDataSetsMetadataFromFile(metadataPath);
+        metadata = MetaHelper
+            .getInputOutputHelper()
+            .loadDataSetsMetadataFromFile(metadataPath);
     }
 
     public static void setUpMethods(Set<String> methodNames)
     {
-        methods = methodNames.stream().map(name -> MethodConfiguration.valueOf(name)).collect(Collectors.toList());
+        methods = methodNames
+            .stream()
+            .map(name -> MethodConfiguration.valueOf(name))
+            .collect(Collectors.toList());
     }
 
-    public static void run()
+    public static void runAsynchronously()
+    {
+        new Thread(() -> runSynchronously()).start();
+    }
+
+    public static void runSynchronously()
     {
         try
         {
+            // indicates that the training/classification is running
             isRunning = true;
 
             // objects that will hold all kinds of data sets
@@ -213,8 +223,7 @@ public class ExecutionHelper
         }
         catch (Exception e)
         {
-            Logger.error(e.getMessage());
-            e.printStackTrace();
+            Logger.error(e);
         }
     }
 }

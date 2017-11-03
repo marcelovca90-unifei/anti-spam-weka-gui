@@ -181,7 +181,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error(e.getMessage());
+            Logger.error(e);
         }
     }
 
@@ -210,7 +210,7 @@ public class MethodEvaluation
         }
         catch (Exception e)
         {
-            Logger.error(e.getMessage());
+            Logger.error(e);
         }
     }
 }

@@ -88,7 +88,7 @@ public class ExecutionHelperTest
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.run();
+        ExecutionHelper.runSynchronously();
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ExecutionHelperTest
 
         MetaHelper.initialize(experimentHelper, inputOutputHelper, randomHelper);
 
-        ExecutionHelper.run();
+        ExecutionHelper.runSynchronously();
     }
 
     private void setUpExecutionHelper(String[] args, Set<DataSetMetadata> metadata, List<MethodConfiguration> methods, int numberOfRuns, boolean skipTrain, boolean skipTest,
