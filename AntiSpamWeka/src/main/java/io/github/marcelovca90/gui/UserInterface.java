@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -79,6 +80,8 @@ public class UserInterface extends JFrame
 
     public UserInterface()
     {
+        setIconImage(new ImageIcon(getClass().getClassLoader().getResource("logo.png")).getImage());
+        setResizable(false);
         setTitle("AntiSpamWeka");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 768, 576);
