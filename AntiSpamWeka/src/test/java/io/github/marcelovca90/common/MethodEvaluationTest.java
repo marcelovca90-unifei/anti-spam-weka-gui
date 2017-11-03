@@ -23,6 +23,7 @@ package io.github.marcelovca90.common;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,12 +33,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.EnumMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.common.Constants.MessageType;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
@@ -121,15 +125,9 @@ public class MethodEvaluationTest
     }
 
     @Test
-    public void getTestEnd_withoutTesting_shouldReturnZero()
+    public void getTrainStart_withoutTraining_shouldReturnZero()
     {
-        assertThat(methodEvaluation.getTestEnd(), equalTo(0L));
-    }
-
-    @Test
-    public void getTestStart_withoutTesting_shouldReturnZero()
-    {
-        assertThat(methodEvaluation.getTestStart(), equalTo(0L));
+        assertThat(methodEvaluation.getTrainStart(), equalTo(0L));
     }
 
     @Test
@@ -139,34 +137,33 @@ public class MethodEvaluationTest
     }
 
     @Test
-    public void getTrainStart_withoutTraining_shouldReturnZero()
+    public void getTestStart_withoutTesting_shouldReturnZero()
     {
-        assertThat(methodEvaluation.getTrainStart(), equalTo(0L));
+        assertThat(methodEvaluation.getTestStart(), equalTo(0L));
     }
 
     @Test
-    public void test_whenNotThrowingException_shouldFinishTraining() throws Exception
+    public void getTestEnd_withoutTesting_shouldReturnZero()
     {
-        when(evaluation.evaluateModel(any(Classifier.class), any(Instances.class))).thenReturn(new double[0]);
-
-        methodEvaluation.test(mock(Instances.class));
-
-        verify(evaluation).evaluateModel(any(Classifier.class), any(Instances.class));
-        assertThat(methodEvaluation.getTestStart(), not(equalTo(0L)));
-        assertThat(methodEvaluation.getTestEnd(), not(equalTo(0L)));
-        assertThat(methodEvaluation.getTestEnd(), greaterThanOrEqualTo(methodEvaluation.getTestStart()));
-    }
-
-    @Test
-    public void test_whenThrowingException_shouldNotFinishTesting() throws Exception
-    {
-        when(evaluation.evaluateModel(any(Classifier.class), any(Instances.class))).thenThrow(new Exception());
-
-        methodEvaluation.test(mock(Instances.class));
-
-        verify(evaluation).evaluateModel(any(Classifier.class), any(Instances.class));
-        assertThat(methodEvaluation.getTestStart(), not(equalTo(0L)));
         assertThat(methodEvaluation.getTestEnd(), equalTo(0L));
+    }
+
+    @Test
+    public void getTrainingSetCounts_withoutTraining_shouldReturnNotNullMapWithZeroEntries()
+    {
+        EnumMap<MessageType, Integer> trainingSetCounts = methodEvaluation.getTrainingSetCounts();
+
+        assertThat(trainingSetCounts, notNullValue());
+        assertThat(trainingSetCounts.isEmpty(), equalTo(true));
+    }
+
+    @Test
+    public void getTestingSetCounts_withoutTraining_shouldReturnNotNullMapWithZeroEntries()
+    {
+        EnumMap<MessageType, Integer> testingSetCounts = methodEvaluation.getTestingSetCounts();
+
+        assertThat(testingSetCounts, notNullValue());
+        assertThat(testingSetCounts.isEmpty(), equalTo(true));
     }
 
     @Test
@@ -192,5 +189,30 @@ public class MethodEvaluationTest
         verify(classifier).buildClassifier(any(Instances.class));
         assertThat(methodEvaluation.getTrainStart(), not(equalTo(0L)));
         assertThat(methodEvaluation.getTrainEnd(), equalTo(0L));
+    }
+
+    @Test
+    public void test_whenNotThrowingException_shouldFinishTraining() throws Exception
+    {
+        when(evaluation.evaluateModel(any(Classifier.class), any(Instances.class))).thenReturn(new double[0]);
+
+        methodEvaluation.test(mock(Instances.class));
+
+        verify(evaluation).evaluateModel(any(Classifier.class), any(Instances.class));
+        assertThat(methodEvaluation.getTestStart(), not(equalTo(0L)));
+        assertThat(methodEvaluation.getTestEnd(), not(equalTo(0L)));
+        assertThat(methodEvaluation.getTestEnd(), greaterThanOrEqualTo(methodEvaluation.getTestStart()));
+    }
+
+    @Test
+    public void test_whenThrowingException_shouldNotFinishTesting() throws Exception
+    {
+        when(evaluation.evaluateModel(any(Classifier.class), any(Instances.class))).thenThrow(new Exception());
+
+        methodEvaluation.test(mock(Instances.class));
+
+        verify(evaluation).evaluateModel(any(Classifier.class), any(Instances.class));
+        assertThat(methodEvaluation.getTestStart(), not(equalTo(0L)));
+        assertThat(methodEvaluation.getTestEnd(), equalTo(0L));
     }
 }

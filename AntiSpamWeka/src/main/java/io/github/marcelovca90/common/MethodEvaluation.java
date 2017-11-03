@@ -45,10 +45,10 @@ public class MethodEvaluation
     private EnumMap<MessageType, Integer> trainingSetCounts;
     private EnumMap<MessageType, Integer> testingSetCounts;
     private String statMethod;
-    private long testEnd;
-    private long testStart;
     private long trainEnd;
     private long trainStart;
+    private long testStart;
+    private long testEnd;
 
     public MethodEvaluation(String folder, MethodConfiguration methodConfiguration)
     {
@@ -106,24 +106,24 @@ public class MethodEvaluation
         return statMethod;
     }
 
-    public long getTestEnd()
-    {
-        return testEnd;
-    }
-
     public long getTestStart()
     {
         return testStart;
     }
 
-    public long getTrainEnd()
+    public long getTestEnd()
     {
-        return trainEnd;
+        return testEnd;
     }
 
     public long getTrainStart()
     {
         return trainStart;
+    }
+
+    public long getTrainEnd()
+    {
+        return trainEnd;
     }
 
     public EnumMap<MessageType, Integer> getTrainingSetCounts()
