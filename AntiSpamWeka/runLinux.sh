@@ -21,7 +21,7 @@
 #-------------------------------------------------------------------------------
 #!/bin/bash
 
-TOTAL_RAM_B=$(free | grep Mem | cut -d ' ' -f 8)
+TOTAL_RAM_B=$(free -b | grep Mem | cut -d ' ' -f 5)
 TOTAL_RAM_KB=$((${TOTAL_RAM_B}/1024))
 TOTAL_RAM_MB=$((${TOTAL_RAM_KB}/1024))
 TOTAL_RAM_GB=$((${TOTAL_RAM_MB}/1024))
