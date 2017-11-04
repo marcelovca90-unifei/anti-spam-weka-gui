@@ -15,11 +15,20 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -48,6 +57,7 @@ import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 
 public class UserInterface extends JFrame
 {
+    private static final String SESSION_PROPERTIES = "session.properties";
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private static final String USER_HOME = System.getProperty("user.home");
@@ -65,6 +75,7 @@ public class UserInterface extends JFrame
     private JCheckBox chkSkipTrain;
     private JPanel contentPane;
     private JPanel panelEmailSettings;
+    private JPanel panelMethods;
     private JPasswordField fldPassword;
     private JTextField txtMetadata;
     private JTextField txtRecipient;
@@ -92,6 +103,21 @@ public class UserInterface extends JFrame
 
     public UserInterface()
     {
+        addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowOpened(WindowEvent e)
+            {
+                loadProperties();
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                saveProperties();
+            }
+        });
+
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource("logo.png")).getImage());
         setResizable(false);
         setTitle("AntiSpamWeka");
@@ -139,7 +165,7 @@ public class UserInterface extends JFrame
         btnChooseMetadata.setBounds(485, 19, 97, 45);
         panelAntiSpamSettings.add(btnChooseMetadata);
 
-        JPanel panelMethods = new JPanel();
+        panelMethods = new JPanel();
         panelMethods.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Methods", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         panelMethods.setBounds(12, 72, 412, 416);
         panelAntiSpamSettings.add(panelMethods);
@@ -417,6 +443,90 @@ public class UserInterface extends JFrame
             if (component instanceof JPanel)
                 setPanelEnabled((JPanel) component, isEnabled);
             component.setEnabled(isEnabled);
+        }
+    }
+
+    private void loadProperties()
+    {
+        if (Files.exists(Paths.get(SESSION_PROPERTIES)))
+        {
+            Properties prop = new Properties();
+
+            try
+            {
+                prop.load(new FileInputStream(new File(SESSION_PROPERTIES)));
+
+                // anti spam settings
+                txtMetadata.setText(prop.getProperty("txtMetadata"));
+                List<String> selectedMethods = Arrays.asList(prop.getProperty("selectedMethods").split(","));
+                for (Component component : panelMethods.getComponents())
+                    if (component instanceof JCheckBox)
+                        ((JCheckBox) component).setSelected(selectedMethods.contains(((JCheckBox) component).getText()));
+                txtRuns.setText(prop.getProperty("numberOfRuns"));
+
+                // run settings
+                chkSkipTrain.setSelected(Boolean.parseBoolean(prop.getProperty("skipTrain")));
+                chkSkipTest.setSelected(Boolean.parseBoolean(prop.getProperty("skipTest")));
+                chkShrinkFeatures.setSelected(Boolean.parseBoolean(prop.getProperty("shrinkFeatures")));
+                chkBalanceClasses.setSelected(Boolean.parseBoolean(prop.getProperty("balanceClasses")));
+                chkIncludeEmpty.setSelected(Boolean.parseBoolean(prop.getProperty("includeEmpty")));
+                chkRemoveOutliers.setSelected(Boolean.parseBoolean(prop.getProperty("removeOutliers")));
+                chkSaveArff.setSelected(Boolean.parseBoolean(prop.getProperty("saveArff")));
+                chkSaveModel.setSelected(Boolean.parseBoolean(prop.getProperty("saveModel")));
+                chkSaveSets.setSelected(Boolean.parseBoolean(prop.getProperty("saveSets")));
+                chkEmailResults.setSelected(Boolean.parseBoolean(prop.getProperty("emailResults")));
+
+                // e-mail settings
+                txtSender.setText(prop.getProperty("sender"));
+                txtRecipient.setText(prop.getProperty("recipient"));
+                txtServer.setText(prop.getProperty("server"));
+                cbProtocol.setSelectedItem(CryptoProtocol.valueOf(prop.getProperty("protocol")));
+                txtUsername.setText(prop.getProperty("username"));
+                fldPassword.setText(prop.getProperty("password"));
+
+            }
+            catch (IOException e)
+            {
+                JOptionPane.showMessageDialog(null, "Error while loading session data");
+            }
+        }
+    }
+
+    private void saveProperties()
+    {
+        Properties prop = new Properties();
+
+        // anti spam settings
+        prop.put("txtMetadata", txtMetadata.getText());
+        prop.put("selectedMethods", selectedMethods.stream().collect(Collectors.joining(",")));
+        prop.put("numberOfRuns", txtRuns.getText());
+
+        // run settings
+        prop.put("skipTrain", String.valueOf(chkSkipTrain.isSelected()));
+        prop.put("skipTest", String.valueOf(chkSkipTest.isSelected()));
+        prop.put("shrinkFeatures", String.valueOf(chkShrinkFeatures.isSelected()));
+        prop.put("balanceClasses", String.valueOf(chkBalanceClasses.isSelected()));
+        prop.put("includeEmpty", String.valueOf(chkIncludeEmpty.isSelected()));
+        prop.put("removeOutliers", String.valueOf(chkRemoveOutliers.isSelected()));
+        prop.put("saveArff", String.valueOf(chkSaveArff.isSelected()));
+        prop.put("saveModel", String.valueOf(chkSaveModel.isSelected()));
+        prop.put("saveSets", String.valueOf(chkSaveSets.isSelected()));
+        prop.put("emailResults", String.valueOf(chkEmailResults.isSelected()));
+
+        prop.put("sender", txtSender.getText());
+        prop.put("recipient", txtRecipient.getText());
+        prop.put("server", txtServer.getText());
+        prop.put("protocol", ((CryptoProtocol) cbProtocol.getSelectedItem()).name());
+        prop.put("username", txtUsername.getText());
+        prop.put("password", new String(fldPassword.getPassword()));
+
+        try
+        {
+            prop.store(new FileOutputStream(new File(SESSION_PROPERTIES)), null);
+        }
+        catch (IOException e1)
+        {
+            JOptionPane.showMessageDialog(null, "Error while saving session data");
         }
     }
 }
