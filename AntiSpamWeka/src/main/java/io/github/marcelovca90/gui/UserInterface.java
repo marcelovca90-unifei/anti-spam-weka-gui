@@ -46,6 +46,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,10 +58,10 @@ import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 
 public class UserInterface extends JFrame
 {
-    private static final String SESSION_PROPERTIES = "session.properties";
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private static final String USER_HOME = System.getProperty("user.home");
+    private static final String PROPERTIES = "session.properties";
 
     private JButton btnRun;
     private JCheckBox chkBalanceClasses;
@@ -448,13 +449,13 @@ public class UserInterface extends JFrame
 
     private void loadProperties()
     {
-        if (Files.exists(Paths.get(SESSION_PROPERTIES)))
+        if (Files.exists(Paths.get(PROPERTIES)))
         {
             Properties prop = new Properties();
 
             try
             {
-                prop.load(new FileInputStream(new File(SESSION_PROPERTIES)));
+                prop.load(new FileInputStream(new File(PROPERTIES)));
 
                 // anti spam settings
                 txtMetadata.setText(prop.getProperty("txtMetadata"));
@@ -482,8 +483,7 @@ public class UserInterface extends JFrame
                 txtServer.setText(prop.getProperty("server"));
                 cbProtocol.setSelectedItem(CryptoProtocol.valueOf(prop.getProperty("protocol")));
                 txtUsername.setText(prop.getProperty("username"));
-                fldPassword.setText(prop.getProperty("password"));
-
+                fldPassword.setText(new String(DatatypeConverter.parseBase64Binary(prop.getProperty("password"))));
             }
             catch (IOException e)
             {
@@ -518,11 +518,11 @@ public class UserInterface extends JFrame
         prop.put("server", txtServer.getText());
         prop.put("protocol", ((CryptoProtocol) cbProtocol.getSelectedItem()).name());
         prop.put("username", txtUsername.getText());
-        prop.put("password", new String(fldPassword.getPassword()));
+        prop.put("password", DatatypeConverter.printBase64Binary(new String(fldPassword.getPassword()).getBytes()));
 
         try
         {
-            prop.store(new FileOutputStream(new File(SESSION_PROPERTIES)), null);
+            prop.store(new FileOutputStream(new File(PROPERTIES)), null);
         }
         catch (IOException e1)
         {
