@@ -229,27 +229,27 @@ public class ExecutionHelper
                     // log the final results for this configuration
                     if (numberOfRuns > 0 && !skipTest)
                         MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
+                }
 
-                    if (emailResults)
-                    {
-                        String logFilename = "logs" + File.separator + method.name() + ".log";
+                if (emailResults)
+                {
+                    String logFilename = "logs" + File.separator + method.name() + ".log";
 
-                        String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), logFilename.substring(logFilename.lastIndexOf(File.separator) + 1));
+                    String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), logFilename.substring(logFilename.lastIndexOf(File.separator) + 1));
 
-                        BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(logFilename), BasicFileAttributes.class);
+                    BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(logFilename), BasicFileAttributes.class);
 
-                        StringBuilder text = new StringBuilder();
-                        text.append("creationTime: " + fileAttributes.creationTime() + "\n");
-                        text.append("lastAccessTime: " + fileAttributes.lastAccessTime() + "\n");
-                        text.append("lastModifiedTime: " + fileAttributes.lastModifiedTime() + "\n");
-                        text.append("isDirectory: " + fileAttributes.isDirectory() + "\n");
-                        text.append("isOther: " + fileAttributes.isOther() + "\n");
-                        text.append("isRegularFile: " + fileAttributes.isRegularFile() + "\n");
-                        text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
-                        text.append("size: " + fileAttributes.size() + "\n");
+                    StringBuilder text = new StringBuilder();
+                    text.append("creationTime: " + fileAttributes.creationTime() + "\n");
+                    text.append("lastAccessTime: " + fileAttributes.lastAccessTime() + "\n");
+                    text.append("lastModifiedTime: " + fileAttributes.lastModifiedTime() + "\n");
+                    text.append("isDirectory: " + fileAttributes.isDirectory() + "\n");
+                    text.append("isOther: " + fileAttributes.isOther() + "\n");
+                    text.append("isRegularFile: " + fileAttributes.isRegularFile() + "\n");
+                    text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
+                    text.append("size: " + fileAttributes.size() + "\n");
 
-                        MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), logFilename);
-                    }
+                    MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), logFilename);
                 }
             }
         }
