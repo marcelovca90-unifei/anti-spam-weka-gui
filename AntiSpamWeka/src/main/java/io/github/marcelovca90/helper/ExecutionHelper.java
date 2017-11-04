@@ -90,25 +90,20 @@ public class ExecutionHelper
             Instances testingSet = null;
             Instances emptySet = null;
 
-            // configure basic loggers (console and file, i.e. logs/trace.log)
-            String traceLogFilename = "logs" + File.separator + "trace.log";
-            Configurator
-                .currentConfig()
-                .writer(new ConsoleWriter(), Level.DEBUG)
-                .addWriter(new FileWriter(traceLogFilename, true, true), Level.TRACE)
-                .writingThread(true)
-                .activate();
-
             // calculate and set the progress bar maximum value
             setUpProgressBar();
 
             for (MethodConfiguration method : methods)
             {
-                // configure result loggers (i.e. logs/${METHOD}.log)
+                // configure console, trace (logs/trace.log) and debug loggers (logs/${METHOD}.log)
+                String traceLogFilename = "logs" + File.separator + "trace.log";
                 String debugLogFilename = "logs" + File.separator + method.name() + ".log";
                 Configurator
                     .currentConfig()
+                    .writer(new ConsoleWriter(), Level.DEBUG)
+                    .addWriter(new FileWriter(traceLogFilename, true, true), Level.TRACE)
                     .addWriter(new FileWriter(debugLogFilename, true, true), Level.DEBUG)
+                    .writingThread(true)
                     .activate();
 
                 MetaHelper.getExperimentHelper().printHeader();
