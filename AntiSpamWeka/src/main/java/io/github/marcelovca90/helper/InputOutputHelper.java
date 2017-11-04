@@ -37,7 +37,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.arturmkrtchyan.sizeof4j.SizeOf;
 
@@ -54,6 +55,7 @@ import weka.core.converters.ArffSaver;
 
 public class InputOutputHelper
 {
+    private static final Logger LOGGER = LogManager.getLogger(InputOutputHelper.class);
     private static final int SIZE_INT = SizeOf.intSize();
     private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 
@@ -73,7 +75,7 @@ public class InputOutputHelper
 
     public Instances createEmptyInstances(int featureAmount, int emptyHamCount, int emptySpamCount)
     {
-        Logger.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "ham", featureAmount, emptyHamCount);
+        LOGGER.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "ham", featureAmount, emptyHamCount);
 
         // declare ham instance to be reused
         Instance hamInstance;
@@ -96,7 +98,7 @@ public class InputOutputHelper
             hamDataSet.add(hamInstance);
         }
 
-        Logger.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "spam", featureAmount, emptySpamCount);
+        LOGGER.trace("Creating empty [{}] data set with [{}] features and [{}] instances.", "spam", featureAmount, emptySpamCount);
 
         // declare spam instance to be reused
         Instance spamInstance;
@@ -163,7 +165,7 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromRawFile(String filename, MessageType messageType) throws IOException
     {
-        Logger.trace("Reading [{}] data from RAW file [{}].", messageType, filename);
+        LOGGER.trace("Reading [{}] data from RAW file [{}].", messageType, filename);
 
         InputStream inputStream = new FileInputStream(filename);
 
@@ -232,13 +234,13 @@ public class InputOutputHelper
 
         if (hamAmount < spamAmount)
         {
-            Logger.trace("Replicating {} [{}] instances to match [{}] set cardinality.", spamAmount - hamAmount, "ham", "spam");
+            LOGGER.trace("Replicating {} [{}] instances to match [{}] set cardinality.", spamAmount - hamAmount, "ham", "spam");
             for (int i = hamAmount; i < spamAmount; i++)
                 hamDataSet.add(hamDataSet.get(random.nextInt(hamAmount)));
         }
         else
         {
-            Logger.trace("Replicating {} [{}] instances to match [{}] set cardinality.", hamAmount - spamAmount, "spam", "ham");
+            LOGGER.trace("Replicating {} [{}] instances to match [{}] set cardinality.", hamAmount - spamAmount, "spam", "ham");
             for (int i = spamAmount; i < hamAmount; i++)
                 spamDataSet.add(spamDataSet.get(random.nextInt(spamAmount)));
         }
@@ -246,7 +248,7 @@ public class InputOutputHelper
 
     public Instances loadInstancesFromArffFile(String filename) throws IOException
     {
-        Logger.trace("Loading data from ARFF file [{}].", filename);
+        LOGGER.trace("Loading data from ARFF file [{}].", filename);
 
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -262,7 +264,7 @@ public class InputOutputHelper
 
     public File saveInstancesToArffFile(Instances instances, String filename) throws IOException
     {
-        Logger.trace("Saving data to ARFF file [{}].", filename);
+        LOGGER.trace("Saving data to ARFF file [{}].", filename);
 
         File outputFile = new File(filename);
         if (outputFile.exists())
@@ -286,7 +288,7 @@ public class InputOutputHelper
 
     public File saveModelToFile(String filename, Classifier classifier) throws Exception
     {
-        Logger.trace("Saving model to file [{}].", filename);
+        LOGGER.trace("Saving model to file [{}].", filename);
 
         weka.core.SerializationHelper.write(filename, classifier);
 

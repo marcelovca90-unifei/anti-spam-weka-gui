@@ -26,7 +26,8 @@ import static io.github.marcelovca90.common.Constants.MessageType.SPAM;
 
 import java.util.EnumMap;
 
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.common.Constants.MessageType;
 import weka.classifiers.Classifier;
@@ -35,6 +36,8 @@ import weka.core.Instances;
 
 public class MethodEvaluation
 {
+    private static final Logger LOGGER = LogManager.getLogger(MethodEvaluation.class);
+
     private Classifier classifier;
     private String dataSetName;
     private Evaluation evaluation;
@@ -161,7 +164,7 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.trace("Started counting instances for each class in training set.");
+            LOGGER.trace("Started counting instances for each class in training set.");
             trainingSetCounts.put(HAM, 0);
             trainingSetCounts.put(SPAM, 0);
             trainSet.forEach(i ->
@@ -171,17 +174,17 @@ public class MethodEvaluation
                 else if (i.classValue() == SPAM.ordinal())
                     trainingSetCounts.put(SPAM, trainingSetCounts.get(SPAM) + 1);
             });
-            Logger.trace("Finished counting instances ({} HAM, {} SPAM)", trainingSetCounts.get(HAM), trainingSetCounts.get(SPAM));
+            LOGGER.trace("Finished counting instances ({} HAM, {} SPAM)", trainingSetCounts.get(HAM), trainingSetCounts.get(SPAM));
 
-            Logger.trace("Started building [{}] classifier.", classifier.getClass().getName());
+            LOGGER.trace("Started building [{}] classifier.", classifier.getClass().getName());
             trainStart = System.currentTimeMillis();
             classifier.buildClassifier(trainSet);
             trainEnd = System.currentTimeMillis();
-            Logger.trace("Finished building [{}] classifier.", classifier.getClass().getName());
+            LOGGER.trace("Finished building [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
         }
     }
 
@@ -190,7 +193,7 @@ public class MethodEvaluation
     {
         try
         {
-            Logger.trace("Started counting instances for each class in testing set.");
+            LOGGER.trace("Started counting instances for each class in testing set.");
             testingSetCounts.put(HAM, 0);
             testingSetCounts.put(SPAM, 0);
             testSet.forEach(i ->
@@ -200,17 +203,17 @@ public class MethodEvaluation
                 else if (i.classValue() == SPAM.ordinal())
                     testingSetCounts.put(SPAM, testingSetCounts.get(SPAM) + 1);
             });
-            Logger.trace("Finished counting instances ({} HAM, {} SPAM)", testingSetCounts.get(HAM), testingSetCounts.get(SPAM));
+            LOGGER.trace("Finished counting instances ({} HAM, {} SPAM)", testingSetCounts.get(HAM), testingSetCounts.get(SPAM));
 
-            Logger.trace("Started evaluating [{}] classifier.", classifier.getClass().getName());
+            LOGGER.trace("Started evaluating [{}] classifier.", classifier.getClass().getName());
             testStart = System.currentTimeMillis();
             evaluation.evaluateModel(classifier, testSet);
             testEnd = System.currentTimeMillis();
-            Logger.trace("Finished evaluating [{}] classifier.", classifier.getClass().getName());
+            LOGGER.trace("Finished evaluating [{}] classifier.", classifier.getClass().getName());
         }
         catch (Exception e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
         }
     }
 }

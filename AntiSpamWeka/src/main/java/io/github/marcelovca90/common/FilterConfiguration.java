@@ -21,7 +21,8 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
@@ -59,6 +60,7 @@ import weka.filters.supervised.instance.StratifiedRemoveFolds;
 
 public class FilterConfiguration
 {
+    private static final Logger LOGGER = LogManager.getLogger(FilterConfiguration.class);
     private static final int NO_CORES = Runtime.getRuntime().availableProcessors();
     private static final String CFS_SUBSET_EVAL_CONFIG = String.format("-Z -P %d -E %d", NO_CORES, NO_CORES);
     private static final String RANKER_CONFIG = "-T -1.7976931348623157E308 -N -1";
@@ -67,7 +69,8 @@ public class FilterConfiguration
     {
         // Correlation-based Feature Subset Selection
         CfsSubsetEval_BestFirst(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, BestFirst.class, "-D 1 -N 5"),
-        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class, "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
+        CfsSubsetEval_EvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, EvolutionarySearch.class,
+                "-population-size 20 -generations 20 -init-op 0 -selection-op 1 -crossover-op 0 -crossover-probability 0.6 -mutation-op 0 -mutation-probability 0.1 -replacement-op 0 -seed 1"),
         CfsSubsetEval_ExhaustiveSearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, ExhaustiveSearch.class, ""),
         CfsSubsetEval_GreedyStepwise(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, GreedyStepwise.class, "-T -1.7976931348623157E308 -N -1 -num-slots 1"),
         CfsSubsetEval_MultiObjectiveEvolutionarySearch(CfsSubsetEval.class, CFS_SUBSET_EVAL_CONFIG, MultiObjectiveEvolutionarySearch.class, "-generations 10 -population-size 100 -seed 1 -a 0"),
@@ -165,13 +168,13 @@ public class FilterConfiguration
     {
         try
         {
-            Logger.trace("Applying {} to the data set (numAttributes: {}).", filter.getDescription(), dataSet.numAttributes());
+            LOGGER.trace("Applying {} to the data set (numAttributes: {}).", filter.getDescription(), dataSet.numAttributes());
 
             return Filter.useFilter(dataSet, buildAttributeFilterFor(filter, dataSet));
         }
         catch (Exception e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
 
             return null;
         }
@@ -179,7 +182,7 @@ public class FilterConfiguration
 
     public static Instances buildAndApply(Instances dataSet, InstanceFilter filter) throws Exception
     {
-        Logger.trace("Applying {} to the data set (size: {}).", filter.getDescription(), dataSet.size());
+        LOGGER.trace("Applying {} to the data set (size: {}).", filter.getDescription(), dataSet.size());
 
         return Filter.useFilter(dataSet, buildInstanceFilterFor(filter, dataSet));
     }

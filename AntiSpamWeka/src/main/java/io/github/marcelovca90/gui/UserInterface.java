@@ -38,7 +38,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.helper.ExecutionHelper;
@@ -47,6 +48,7 @@ import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 public class UserInterface extends JFrame
 {
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private static final String USER_HOME = System.getProperty("user.home");
 
     private JCheckBox chkBalanceClasses;
@@ -110,7 +112,7 @@ public class UserInterface extends JFrame
         panelAntiSpamSettings.add(lblMetadata);
 
         txtMetadata = new JTextField();
-        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadataUpTo16.txt".replaceAll("!", File.separator));
+        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadata.txt".replaceAll("!", File.separator));
         txtMetadata.setEditable(false);
         txtMetadata.setColumns(10);
         txtMetadata.setBounds(79, 18, 399, 45);
@@ -303,7 +305,7 @@ public class UserInterface extends JFrame
             }
             catch (Exception e)
             {
-                Logger.error(e);
+                LOGGER.error(e);
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         });

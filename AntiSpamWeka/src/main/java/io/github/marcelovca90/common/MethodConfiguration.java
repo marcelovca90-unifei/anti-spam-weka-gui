@@ -21,7 +21,8 @@
  ******************************************************************************/
 package io.github.marcelovca90.common;
 
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import hr.irb.fastRandomForest.FastRandomForest;
 import weka.classifiers.AbstractClassifier;
@@ -124,6 +125,8 @@ public enum MethodConfiguration
     // http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html
     WRF("Weka random forests", "-P 100 -I 100 -num-slots 0 -K 0 -M 1.0 -V 0.001 -S 1", RandomForest.class);
 
+    private static final Logger LOGGER = LogManager.getLogger(MethodConfiguration.class);
+
     // dynamically instantiates a classifier for the given method configuration
     public static AbstractClassifier buildClassifierFor(MethodConfiguration methodConfiguration)
     {
@@ -137,7 +140,7 @@ public enum MethodConfiguration
         }
         catch (Exception e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
         }
 
         return classifier;

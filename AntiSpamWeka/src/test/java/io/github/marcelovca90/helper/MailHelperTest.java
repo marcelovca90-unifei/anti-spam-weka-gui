@@ -6,7 +6,7 @@ import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 
 public class MailHelperTest
 {
-    private final String filename = getClass().getClassLoader().getResource("tinylog.properties").getFile();
+    private final String filename = getClass().getClassLoader().getResource("log4j2.xml").getFile();
 
     @Test
     public void sendMail_usingSSLandFakeCredentials_shouldReturnSuccessSuppressingException()

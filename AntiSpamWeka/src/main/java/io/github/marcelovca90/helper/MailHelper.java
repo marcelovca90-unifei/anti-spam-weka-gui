@@ -20,10 +20,13 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MailHelper
 {
+    private static final Logger LOGGER = LogManager.getLogger(MailHelper.class);
+
     public enum CryptoProtocol
     {
         SSL,
@@ -60,7 +63,7 @@ public class MailHelper
         }
         catch (MessagingException e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
         }
     }
 

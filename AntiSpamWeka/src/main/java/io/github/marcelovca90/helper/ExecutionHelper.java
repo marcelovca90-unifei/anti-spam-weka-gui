@@ -12,11 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.swing.SwingUtilities;
 
-import org.pmw.tinylog.Configurator;
-import org.pmw.tinylog.Level;
-import org.pmw.tinylog.Logger;
-import org.pmw.tinylog.writers.ConsoleWriter;
-import org.pmw.tinylog.writers.FileWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.common.Constants.MessageType;
 import io.github.marcelovca90.common.DataSetMetadata;
@@ -32,6 +29,8 @@ import weka.core.Instances;
 
 public class ExecutionHelper
 {
+    private static final Logger LOGGER = LogManager.getLogger(ExecutionHelper.class);
+
     // anti spam settings
     public static Set<DataSetMetadata> metadata;
     public static List<MethodConfiguration> methods;
@@ -95,17 +94,6 @@ public class ExecutionHelper
 
             for (MethodConfiguration method : methods)
             {
-                // configure console, trace (logs/trace.log) and debug loggers (logs/${METHOD}.log)
-                String traceLogFilename = "logs" + File.separator + "trace.log";
-                String debugLogFilename = "logs" + File.separator + method.name() + ".log";
-                Configurator
-                    .currentConfig()
-                    .writer(new ConsoleWriter(), Level.DEBUG)
-                    .addWriter(new FileWriter(traceLogFilename, true, true), Level.TRACE)
-                    .addWriter(new FileWriter(debugLogFilename, true, true), Level.DEBUG)
-                    .writingThread(true)
-                    .activate();
-
                 MetaHelper.getExperimentHelper().printHeader();
 
                 for (DataSetMetadata metadata : metadata)
@@ -241,31 +229,33 @@ public class ExecutionHelper
                     // log the final results for this configuration
                     if (numberOfRuns > 0 && !skipTest)
                         MetaHelper.getExperimentHelper().summarizeResults(baseEvaluation, true, true);
-                }
 
-                if (emailResults)
-                {
-                    String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), debugLogFilename.substring(debugLogFilename.lastIndexOf(File.separator) + 1));
+                    if (emailResults)
+                    {
+                        String logFilename = "logs" + File.separator + method.name() + ".log";
 
-                    BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(debugLogFilename), BasicFileAttributes.class);
+                        String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), logFilename.substring(logFilename.lastIndexOf(File.separator) + 1));
 
-                    StringBuilder text = new StringBuilder();
-                    text.append("creationTime: " + fileAttributes.creationTime() + "\n");
-                    text.append("lastAccessTime: " + fileAttributes.lastAccessTime() + "\n");
-                    text.append("lastModifiedTime: " + fileAttributes.lastModifiedTime() + "\n");
-                    text.append("isDirectory: " + fileAttributes.isDirectory() + "\n");
-                    text.append("isOther: " + fileAttributes.isOther() + "\n");
-                    text.append("isRegularFile: " + fileAttributes.isRegularFile() + "\n");
-                    text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
-                    text.append("size: " + fileAttributes.size() + "\n");
+                        BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(logFilename), BasicFileAttributes.class);
 
-                    MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), debugLogFilename);
+                        StringBuilder text = new StringBuilder();
+                        text.append("creationTime: " + fileAttributes.creationTime() + "\n");
+                        text.append("lastAccessTime: " + fileAttributes.lastAccessTime() + "\n");
+                        text.append("lastModifiedTime: " + fileAttributes.lastModifiedTime() + "\n");
+                        text.append("isDirectory: " + fileAttributes.isDirectory() + "\n");
+                        text.append("isOther: " + fileAttributes.isOther() + "\n");
+                        text.append("isRegularFile: " + fileAttributes.isRegularFile() + "\n");
+                        text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
+                        text.append("size: " + fileAttributes.size() + "\n");
+
+                        MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), logFilename);
+                    }
                 }
             }
         }
         catch (Exception e)
         {
-            Logger.error(e);
+            LOGGER.error(e);
         }
     }
 

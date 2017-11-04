@@ -39,7 +39,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.pmw.tinylog.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.common.Constants.Metric;
 import io.github.marcelovca90.common.MethodConfiguration;
@@ -48,6 +49,8 @@ import weka.classifiers.Evaluation;
 
 public class ExperimentHelper
 {
+    private static final Logger LOGGER = LogManager.getLogger(ExperimentHelper.class);
+
     private Map<Metric, List<Double>> resultHistory = new EnumMap<>(Metric.class);
 
     // clears the data in result keeper
@@ -130,7 +133,7 @@ public class ExperimentHelper
 
         String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));
 
-        Logger.info(headerWithoutStats + "\t" + headerWithStats);
+        LOGGER.info(headerWithoutStats + "\t" + headerWithStats);
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
@@ -154,9 +157,9 @@ public class ExperimentHelper
         }
 
         if (!printStats)
-            Logger.debug(sb.toString());
+            LogManager.getLogger(methodEvaluation.getMethodConfiguration().name()).debug(sb.toString());
         else
-            Logger.info(sb.toString());
+            LogManager.getLogger(methodEvaluation.getMethodConfiguration().name()).info(sb.toString());
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
@@ -224,17 +227,17 @@ public class ExperimentHelper
                 // if the current value extrapolates any of the three thresholds, then it is considered an outlier
                 if (isOutlierByZScore(stats, value))
                 {
-                    Logger.trace("Outlier detected by Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    LOGGER.trace("Outlier detected by Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
                     outlierIndices.add(i);
                 }
                 else if (isOutlierByModifiedZScore(stats, value))
                 {
-                    Logger.trace("Outlier detected by Modified Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    LOGGER.trace("Outlier detected by Modified Z-Score\tMetric={}\tIndex={}\tValue={}", metric, i, value);
                     outlierIndices.add(i);
                 }
                 else if (isOutlierByInterquartileRange(stats, value))
                 {
-                    Logger.trace("Outlier detected by Interquartile Range\tMetric={}\tIndex={}\tValue={}", metric, i, value);
+                    LOGGER.trace("Outlier detected by Interquartile Range\tMetric={}\tIndex={}\tValue={}", metric, i, value);
                     outlierIndices.add(i);
                 }
             }
