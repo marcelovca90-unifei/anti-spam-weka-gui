@@ -94,8 +94,6 @@ public class ExecutionHelper
 
             for (MethodConfiguration method : methods)
             {
-                MetaHelper.getExperimentHelper().printHeader();
-
                 for (DataSetMetadata metadata : metadata)
                 {
                     String folder = metadata.getFolder();

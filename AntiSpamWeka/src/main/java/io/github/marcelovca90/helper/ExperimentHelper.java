@@ -26,6 +26,7 @@ import static io.github.marcelovca90.common.Constants.MessageType.SPAM;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,8 @@ import weka.classifiers.Evaluation;
 public class ExperimentHelper
 {
     private static final Logger LOGGER = LogManager.getLogger(ExperimentHelper.class);
+
+    private final Set<String> methodsWithHeaderAlreadyPrinted = new HashSet<>();
 
     private Map<Metric, List<Double>> resultHistory = new EnumMap<>(Metric.class);
 
@@ -115,7 +118,7 @@ public class ExperimentHelper
         return removeOutliers(detectOutliers());
     }
 
-    public void printHeader()
+    private void printResultHeader(String methodName)
     {
         Stream<String> metricsWithoutStats = Arrays.stream(new String[] { "Data Set", "Statistics Method", "ML Method", "Number of Features (before)", "Number of Features (after)" });
 
@@ -133,13 +136,14 @@ public class ExperimentHelper
 
         String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));
 
-        LOGGER.info(headerWithoutStats + "\t" + headerWithStats);
+        LogManager.getLogger(methodName).info(headerWithoutStats + "\t" + headerWithStats);
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
     public void summarizeResults(Map<Metric, DescriptiveStatistics> results, MethodEvaluation methodEvaluation, boolean printStats, boolean formatMillis)
     {
         MethodConfiguration methodConfiguration = methodEvaluation.getMethodConfiguration();
+        String methodName = methodConfiguration.name();
 
         StringBuilder sb = new StringBuilder();
 
@@ -156,10 +160,16 @@ public class ExperimentHelper
                 buildResultLineWithStats(results, formatMillis, sb, metric);
         }
 
+        if (!methodsWithHeaderAlreadyPrinted.contains(methodName))
+        {
+            printResultHeader(methodName);
+            methodsWithHeaderAlreadyPrinted.add(methodName);
+        }
+
         if (!printStats)
-            LogManager.getLogger(methodEvaluation.getMethodConfiguration().name()).debug(sb.toString());
+            LogManager.getLogger(methodName).debug(sb.toString());
         else
-            LogManager.getLogger(methodEvaluation.getMethodConfiguration().name()).info(sb.toString());
+            LogManager.getLogger(methodName).info(sb.toString());
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric

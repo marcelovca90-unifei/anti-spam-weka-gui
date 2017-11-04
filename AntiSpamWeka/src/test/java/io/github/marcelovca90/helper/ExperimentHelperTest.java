@@ -94,12 +94,6 @@ public class ExperimentHelperTest
     }
 
     @Test
-    public void printHeader_shouldReturnSuccess()
-    {
-        experimentHelper.printHeader();
-    }
-
-    @Test
     public void reset_shouldReturnSuccess()
     {
         experimentHelper.clearResultHistory();
