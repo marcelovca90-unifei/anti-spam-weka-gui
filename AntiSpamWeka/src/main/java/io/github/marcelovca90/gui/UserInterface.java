@@ -484,6 +484,7 @@ public class UserInterface extends JFrame
                 cbProtocol.setSelectedItem(CryptoProtocol.valueOf(prop.getProperty("protocol")));
                 txtUsername.setText(prop.getProperty("username"));
                 fldPassword.setText(new String(DatatypeConverter.parseBase64Binary(prop.getProperty("password"))));
+                fldConfirm.setText(new String(DatatypeConverter.parseBase64Binary(prop.getProperty("confirm"))));
             }
             catch (IOException e)
             {
@@ -519,6 +520,7 @@ public class UserInterface extends JFrame
         prop.put("protocol", ((CryptoProtocol) cbProtocol.getSelectedItem()).name());
         prop.put("username", txtUsername.getText());
         prop.put("password", DatatypeConverter.printBase64Binary(new String(fldPassword.getPassword()).getBytes()));
+        prop.put("confirm", DatatypeConverter.printBase64Binary(new String(fldConfirm.getPassword()).getBytes()));
 
         try
         {
