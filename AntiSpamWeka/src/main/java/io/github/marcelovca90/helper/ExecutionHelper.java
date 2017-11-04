@@ -247,7 +247,7 @@ public class ExecutionHelper
                     text.append("isSymbolicLink: " + fileAttributes.isSymbolicLink() + "\n");
                     text.append("size: " + fileAttributes.size() + "\n");
 
-                    MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), logFilename);
+                    MailHelper.sendMail(protocol, username, password, server, sender, recipient, subject, text.toString(), logFilename, false);
                 }
             }
         }

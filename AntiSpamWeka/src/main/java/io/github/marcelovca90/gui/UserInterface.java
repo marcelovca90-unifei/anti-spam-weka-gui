@@ -43,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.common.MethodConfiguration;
 import io.github.marcelovca90.helper.ExecutionHelper;
+import io.github.marcelovca90.helper.MailHelper;
 import io.github.marcelovca90.helper.MailHelper.CryptoProtocol;
 
 public class UserInterface extends JFrame
@@ -51,6 +52,7 @@ public class UserInterface extends JFrame
     private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private static final String USER_HOME = System.getProperty("user.home");
 
+    private JButton btnRun;
     private JCheckBox chkBalanceClasses;
     private JCheckBox chkEmailResults;
     private JCheckBox chkIncludeEmpty;
@@ -62,6 +64,7 @@ public class UserInterface extends JFrame
     private JCheckBox chkSkipTest;
     private JCheckBox chkSkipTrain;
     private JPanel contentPane;
+    private JPanel panelEmailSettings;
     private JPasswordField fldPassword;
     private JTextField txtMetadata;
     private JTextField txtRecipient;
@@ -73,6 +76,10 @@ public class UserInterface extends JFrame
     private Set<String> selectedMethods;
 
     public static JProgressBar progressBar;
+    private JLabel lblConfirm;
+    private JPasswordField fldConfirm;
+    private JButton btnReset;
+    private JButton btnValidate;
 
     public static void main(String[] args)
     {
@@ -118,7 +125,7 @@ public class UserInterface extends JFrame
         txtMetadata.setBounds(79, 18, 399, 45);
         panelAntiSpamSettings.add(txtMetadata);
 
-        JButton btnChooseMetadata = new JButton("Choose...");
+        JButton btnChooseMetadata = new JButton("Choose");
         btnChooseMetadata.addActionListener(ae ->
         {
             JFileChooser jFileChooser = new JFileChooser();
@@ -129,7 +136,7 @@ public class UserInterface extends JFrame
                 txtMetadata.setText(selectedFile.getAbsolutePath());
             }
         });
-        btnChooseMetadata.setBounds(490, 19, 97, 45);
+        btnChooseMetadata.setBounds(485, 19, 97, 45);
         panelAntiSpamSettings.add(btnChooseMetadata);
 
         JPanel panelMethods = new JPanel();
@@ -162,7 +169,7 @@ public class UserInterface extends JFrame
 
         JPanel panelRunSettings = new JPanel();
         panelRunSettings.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Run settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        panelRunSettings.setBounds(432, 72, 304, 205);
+        panelRunSettings.setBounds(432, 72, 304, 150);
         panelAntiSpamSettings.add(panelRunSettings);
         panelRunSettings.setLayout(new GridLayout(0, 2));
 
@@ -206,6 +213,19 @@ public class UserInterface extends JFrame
         panelRunSettings.add(chkSaveSets);
 
         chkEmailResults = new JCheckBox("E-mail results");
+        chkEmailResults.addActionListener(ae ->
+        {
+            if (((JCheckBox) ae.getSource()).isSelected())
+            {
+                setPanelEnabled(panelEmailSettings, true);
+                btnRun.setEnabled(false);
+            }
+            else
+            {
+                setPanelEnabled(panelEmailSettings, false);
+                btnRun.setEnabled(true);
+            }
+        });
         chkEmailResults.setSelected(true);
         panelRunSettings.add(chkEmailResults);
 
@@ -217,11 +237,11 @@ public class UserInterface extends JFrame
         panelAntiSpamSettings.add(txtRuns);
 
         JLabel lblRuns = new JLabel("No. Runs");
-        lblRuns.setBounds(599, 18, 57, 45);
+        lblRuns.setBounds(594, 18, 62, 45);
         panelAntiSpamSettings.add(lblRuns);
 
-        JPanel panelEmailSettings = new JPanel();
-        panelEmailSettings.setBounds(432, 283, 304, 205);
+        panelEmailSettings = new JPanel();
+        panelEmailSettings.setBounds(432, 225, 304, 263);
         panelAntiSpamSettings.add(panelEmailSettings);
         panelEmailSettings.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "E-mail settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         panelEmailSettings.setLayout(new GridLayout(0, 2, 0, 0));
@@ -246,7 +266,7 @@ public class UserInterface extends JFrame
         panelEmailSettings.add(lblServer);
 
         txtServer = new JTextField();
-        txtServer.setText("mail.server.com:port");
+        txtServer.setText("smtp.mail.server.com");
         txtServer.setColumns(10);
         panelEmailSettings.add(txtServer);
 
@@ -273,6 +293,55 @@ public class UserInterface extends JFrame
         fldPassword.setText("sender123password");
         panelEmailSettings.add(fldPassword);
 
+        lblConfirm = new JLabel("Confirm Password");
+        panelEmailSettings.add(lblConfirm);
+
+        fldConfirm = new JPasswordField();
+        fldConfirm.setText("sender123password");
+        panelEmailSettings.add(fldConfirm);
+
+        btnValidate = new JButton("Validate");
+        btnValidate.addActionListener(ae ->
+        {
+            if (!new String(fldPassword.getPassword()).equals(new String(fldConfirm.getPassword())))
+            {
+                JOptionPane.showMessageDialog(null, "Password and confirmation do not match");
+                btnRun.setEnabled(false);
+            }
+            else
+            {
+                boolean dryRunStatus = MailHelper.sendMail(
+                    (CryptoProtocol) cbProtocol.getSelectedItem(),
+                    txtUsername.getText(), new String(fldPassword.getPassword()), txtServer.getText(), "", "", "", "", "", true);
+
+                if (!dryRunStatus)
+                {
+                    JOptionPane.showMessageDialog(null, "Connection error");
+                    btnRun.setEnabled(false);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Connection success");
+                    btnRun.setEnabled(true);
+                }
+            }
+        });
+        panelEmailSettings.add(btnValidate);
+
+        btnReset = new JButton("Reset");
+        btnReset.addActionListener(ae ->
+        {
+            txtSender.setText("sender@server.com");
+            txtRecipient.setText("recipient@server.com");
+            txtServer.setText("smtp.mail.server.com");
+            cbProtocol.setSelectedItem(CryptoProtocol.TLS);
+            txtUsername.setText("sender@server.com");
+            fldPassword.setText("sender123password");
+            fldConfirm.setText("sender123password");
+            btnRun.setEnabled(false);
+        });
+        panelEmailSettings.add(btnReset);
+
         JPanel panelBottom = new JPanel();
         contentPane.add(panelBottom, BorderLayout.SOUTH);
         panelBottom.setLayout(new BorderLayout(0, 0));
@@ -281,7 +350,8 @@ public class UserInterface extends JFrame
         progressBar.setStringPainted(true);
         panelBottom.add(progressBar, BorderLayout.CENTER);
 
-        JButton btnRun = new JButton("Run");
+        btnRun = new JButton("Run");
+        btnRun.setEnabled(false);
         panelBottom.add(btnRun, BorderLayout.EAST);
         btnRun.addActionListener(ae ->
         {

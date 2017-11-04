@@ -33,7 +33,7 @@ public class MailHelper
         TLS
     };
 
-    public static void sendMail(CryptoProtocol protocol, String username, String password, String host, String from, String recipients, String subject, String text, String filename)
+    public static boolean sendMail(CryptoProtocol protocol, String username, String password, String host, String from, String recipients, String subject, String text, String filename, boolean dryRun)
     {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -58,12 +58,23 @@ public class MailHelper
 
         try
         {
-            Message message = buildMessage(session, from, recipients, subject, text, filename);
-            Transport.send(message);
+            if (dryRun)
+            {
+                Transport transport = session.getTransport();
+                transport.connect(host, username, password);
+                transport.close();
+            }
+            else
+            {
+                Message message = buildMessage(session, from, recipients, subject, text, filename);
+                Transport.send(message);
+            }
+            return true;
         }
         catch (MessagingException e)
         {
             LOGGER.error(e);
+            return false;
         }
     }
 
