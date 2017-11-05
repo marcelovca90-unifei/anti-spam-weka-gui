@@ -50,7 +50,7 @@ import weka.core.Instances;
 public class MethodEvaluationTest
 {
     private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
-    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
+    private final MethodConfiguration methodConfiguration = MethodConfiguration.LIBSVM_RBF_G_zero_C_med;
 
     private MethodEvaluation methodEvaluation;
 
