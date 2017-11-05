@@ -11,7 +11,7 @@ echo "        <File name=\"TraceFile\" fileName=\"logs/trace.log\"> <PatternLayo
 
 for METHOD in "${METHODS[@]}"
 do
-    echo "        <File name=\"$METHOD\" filename=\"logs/$METHOD.log\"> <PatternLayout pattern=\"%d %p %m%n\" /> </File>"
+    echo "        <File name=\"$METHOD\" filename=\"logs/$METHOD.csv\"> <PatternLayout pattern=\"%d %p %m%n\" /> </File>"
 done
 
 echo "    </Appenders>"

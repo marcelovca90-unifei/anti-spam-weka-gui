@@ -3,33 +3,33 @@
     <Appenders>
         <Console name="TraceConsole" target="SYSTEM_OUT"> <PatternLayout pattern="%d %p %m%n" /> </Console>
         <File name="TraceFile" fileName="logs/trace.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_neg_C_small" filename="logs/LIBSVM_POLY_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_zero_C_small" filename="logs/LIBSVM_POLY_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_pos_C_small" filename="logs/LIBSVM_POLY_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_neg_C_med" filename="logs/LIBSVM_POLY_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_zero_C_med" filename="logs/LIBSVM_POLY_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_pos_C_med" filename="logs/LIBSVM_POLY_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_neg_C_high" filename="logs/LIBSVM_POLY_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_zero_C_high" filename="logs/LIBSVM_POLY_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_POLY_G_pos_C_high" filename="logs/LIBSVM_POLY_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_neg_C_small" filename="logs/LIBSVM_RBF_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_zero_C_small" filename="logs/LIBSVM_RBF_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_pos_C_small" filename="logs/LIBSVM_RBF_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_neg_C_med" filename="logs/LIBSVM_RBF_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_zero_C_med" filename="logs/LIBSVM_RBF_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_pos_C_med" filename="logs/LIBSVM_RBF_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_neg_C_high" filename="logs/LIBSVM_RBF_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_zero_C_high" filename="logs/LIBSVM_RBF_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_RBF_G_pos_C_high" filename="logs/LIBSVM_RBF_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_neg_C_small" filename="logs/LIBSVM_SIG_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_zero_C_small" filename="logs/LIBSVM_SIG_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_pos_C_small" filename="logs/LIBSVM_SIG_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_neg_C_med" filename="logs/LIBSVM_SIG_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_zero_C_med" filename="logs/LIBSVM_SIG_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_pos_C_med" filename="logs/LIBSVM_SIG_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_neg_C_high" filename="logs/LIBSVM_SIG_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_zero_C_high" filename="logs/LIBSVM_SIG_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File name="LIBSVM_SIG_G_pos_C_high" filename="logs/LIBSVM_SIG_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_neg_C_small" filename="logs/LIBSVM_POLY_G_neg_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_small" filename="logs/LIBSVM_POLY_G_zero_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_small" filename="logs/LIBSVM_POLY_G_pos_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_neg_C_med" filename="logs/LIBSVM_POLY_G_neg_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_med" filename="logs/LIBSVM_POLY_G_zero_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_med" filename="logs/LIBSVM_POLY_G_pos_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_neg_C_high" filename="logs/LIBSVM_POLY_G_neg_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_high" filename="logs/LIBSVM_POLY_G_zero_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_high" filename="logs/LIBSVM_POLY_G_pos_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_small" filename="logs/LIBSVM_RBF_G_neg_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_small" filename="logs/LIBSVM_RBF_G_zero_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_small" filename="logs/LIBSVM_RBF_G_pos_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_med" filename="logs/LIBSVM_RBF_G_neg_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_med" filename="logs/LIBSVM_RBF_G_zero_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_med" filename="logs/LIBSVM_RBF_G_pos_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_high" filename="logs/LIBSVM_RBF_G_neg_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_high" filename="logs/LIBSVM_RBF_G_zero_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_high" filename="logs/LIBSVM_RBF_G_pos_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_small" filename="logs/LIBSVM_SIG_G_neg_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_small" filename="logs/LIBSVM_SIG_G_zero_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_small" filename="logs/LIBSVM_SIG_G_pos_C_small.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_med" filename="logs/LIBSVM_SIG_G_neg_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_med" filename="logs/LIBSVM_SIG_G_zero_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_med" filename="logs/LIBSVM_SIG_G_pos_C_med.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_high" filename="logs/LIBSVM_SIG_G_neg_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_high" filename="logs/LIBSVM_SIG_G_zero_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_high" filename="logs/LIBSVM_SIG_G_pos_C_high.csv"> <PatternLayout pattern="%d %p %m%n" /> </File>
     </Appenders>
     <Loggers>
         <Root level="trace"> <appender-ref ref="TraceConsole" /> <appender-ref ref="TraceFile" /> </Root>
