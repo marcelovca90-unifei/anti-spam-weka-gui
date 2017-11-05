@@ -68,7 +68,7 @@ public class InputOutputHelperTest
     public void buildClassifierFilename_shouldReturnStringWithClassifierDetails()
     {
         String folder = "/some/folder";
-        MethodConfiguration method = MethodConfiguration.RT;
+        MethodConfiguration method = MethodConfiguration.LIBSVM_RBF_G_zero_C_med;
         double splitPercent = RandomUtils.nextDouble();
         int seed = MetaHelper.getRandomHelper().getSeed();
 
@@ -131,7 +131,7 @@ public class InputOutputHelperTest
     @Test
     public void loadModelFromFile_shouldProperlyDeserializeModel() throws Exception
     {
-        AbstractClassifier baseClassifier = MethodConfiguration.buildClassifierFor(MethodConfiguration.RT);
+        AbstractClassifier baseClassifier = MethodConfiguration.buildClassifierFor(MethodConfiguration.LIBSVM_RBF_G_zero_C_med);
 
         File file = ioHelper.saveModelToFile("dummy.model", baseClassifier);
 
@@ -140,7 +140,7 @@ public class InputOutputHelperTest
         assertThat(file.exists(), equalTo(Boolean.TRUE));
         assertThat(file.delete(), equalTo(Boolean.TRUE));
         assertThat(recoveredClassifier, notNullValue());
-        assertThat(recoveredClassifier, instanceOf(MethodConfiguration.RT.getClazz()));
+        assertThat(recoveredClassifier, instanceOf(MethodConfiguration.LIBSVM_RBF_G_zero_C_med.getClazz()));
     }
 
     @Test

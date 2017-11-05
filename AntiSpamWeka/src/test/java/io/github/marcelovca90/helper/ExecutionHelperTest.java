@@ -68,7 +68,7 @@ public class ExecutionHelperTest
 
         metadata = Sets.newHashSet(metadataMock);
 
-        methods = Arrays.asList(MethodConfiguration.SPEGASOS);
+        methods = Arrays.asList(MethodConfiguration.LIBSVM_RBF_G_zero_C_med);
     }
 
     @AfterClass

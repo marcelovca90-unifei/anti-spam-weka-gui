@@ -1,74 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- Copyright (C) 2017 Marcelo Vinícius Cysneiros Aragão Permission is hereby 
-    granted, free of charge, to any person obtaining a copy of this software 
-    and associated documentation files (the "Software"), to deal in the Software 
-    without restriction, including without limitation the rights to use, copy, 
-    modify, merge, publish, distribute, sublicense, and/or sell copies of the 
-    Software, and to permit persons to whom the Software is furnished to do so, 
-    subject to the following conditions: The above copyright notice and this 
-    permission notice shall be included in all copies or substantial portions 
-    of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY 
-    KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN 
-    NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-    DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-    DEALINGS IN THE SOFTWARE. -->
-
 <Configuration status="WARN">
     <Appenders>
-        <Console name="Console"   target="SYSTEM_OUT">           <PatternLayout pattern="%d %p %m%n" /> </Console>
-        <File    name="A1DE"      fileName="logs/A1DE.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="A2DE"      fileName="logs/A2DE.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="BFTREE"    fileName="logs/BFTREE.log">    <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="CART"      fileName="logs/CART.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="DTNB"      fileName="logs/DTNB.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="FURIA"     fileName="logs/FURIA.log">     <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="FRF"       fileName="logs/FRF.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="HP"        fileName="logs/HP.log">        <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="IBK"       fileName="logs/IBK.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="J48"       fileName="logs/J48.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="J48C"      fileName="logs/J48C.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="J48G"      fileName="logs/J48G.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="JRIP"      fileName="logs/JRIP.log">      <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="LIBLINEAR" fileName="logs/LIBLINEAR.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="LIBSVM"    fileName="logs/LIBSVM.log">    <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="MLP"       fileName="logs/MLP.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="NB"        fileName="logs/NB.log">        <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="NBTREE"    fileName="logs/NBTREE.log">    <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="RBF"       fileName="logs/RBF.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="RT"        fileName="logs/RT.log">        <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="SGD"       fileName="logs/SGD.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="SMO"       fileName="logs/SMO.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="SPEGASOS"  fileName="logs/SPEGASOS.log">  <PatternLayout pattern="%d %p %m%n" /> </File>
-        <File    name="WRF"       fileName="logs/WRF.log">       <PatternLayout pattern="%d %p %m%n" /> </File>
+        <Console name="Console" target="SYSTEM_OUT"> <PatternLayout pattern="%d %p %m%n" /> </Console>
+        <File name="LIBSVM_POLY_G_neg_C_small.log" filename="logs/LIBSVM_POLY_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_small.log" filename="logs/LIBSVM_POLY_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_small.log" filename="logs/LIBSVM_POLY_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_neg_C_med.log" filename="logs/LIBSVM_POLY_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_med.log" filename="logs/LIBSVM_POLY_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_med.log" filename="logs/LIBSVM_POLY_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_neg_C_high.log" filename="logs/LIBSVM_POLY_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_zero_C_high.log" filename="logs/LIBSVM_POLY_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_POLY_G_pos_C_high.log" filename="logs/LIBSVM_POLY_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_small.log" filename="logs/LIBSVM_RBF_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_small.log" filename="logs/LIBSVM_RBF_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_small.log" filename="logs/LIBSVM_RBF_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_med.log" filename="logs/LIBSVM_RBF_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_med.log" filename="logs/LIBSVM_RBF_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_med.log" filename="logs/LIBSVM_RBF_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_neg_C_high.log" filename="logs/LIBSVM_RBF_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_zero_C_high.log" filename="logs/LIBSVM_RBF_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_RBF_G_pos_C_high.log" filename="logs/LIBSVM_RBF_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_small.log" filename="logs/LIBSVM_SIG_G_neg_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_small.log" filename="logs/LIBSVM_SIG_G_zero_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_small.log" filename="logs/LIBSVM_SIG_G_pos_C_small.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_med.log" filename="logs/LIBSVM_SIG_G_neg_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_med.log" filename="logs/LIBSVM_SIG_G_zero_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_med.log" filename="logs/LIBSVM_SIG_G_pos_C_med.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_neg_C_high.log" filename="logs/LIBSVM_SIG_G_neg_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_zero_C_high.log" filename="logs/LIBSVM_SIG_G_zero_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
+        <File name="LIBSVM_SIG_G_pos_C_high.log" filename="logs/LIBSVM_SIG_G_pos_C_high.log"> <PatternLayout pattern="%d %p %m%n" /> </File>
     </Appenders>
     <Loggers>
-        <Root                    level="trace"> <appender-ref ref="Console" />   </Root>
-        <logger name="A1DE"      level="debug"> <appender-ref ref="A1DE" />      </logger>
-        <logger name="A2DE"      level="debug"> <appender-ref ref="A2DE" />      </logger>
-        <logger name="BFTREE"    level="debug"> <appender-ref ref="BFTREE" />    </logger>
-        <logger name="CART"      level="debug"> <appender-ref ref="CART" />      </logger>
-        <logger name="DTNB"      level="debug"> <appender-ref ref="DTNB" />      </logger>
-        <logger name="FURIA"     level="debug"> <appender-ref ref="FURIA" />     </logger>
-        <logger name="FRF"       level="debug"> <appender-ref ref="FRF" />       </logger>
-        <logger name="HP"        level="debug"> <appender-ref ref="HP" />        </logger>
-        <logger name="IBK"       level="debug"> <appender-ref ref="IBK" />       </logger>
-        <logger name="J48"       level="debug"> <appender-ref ref="J48" />       </logger>
-        <logger name="J48C"      level="debug"> <appender-ref ref="J48C" />      </logger>
-        <logger name="J48G"      level="debug"> <appender-ref ref="J48G" />      </logger>
-        <logger name="JRIP"      level="debug"> <appender-ref ref="JRIP" />      </logger>
-        <logger name="LIBLINEAR" level="debug"> <appender-ref ref="LIBLINEAR" /> </logger>
-        <logger name="LIBSVM"    level="debug"> <appender-ref ref="LIBSVM" />    </logger>
-        <logger name="MLP"       level="debug"> <appender-ref ref="MLP" />       </logger>
-        <logger name="NB"        level="debug"> <appender-ref ref="NB" />        </logger>
-        <logger name="NBTREE"    level="debug"> <appender-ref ref="NBTREE" />    </logger>
-        <logger name="RBF"       level="debug"> <appender-ref ref="RBF" />       </logger>
-        <logger name="RT"        level="debug"> <appender-ref ref="RT" />        </logger>
-        <logger name="SGD"       level="debug"> <appender-ref ref="SGD" />       </logger>
-        <logger name="SMO"       level="debug"> <appender-ref ref="SMO" />       </logger>
-        <logger name="SPEGASOS"  level="debug"> <appender-ref ref="SPEGASOS" />  </logger>
-        <logger name="WRF"       level="debug"> <appender-ref ref="WRF" />       </logger>
+        <Root level="trace"> <appender-ref ref="Console" />   </Root>
+        <logger name="LIBSVM_POLY_G_neg_C_small" level="debug"> <appender-ref ref="LIBSVM_POLY_G_neg_C_small" /> </logger>
+        <logger name="LIBSVM_POLY_G_zero_C_small" level="debug"> <appender-ref ref="LIBSVM_POLY_G_zero_C_small" /> </logger>
+        <logger name="LIBSVM_POLY_G_pos_C_small" level="debug"> <appender-ref ref="LIBSVM_POLY_G_pos_C_small" /> </logger>
+        <logger name="LIBSVM_POLY_G_neg_C_med" level="debug"> <appender-ref ref="LIBSVM_POLY_G_neg_C_med" /> </logger>
+        <logger name="LIBSVM_POLY_G_zero_C_med" level="debug"> <appender-ref ref="LIBSVM_POLY_G_zero_C_med" /> </logger>
+        <logger name="LIBSVM_POLY_G_pos_C_med" level="debug"> <appender-ref ref="LIBSVM_POLY_G_pos_C_med" /> </logger>
+        <logger name="LIBSVM_POLY_G_neg_C_high" level="debug"> <appender-ref ref="LIBSVM_POLY_G_neg_C_high" /> </logger>
+        <logger name="LIBSVM_POLY_G_zero_C_high" level="debug"> <appender-ref ref="LIBSVM_POLY_G_zero_C_high" /> </logger>
+        <logger name="LIBSVM_POLY_G_pos_C_high" level="debug"> <appender-ref ref="LIBSVM_POLY_G_pos_C_high" /> </logger>
+        <logger name="LIBSVM_RBF_G_neg_C_small" level="debug"> <appender-ref ref="LIBSVM_RBF_G_neg_C_small" /> </logger>
+        <logger name="LIBSVM_RBF_G_zero_C_small" level="debug"> <appender-ref ref="LIBSVM_RBF_G_zero_C_small" /> </logger>
+        <logger name="LIBSVM_RBF_G_pos_C_small" level="debug"> <appender-ref ref="LIBSVM_RBF_G_pos_C_small" /> </logger>
+        <logger name="LIBSVM_RBF_G_neg_C_med" level="debug"> <appender-ref ref="LIBSVM_RBF_G_neg_C_med" /> </logger>
+        <logger name="LIBSVM_RBF_G_zero_C_med" level="debug"> <appender-ref ref="LIBSVM_RBF_G_zero_C_med" /> </logger>
+        <logger name="LIBSVM_RBF_G_pos_C_med" level="debug"> <appender-ref ref="LIBSVM_RBF_G_pos_C_med" /> </logger>
+        <logger name="LIBSVM_RBF_G_neg_C_high" level="debug"> <appender-ref ref="LIBSVM_RBF_G_neg_C_high" /> </logger>
+        <logger name="LIBSVM_RBF_G_zero_C_high" level="debug"> <appender-ref ref="LIBSVM_RBF_G_zero_C_high" /> </logger>
+        <logger name="LIBSVM_RBF_G_pos_C_high" level="debug"> <appender-ref ref="LIBSVM_RBF_G_pos_C_high" /> </logger>
+        <logger name="LIBSVM_SIG_G_neg_C_small" level="debug"> <appender-ref ref="LIBSVM_SIG_G_neg_C_small" /> </logger>
+        <logger name="LIBSVM_SIG_G_zero_C_small" level="debug"> <appender-ref ref="LIBSVM_SIG_G_zero_C_small" /> </logger>
+        <logger name="LIBSVM_SIG_G_pos_C_small" level="debug"> <appender-ref ref="LIBSVM_SIG_G_pos_C_small" /> </logger>
+        <logger name="LIBSVM_SIG_G_neg_C_med" level="debug"> <appender-ref ref="LIBSVM_SIG_G_neg_C_med" /> </logger>
+        <logger name="LIBSVM_SIG_G_zero_C_med" level="debug"> <appender-ref ref="LIBSVM_SIG_G_zero_C_med" /> </logger>
+        <logger name="LIBSVM_SIG_G_pos_C_med" level="debug"> <appender-ref ref="LIBSVM_SIG_G_pos_C_med" /> </logger>
+        <logger name="LIBSVM_SIG_G_neg_C_high" level="debug"> <appender-ref ref="LIBSVM_SIG_G_neg_C_high" /> </logger>
+        <logger name="LIBSVM_SIG_G_zero_C_high" level="debug"> <appender-ref ref="LIBSVM_SIG_G_zero_C_high" /> </logger>
+        <logger name="LIBSVM_SIG_G_pos_C_high" level="debug"> <appender-ref ref="LIBSVM_SIG_G_pos_C_high" /> </logger>
     </Loggers>
 </Configuration>

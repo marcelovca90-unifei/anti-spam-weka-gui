@@ -49,7 +49,7 @@ public class ExperimentHelperTest
     private final String folder = "/some/folder/DATA_SET/STAT_METHOD/100/";
     private final ExperimentHelper experimentHelper = MetaHelper.getExperimentHelper();
     private final Map<Metric, DescriptiveStatistics> results = new HashMap<>();
-    private final MethodConfiguration methodConfiguration = MethodConfiguration.RT;
+    private final MethodConfiguration methodConfiguration = MethodConfiguration.LIBSVM_RBF_G_zero_C_med;
     private final MethodEvaluation methodEvaluation = new MethodEvaluation(folder, methodConfiguration);
 
     @Mock
