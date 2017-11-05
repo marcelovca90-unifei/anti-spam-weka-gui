@@ -10,7 +10,7 @@ echo "        <Console name=\"Console\" target=\"SYSTEM_OUT\"> <PatternLayout pa
 
 for METHOD in "${METHODS[@]}"
 do
-    echo "        <File name=\"$METHOD.log\" filename=\"logs/$METHOD.log\"> <PatternLayout pattern=\"%d %p %m%n\" /> </File>"
+    echo "        <File name=\"$METHOD\" filename=\"logs/$METHOD.log\"> <PatternLayout pattern=\"%d %p %m%n\" /> </File>"
 done
 
 echo "    </Appenders>"

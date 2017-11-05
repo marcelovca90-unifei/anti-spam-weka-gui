@@ -13,4 +13,4 @@ before_script:
   - cd AntiSpamWeka
 
 script:
-  - mvn clean install
+  - mvn clean install -DskipTests
