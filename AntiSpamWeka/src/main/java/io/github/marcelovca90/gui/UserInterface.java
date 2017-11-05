@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -459,7 +459,7 @@ public class UserInterface extends JFrame
 
                 // anti spam settings
                 txtMetadata.setText(prop.getProperty("txtMetadata"));
-                List<String> selectedMethods = Arrays.asList(prop.getProperty("selectedMethods").split(","));
+                selectedMethods = new HashSet<>(Arrays.asList(prop.getProperty("selectedMethods").split(",")));
                 for (Component component : panelMethods.getComponents())
                     if (component instanceof JCheckBox)
                         ((JCheckBox) component).setSelected(selectedMethods.contains(((JCheckBox) component).getText()));
