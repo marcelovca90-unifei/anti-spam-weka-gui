@@ -128,7 +128,7 @@ public class UserInterface extends JFrame
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
 
-        selectedMethods = new LinkedHashSet<>(Arrays.asList("A1DE", "NB", "J48", "FRF", "MLP", "RBF", "LIBSVM", "SPEGASOS"));
+        selectedMethods = new LinkedHashSet<>();
         contentPane.setLayout(new BorderLayout(0, 0));
 
         JPanel panelTop = new JPanel();
