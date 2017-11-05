@@ -254,6 +254,7 @@ public class ExecutionHelper
         catch (Exception e)
         {
             LOGGER.error(e);
+            e.printStackTrace();
         }
     }
 

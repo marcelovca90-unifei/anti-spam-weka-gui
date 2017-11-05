@@ -122,7 +122,7 @@ public class ExperimentHelper
     {
         Stream<String> metricsWithoutStats = Arrays.stream(new String[] { "Data Set", "Statistics Method", "ML Method", "Number of Features (before)", "Number of Features (after)" });
 
-        String headerWithoutStats = metricsWithoutStats.collect(Collectors.joining("\t", "\t", ""));
+        String headerWithoutStats = metricsWithoutStats.collect(Collectors.joining(";", ";", ""));
 
         Stream<String> metricsWithStats = Arrays.stream(
             new String[] {
@@ -134,9 +134,9 @@ public class ExperimentHelper
                     "Train Time", "Test Time"
             });
 
-        String headerWithStats = metricsWithStats.collect(Collectors.joining("\tSTDEV\tCI\t", "", "\tSTDEV\tCI"));
+        String headerWithStats = metricsWithStats.collect(Collectors.joining(";STDEV;CI;", "", ";STDEV;CI"));
 
-        LogManager.getLogger(methodName).info(headerWithoutStats + "\t" + headerWithStats);
+        LogManager.getLogger(methodName).info(headerWithoutStats + ";" + headerWithStats);
     }
 
     // displays the experiment's [last resultHistory] or [mean ± standard deviation] for every metric
@@ -147,18 +147,10 @@ public class ExperimentHelper
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(String.format("\t%s", methodEvaluation.getDataSetName()));
-        sb.append(String.format("\t%s", methodEvaluation.getStatMethod()));
-        sb.append(String.format("\t%s", methodConfiguration.name()));
-        sb.append(String.format("\t%d\t%d\t", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
-
-        for (Metric metric : Metric.values())
-        {
-            if (!printStats)
-                buildResultLineWithoutStats(results, formatMillis, sb, metric);
-            else
-                buildResultLineWithStats(results, formatMillis, sb, metric);
-        }
+        sb.append(String.format(";%s", methodEvaluation.getDataSetName()));
+        sb.append(String.format(";%s", methodEvaluation.getStatMethod()));
+        sb.append(String.format(";%s", methodConfiguration.name()));
+        sb.append(String.format(";%d;%d;", methodEvaluation.getNumberOfTotalFeatures(), methodEvaluation.getNumberOfActualFeatures()));
 
         if (!methodsWithHeaderAlreadyPrinted.contains(methodName))
         {
@@ -166,8 +158,16 @@ public class ExperimentHelper
             methodsWithHeaderAlreadyPrinted.add(methodName);
         }
 
+        for (Metric metric : Metric.values())
+        {
+            if (!printStats)
+                appendResultLineWithoutStats(results, formatMillis, sb, metric);
+            else
+                appendResultLineWithStats(results, formatMillis, sb, metric);
+        }
+
         if (!printStats)
-            LogManager.getLogger(methodName).debug(sb.toString());
+            LogManager.getLogger(ExperimentHelper.class).debug(sb.toString());
         else
             LogManager.getLogger(methodName).info(sb.toString());
     }
@@ -184,17 +184,17 @@ public class ExperimentHelper
         resultHistory.get(key).add(value);
     }
 
-    private void buildResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    private void appendResultLineWithoutStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
     {
         double[] values = results.get(metric).getValues();
 
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-            sb.append(String.format("%s\t", formatMillis(values[values.length - 1])));
+            sb.append(String.format("%s;", formatMillis(values[values.length - 1])));
         else
-            sb.append(String.format("%.2f\t", values[values.length - 1]));
+            sb.append(String.format("%.2f;", values[values.length - 1]));
     }
 
-    private void buildResultLineWithStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
+    private void appendResultLineWithStats(Map<Metric, DescriptiveStatistics> results, boolean formatMillis, StringBuilder sb, Metric metric)
     {
         DescriptiveStatistics statistics = results.get(metric);
         double mean = statistics.getMean();
@@ -202,9 +202,9 @@ public class ExperimentHelper
         double confidenceInterval = computeConfidenceInterval(statistics, 0.05);
 
         if (formatMillis && (metric == Metric.TRAIN_TIME || metric == Metric.TEST_TIME))
-            sb.append(String.format("%s\t%s\t%s\t", formatMillis(mean), formatMillis(stdev), formatMillis(confidenceInterval)));
+            sb.append(String.format("%s;%s;%s;", formatMillis(mean), formatMillis(stdev), formatMillis(confidenceInterval)));
         else
-            sb.append(String.format("%.2f\t%.2f\t%.2f\t", mean, stdev, confidenceInterval));
+            sb.append(String.format("%.2f;%.2f;%.2f;", mean, stdev, confidenceInterval));
     }
 
     // computes the confidence interval width for the given statistics and significance

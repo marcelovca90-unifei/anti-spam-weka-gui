@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -459,7 +458,7 @@ public class UserInterface extends JFrame
 
                 // anti spam settings
                 txtMetadata.setText(prop.getProperty("txtMetadata"));
-                selectedMethods = new HashSet<>(Arrays.asList(prop.getProperty("selectedMethods").split(",")));
+                selectedMethods = new LinkedHashSet<>(Arrays.asList(prop.getProperty("selectedMethods").split(",")));
                 for (Component component : panelMethods.getComponents())
                     if (component instanceof JCheckBox)
                         ((JCheckBox) component).setSelected(selectedMethods.contains(((JCheckBox) component).getText()));
@@ -476,6 +475,8 @@ public class UserInterface extends JFrame
                 chkSaveModel.setSelected(Boolean.parseBoolean(prop.getProperty("saveModel")));
                 chkSaveSets.setSelected(Boolean.parseBoolean(prop.getProperty("saveSets")));
                 chkEmailResults.setSelected(Boolean.parseBoolean(prop.getProperty("emailResults")));
+                setPanelEnabled(panelEmailSettings, chkEmailResults.isSelected());
+                btnRun.setEnabled(!chkEmailResults.isSelected());
 
                 // e-mail settings
                 txtSender.setText(prop.getProperty("sender"));
