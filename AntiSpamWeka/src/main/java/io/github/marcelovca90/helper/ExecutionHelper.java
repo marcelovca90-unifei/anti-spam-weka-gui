@@ -231,7 +231,7 @@ public class ExecutionHelper
 
                 if (emailResults)
                 {
-                    String logFilename = "logs" + File.separator + method.name() + ".log";
+                    String logFilename = "logs" + File.separator + method.name() + ".csv";
 
                     String subject = String.format("[ASW] %s - %s", LocalDateTime.now(), logFilename.substring(logFilename.lastIndexOf(File.separator) + 1));
 
