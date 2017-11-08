@@ -1,8 +1,8 @@
-# anti-spam-weka [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka)
+# anti-spam-weka-gui [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka-gui.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka-gui)
 
 Project of my master's degree in Computer Science ("Study and Research in Anti-Spam Systems").
 
-For instructions on how to clone, build and run the project, please refer to ["How To"](https://github.com/marcelovca90/anti-spam-weka/blob/master/HOW-TO.md).
+For instructions on how to clone, build and run the project, please refer to ["How To"](https://github.com/marcelovca90/anti-spam-weka-gui/blob/master/HOW-TO.md).
 
 - - - -
 

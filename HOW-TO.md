@@ -1,12 +1,12 @@
 ### Prerequisites:
 
-[Git](https://git-scm.com/downloads) + [JDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html) / [OpenJDK 8](http://openjdk.java.net/install/) + [Apache Maven](https://maven.apache.org/download.cgi) + [SendEmail](http://caspian.dotconf.net/menu/Software/SendEmail/#download)
+[Git](https://git-scm.com/downloads) + [JDK 8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html) / [OpenJDK 8](http://openjdk.java.net/install/) + [Apache Maven](https://maven.apache.org/download.cgi)
 
-#### 1. Cloning and building the main project ([anti-spam-weka](https://github.com/marcelovca90/anti-spam-weka)):
+#### 1. Cloning and building the main project ([anti-spam-weka-gui](https://github.com/marcelovca90/anti-spam-weka-gui)):
 
 ```
-git clone https://github.com/marcelovca90/anti-spam-weka ~/anti-spam-weka/
-cd ~/anti-spam-weka/AntiSpamWeka/ && mvn clean install
+git clone https://github.com/marcelovca90/anti-spam-weka-gui ~/anti-spam-weka-gui/
+cd ~/anti-spam-weka-gui/AntiSpamWekaGUI/ && mvn clean install
 ```
 
 #### 2. Cloning and extracting the data sets ([anti-spam-weka-data](https://github.com/marcelovca90/anti-spam-weka-data)):
@@ -27,8 +27,8 @@ sudo update-alternatives --config liblapack.so
 sudo update-alternatives --config liblapack.so.3
 ```
 
-#### 5. Configuring and performing training, testing and e-mail sending
+#### 5. Configuring and performing training and testing
 
 ```
-cd ~/anti-spam-weka/AntiSpamWeka/ && vi run.sh && ./run.sh
+cd ~/anti-spam-weka-gui/AntiSpamWekaGUI/ && ./run.sh (choose the appropriate script for your OS)
 ```

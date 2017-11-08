@@ -145,7 +145,7 @@ public class UserInterface extends JFrame
         panelAntiSpamSettings.add(lblMetadata);
 
         txtMetadata = new JTextField();
-        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadata.txt".replaceAll("!", File.separator));
+        txtMetadata.setText(USER_HOME + "!git!anti-spam-weka-data!2017_BASE2!metadata.txt".replace("!", File.separator));
         txtMetadata.setEditable(false);
         txtMetadata.setColumns(10);
         txtMetadata.setBounds(79, 18, 399, 45);
@@ -337,8 +337,8 @@ public class UserInterface extends JFrame
             else
             {
                 boolean dryRunStatus = MailHelper.sendMail(
-                    (CryptoProtocol) cbProtocol.getSelectedItem(),
-                    txtUsername.getText(), new String(fldPassword.getPassword()), txtServer.getText(), "", "", "", "", "", true);
+                        (CryptoProtocol) cbProtocol.getSelectedItem(),
+                        txtUsername.getText(), new String(fldPassword.getPassword()), txtServer.getText(), "", "", "", "", "", true);
 
                 if (!dryRunStatus)
                 {
